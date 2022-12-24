@@ -1,3 +1,6 @@
+using Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,7 +10,27 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PostreSQL"));
+    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+});
+
 var app = builder.Build();
+
+using(var servicescope = app.Services.CreateScope())
+{
+    var serviceprovider = servicescope.ServiceProvider;
+    try
+    {
+         var context = serviceprovider.GetRequiredService<ApplicationDbContext>();
+         DbInitializer.Initialize(context);
+    }
+    catch(Exception e)
+    {
+        app.Logger.LogError(e.Message, "Db initializing error");
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
