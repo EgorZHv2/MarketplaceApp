@@ -29,6 +29,7 @@ namespace Data
 
             modelBuilder.Entity<Review>().HasKey(x =>x.Id);
             modelBuilder.Entity<Review>().HasOne(e => e.Shop).WithMany(t=> t.Reviews).HasForeignKey(e => e.ShopId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Review>().HasOne(e => e.Buyer).WithMany(t => t.Reviews).HasForeignKey(e => e.BuyerId).OnDelete(DeleteBehavior.Cascade);
         }
 
     }

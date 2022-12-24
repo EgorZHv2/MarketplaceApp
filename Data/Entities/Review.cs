@@ -11,7 +11,9 @@ namespace Data.Entities
         public Guid Id { get; set; }
         public string ReviewText { get; set; }
         public int Score { get; set; }
+        public Guid BuyerId { get; set; }
         public Guid ShopId { get; set; }
         public Shop Shop { get; set; }
+        public User Buyer { get; set; }
     }
 }
