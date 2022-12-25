@@ -2,6 +2,8 @@ using Data;
 using Data.Repositories;
 using Data.IRepositories;
 using Microsoft.EntityFrameworkCore;
+using Logic.Interfaces;
+using Logic.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +21,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 
 builder.Services.AddScoped<IRepositoryWrapper, PostgreRepositoryWrapper>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 var app = builder.Build();
 
