@@ -1,4 +1,6 @@
 using Data;
+using Data.Repositories;
+using Data.IRepositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +17,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostreSQL"));
     options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
+
+builder.Services.AddScoped<IRepositoryWrapper, PostgreRepositoryWrapper>();
 
 var app = builder.Build();
 

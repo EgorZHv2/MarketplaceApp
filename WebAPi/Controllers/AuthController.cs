@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Logic.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPi.Controllers
@@ -13,7 +14,7 @@ namespace WebAPi.Controllers
             return Ok();
         }
         [HttpPost]
-        public async Task<IActionResult> Register([FromBody] Object model)
+        public async Task<IActionResult> Register([FromBody] RegistrationModel model)
         {
             return Ok();
         }
