@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +25,7 @@ namespace WebAPi.Controllers
             return Ok();
         }
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles ="Seller")]
         public async Task<IActionResult> GetAllReviews()
         {
              return Ok();

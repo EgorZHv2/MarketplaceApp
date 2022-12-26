@@ -1,10 +1,15 @@
 ﻿using AutoMapper;
 using Data.Entities;
 using Data.IRepositories;
+using Logic.Configuration;
 using Logic.Interfaces;
 using Logic.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace WebAPi.Controllers
 {
@@ -34,9 +39,31 @@ namespace WebAPi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login([FromBody] Object model)
+        public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            return Ok();
+            if (!ModelState.IsValid)
+            {
+                 return BadRequest(ModelState);
+            }
+            var user = _repositoryWrapper.Users.GetAll().FirstOrDefault(e => e.Email == model.Email);
+            if(user == null)
+            {
+                return BadRequest(ModelState);
+            }
+            var claims = new Claim[] {new Claim(ClaimTypes.Name, user.Email),new Claim(ClaimTypes.Role,user.Role.ToString())};
+            
+            var token = new JwtSecurityToken
+                (
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(5),
+                signingCredentials: JwtAuthOptions.GetCredentials());
+
+            var results = new
+            {
+                token = new JwtSecurityTokenHandler().WriteToken(token),
+                expiration = token.ValidTo
+            };
+            return Ok(results);
         }
 
         [HttpPost]
