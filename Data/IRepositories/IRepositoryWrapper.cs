@@ -8,9 +8,9 @@ namespace Data.IRepositories
 {
     public interface IRepositoryWrapper
     {
-         IUserRepository User { get; }
-        IShopRepository Shop { get; }
-        IReviewRepository Review { get; }
+         IUserRepository Users { get; }
+        IShopRepository Shops { get; }
+        IReviewRepository Reviews { get; }
         void Save();
     }
 }

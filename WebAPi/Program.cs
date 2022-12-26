@@ -4,6 +4,8 @@ using Data.IRepositories;
 using Microsoft.EntityFrameworkCore;
 using Logic.Interfaces;
 using Logic.Services;
+using AutoMapper;
+using Logic.Mappers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,8 +22,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
 
+builder.Services.AddAutoMapper(typeof(AppMappingProfile));
+
 builder.Services.AddScoped<IRepositoryWrapper, PostgreRepositoryWrapper>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IPasswordGeneratorService,PasswordGeneratorService>();
 
 var app = builder.Build();
 

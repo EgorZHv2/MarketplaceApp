@@ -13,42 +13,46 @@ namespace Data.Repositories
     {
         private ApplicationDbContext _context;
 
-        private IUserRepository _user;
-        private IShopRepository _shop;
-        private IReviewRepository _review;
+        private IUserRepository _users;
+        private IShopRepository _shops;
+        private IReviewRepository _reviews;
 
-        public IUserRepository User
+        public PostgreRepositoryWrapper(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+        public IUserRepository Users
         {
             get
             {
-                if(_user == null)
+                if(_users == null)
                 {
-                    _user = new PostgreUserRepository(_context);
+                    _users = new PostgreUserRepository(_context);
                 }
-                return _user;
+                return _users;
             }
         }
-        public IShopRepository Shop
+        public IShopRepository Shops
         {
             get
             {
-                if(_shop == null)
+                if(_shops == null)
                 {
-                    _shop = new PostgreShopRepository(_context);
+                    _shops = new PostgreShopRepository(_context);
                 }
-                return _shop;
+                return _shops;
             }
         }
 
-        public IReviewRepository Review
+        public IReviewRepository Reviews
         {
             get
             {
-                if(_review == null)
+                if(_reviews == null)
                 {
-                    _review = new PostgreReviewRepository(_context);
+                    _reviews = new PostgreReviewRepository(_context);
                 }
-                return _review;
+                return _reviews;
             }
         }
         public void Save()

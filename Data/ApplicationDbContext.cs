@@ -23,6 +23,7 @@ namespace Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<User>().HasKey(x => x.Id);
+            modelBuilder.Entity<User>().Property(e => e.FirstName).IsRequired(false);
 
             modelBuilder.Entity<Shop>().HasKey(x =>x.Id);
             modelBuilder.Entity<Shop>().HasOne(e => e.Seller).WithMany(t => t.Shops).HasForeignKey(e => e.SellerId).OnDelete(DeleteBehavior.Cascade);
