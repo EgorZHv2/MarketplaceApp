@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Data.Entities;
+using Data.IRepositories;
+using Logic.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,38 +12,106 @@ namespace WebAPi.Controllers
     [ApiController]
     public class ShopController : ControllerBase
     {
+        private IRepositoryWrapper _repository;
+        private IMapper _mapper;
+        private ILogger<ShopController> _logger;
+
+        public ShopController(
+            IRepositoryWrapper repository,
+            IMapper mapper,
+            ILogger<ShopController> logger
+        )
+        {
+            _repository = repository;
+            _mapper = mapper;
+            _logger = logger;
+        }
+
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetAllShops()
         {
-            return Ok();
+            var list = _repository.Shops.GetAll().ToList();
+            return Ok(list);
+            
         }
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetShopById([FromBody] Guid Id)
+        public async Task<IActionResult> GetShopById([FromQuery] Guid Id)
         {
-            return Ok();
+            var entity = _repository.Shops.GetById(Id);
+            if(entity == null)
+            {
+                _logger.LogError("Review not found");
+                return NotFound("Review not found");
+            }
+            return Ok(entity);
+           
         }
-        
+
         [HttpPost]
         [Authorize(Roles = "Seller, Admin")]
-        public async Task<IActionResult> CreateShop([FromBody] Object model)
+        public async Task<IActionResult> CreateShop([FromBody] ShopModel model)
         {
-            return Ok();
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            Shop shop = new Shop();
+            try
+            {
+                shop = _mapper.Map<Shop>(model);
+            }
+            catch
+            {
+                 _logger.LogError("Error while mapping");
+                return StatusCode(500);
+            }
+            shop.Id = Guid.NewGuid();
+            _repository.Shops.Create(shop);
+            _repository.Save();
+            return Ok(shop.Id);
+            
         }
 
         [HttpPut]
         [Authorize(Roles = "Seller, Admin")]
-        public async Task<IActionResult> UpdateShop([FromBody] Object model)
+        public async Task<IActionResult> UpdateShop([FromBody] ShopModel model)
         {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            Shop shop = new Shop();
+            try
+            {
+                shop = _mapper.Map<Shop>(model);
+            }
+            catch
+            {
+                 _logger.LogError("Error while mapping");
+                return StatusCode(500);
+            }
+           
+            _repository.Shops.Update(shop);
+            _repository.Save();
+        
             return Ok();
-        } 
+        }
 
         [HttpDelete]
         [Authorize(Roles = "Seller, Admin")]
         public async Task<IActionResult> DeleteShop([FromBody] Guid Id)
         {
+            Shop shop = _repository.Shops.GetById(Id);
+            if(shop == null)
+            {
+                _logger.LogError("Shop not found");
+                return NotFound("Not found this Id");
+            }
+            _repository.Shops.Delete(Id);
+            _repository.Save();
             return Ok();
         }
     }

@@ -22,13 +22,15 @@ namespace WebAPi.Controllers
         private IPasswordGeneratorService _passwordGeneratorService;
         private IEmailService _emailService;
         private ILogger<AuthController> _logger;
+        private ITokenService _tokenService;
 
         public AuthController(
             IRepositoryWrapper repositoryWrapper,
             IMapper mapper,
             IPasswordGeneratorService passwordGeneratorService,
             IEmailService emailService,
-            ILogger<AuthController> logger
+            ILogger<AuthController> logger,
+            ITokenService tokenService
         )
         {
             _repositoryWrapper = repositoryWrapper;
@@ -36,6 +38,7 @@ namespace WebAPi.Controllers
             _passwordGeneratorService = passwordGeneratorService;
             _emailService = emailService;
             _logger = logger;
+            _tokenService = tokenService;
         }
 
         [HttpPost]
@@ -43,27 +46,22 @@ namespace WebAPi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                 return BadRequest(ModelState);
-            }
-            var user = _repositoryWrapper.Users.GetAll().FirstOrDefault(e => e.Email == model.Email);
-            if(user == null)
-            {
                 return BadRequest(ModelState);
             }
-            var claims = new Claim[] {new Claim(ClaimTypes.Name, user.Email),new Claim(ClaimTypes.Role,user.Role.ToString())};
-            
-            var token = new JwtSecurityToken
-                (
-                claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(5),
-                signingCredentials: JwtAuthOptions.GetCredentials());
-
-            var results = new
+            var user = _repositoryWrapper.Users
+                .GetAll()
+                .FirstOrDefault(e => e.Email == model.Email);
+            if (user == null)
             {
-                token = new JwtSecurityTokenHandler().WriteToken(token),
-                expiration = token.ValidTo
-            };
-            return Ok(results);
+                return NotFound("Wrong email");
+            }
+            if (model.Password != user.Password)
+            {
+                return StatusCode(403, "Wrong password");
+            }
+            var results = _tokenService.GetTokenAsync(user);
+
+            return Ok(results.Result);
         }
 
         [HttpPost]
@@ -82,7 +80,9 @@ namespace WebAPi.Controllers
                 }
                 catch
                 {
+                    
                     _logger.LogError("Error while mapping");
+                    return StatusCode(500);
                 }
                 user.Password = _passwordGeneratorService.GeneratePassword();
                 _emailService.SendEmail(
@@ -96,7 +96,7 @@ namespace WebAPi.Controllers
             }
             else
             {
-                return BadRequest(ModelState);
+               return StatusCode(500);
             }
         }
     }

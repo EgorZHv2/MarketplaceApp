@@ -10,7 +10,7 @@ namespace Logic.Configuration
 {
     public class JwtAuthOptions
     {
-        private const  string AUTH_KEY = "TQvgjeABMPOwCycOqah5EQu5yyVjpmVG";
+        private static readonly  string AUTH_KEY = "TQvgjeABMPOwCycOqah5EQu5yyVjpmVG";
 
         private static readonly SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(AUTH_KEY));
 

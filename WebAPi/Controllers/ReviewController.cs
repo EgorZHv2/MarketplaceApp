@@ -1,4 +1,8 @@
 ﻿
+using AutoMapper;
+using Data.Entities;
+using Data.IRepositories;
+using Logic.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -10,42 +14,102 @@ namespace WebAPi.Controllers
     [ApiController]
     public class ReviewController : ControllerBase
     {
+        private IRepositoryWrapper _repository;
+        private IMapper _mapper;
+        private ILogger<ReviewController> _logger;
+
+        public ReviewController(IRepositoryWrapper repository,
+            IMapper mapper,
+            ILogger<ReviewController> logger)
+        {
+            _repository = repository;
+            _mapper = mapper;
+            _logger = logger;
+        }
+
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetReviewById([FromBody] Guid Id)
+        public async Task<IActionResult> GetReviewById([FromQuery] Guid Id)
         {
-            
-            return Ok();
+            var entity = _repository.Reviews.GetById(Id);
+            if(entity == null)
+            {
+                _logger.LogError("Review not found");
+                return NotFound("Review not found");
+            }
+            return Ok(entity);
         }
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetReviewsByShopId([FromBody] Guid Id)
+        public async Task<IActionResult> GetReviewsByShopId([FromQuery] Guid Id)
         {
-            
-            return Ok();
+            var list = _repository.Reviews.GetAll().Where(e => e.ShopId == Id).ToList();
+            return Ok(list);
         }
         [HttpGet]
-        [Authorize(Roles ="Seller")]
+        [Authorize]
         public async Task<IActionResult> GetAllReviews()
         {
-             return Ok();
+             var list = _repository.Reviews.GetAll().ToList();
+             return Ok(list);
         }
         [HttpPost]
         [Authorize(Roles = "Buyer,Admin")]
-        public async Task<IActionResult> CreateReview([FromBody] Object model)
+        public async Task<IActionResult> CreateReview([FromBody] ReviewModel model)
         {
-            return Ok();
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            Review review = new Review();
+            try
+            {
+                review = _mapper.Map<Review>(model);
+            }
+            catch
+            {
+                 _logger.LogError("Error while mapping");
+                return StatusCode(500);
+            }
+            review.Id = Guid.NewGuid();
+            _repository.Reviews.Create(review);
+            _repository.Save();
+            return Ok(review.Id);
         }
         [HttpPut]
         [Authorize(Roles = "Buyer,Admin")]
-        public async Task<IActionResult> UpdateReview([FromBody] Object model)
+        public async Task<IActionResult> UpdateReview([FromBody] ReviewModel model)
         {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            Review review = new Review();
+            try
+            {
+                review = _mapper.Map<Review>(model);
+            }
+            catch
+            {
+                 _logger.LogError("Error while mapping");
+                return StatusCode(500);
+            }
+            _repository.Reviews.Update(review);
+            _repository.Save();
             return Ok();
         }
         [HttpDelete]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteReview([FromBody] Guid Id)
         {
+            Review review = _repository.Reviews.GetById(Id);
+            if(review == null)
+            {
+                _logger.LogError("Review not found");
+                return NotFound("Not found this Id");
+            }
+            _repository.Reviews.Delete(Id);
+            _repository.Save();
             return Ok();
         }
     }

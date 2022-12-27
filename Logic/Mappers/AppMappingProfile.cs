@@ -14,6 +14,10 @@ namespace Logic.Mappers
         public AppMappingProfile() 
         {
             CreateMap<RegistrationModel, User>();
+
+            CreateMap<ReviewModel,Review>().ReverseMap();
+
+            CreateMap<ShopModel,Shop>().ReverseMap();
         }
     }
 }

@@ -34,6 +34,7 @@ builder.Services.AddAutoMapper(typeof(AppMappingProfile));
 builder.Services.AddScoped<IRepositoryWrapper, PostgreRepositoryWrapper>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IPasswordGeneratorService, PasswordGeneratorService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -100,6 +101,8 @@ using (var servicescope = app.Services.CreateScope())
     {
         var context = serviceprovider.GetRequiredService<ApplicationDbContext>();
         DbInitializer.Initialize(context);
+        var repository = serviceprovider.GetRequiredService<IRepositoryWrapper>();
+        DataSeed.SeedData(repository);
     }
     catch (Exception e)
     {
