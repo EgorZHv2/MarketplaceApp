@@ -35,6 +35,7 @@ builder.Services.AddScoped<IRepositoryWrapper, PostgreRepositoryWrapper>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IPasswordGeneratorService, PasswordGeneratorService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IImageConverter, ImageConverter>();
 
 builder.Services.AddSwaggerGen(c =>
 {

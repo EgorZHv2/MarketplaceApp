@@ -24,7 +24,7 @@ namespace Logic.Services
             };
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(5),
+                expires: DateTime.UtcNow.AddHours(1),
                 signingCredentials: JwtAuthOptions.GetCredentials()
             );
            
