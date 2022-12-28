@@ -5,6 +5,9 @@ using Logic.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Dadata;
+using Dadata.Model;
+using Logic.Interfaces;
 
 namespace WebAPi.Controllers
 {
@@ -15,16 +18,18 @@ namespace WebAPi.Controllers
         private IRepositoryWrapper _repository;
         private IMapper _mapper;
         private ILogger<ShopController> _logger;
-
+        private IINNService _iNNService;
         public ShopController(
             IRepositoryWrapper repository,
             IMapper mapper,
-            ILogger<ShopController> logger
+            ILogger<ShopController> logger,
+            IINNService iNNService
         )
         {
             _repository = repository;
             _mapper = mapper;
             _logger = logger;
+            _iNNService = iNNService;
         }
 
         [HttpGet]
@@ -58,6 +63,11 @@ namespace WebAPi.Controllers
             {
                 return BadRequest(ModelState);
             }
+            if(!_iNNService.CheckINN(model.INN))
+            {
+                return NotFound("Inn not valid");
+            }
+        
             Shop shop = new Shop();
             try
             {
@@ -82,6 +92,10 @@ namespace WebAPi.Controllers
             if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+            }
+            if(!_iNNService.CheckINN(model.INN))
+            {
+                return NotFound("Inn not valid");
             }
             Shop shop = new Shop();
             try
