@@ -36,6 +36,7 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IPasswordGeneratorService, PasswordGeneratorService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IImageConverter, ImageConverter>();
+builder.Services.AddScoped<IHttpService, HttpService>();
 
 builder.Services.AddSwaggerGen(c =>
 {

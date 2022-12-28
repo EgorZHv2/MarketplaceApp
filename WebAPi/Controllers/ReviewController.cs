@@ -100,7 +100,7 @@ namespace WebAPi.Controllers
         }
         [HttpDelete]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteReview([FromBody] Guid Id)
+        public async Task<IActionResult> DeleteReview([FromQuery] Guid Id)
         {
             Review review = _repository.Reviews.GetById(Id);
             if(review == null)

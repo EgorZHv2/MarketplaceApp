@@ -102,7 +102,7 @@ namespace WebAPi.Controllers
 
         [HttpDelete]
         [Authorize(Roles = "Seller, Admin")]
-        public async Task<IActionResult> DeleteShop([FromBody] Guid Id)
+        public async Task<IActionResult> DeleteShop([FromQuery] Guid Id)
         {
             Shop shop = _repository.Shops.GetById(Id);
             if(shop == null)
