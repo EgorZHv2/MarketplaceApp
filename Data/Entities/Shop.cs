@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Data.Entities
 {
-    public class Shop
+    public class Shop:BaseEntity
     {
-        public Guid Id { get; set; }
+
         public string Title { get; set; }
         public string Description { get; set; }
         public byte[] Logo { get; set; }

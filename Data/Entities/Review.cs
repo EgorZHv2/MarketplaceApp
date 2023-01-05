@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Data.Entities
 {
-    public class Review
+    public class Review:BaseEntity
     {
-        public Guid Id { get; set; }
+      
         public string ReviewText { get; set; }
         public int Score { get; set; }
         public Guid BuyerId { get; set; }
