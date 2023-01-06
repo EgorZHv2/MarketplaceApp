@@ -72,6 +72,9 @@ namespace WebAPi.Controllers
                 return StatusCode(500);
             }
             review.Id = Guid.NewGuid();
+            var user = _repository.Users.GetAll().FirstOrDefault(e => e.Email == User.Identity.Name);
+            review.CreatorId = user.Id;
+            review.UpdatorId = user.Id;
             _repository.Reviews.Create(review);
             _repository.Save();
             return Ok(review.Id);
@@ -94,6 +97,8 @@ namespace WebAPi.Controllers
                  _logger.LogError("Error while mapping");
                 return StatusCode(500);
             }
+            var user = _repository.Users.GetAll().FirstOrDefault(e => e.Email == User.Identity.Name);
+            review.UpdatorId = user.Id;
             _repository.Reviews.Update(review);
             _repository.Save();
             return Ok();
@@ -108,6 +113,8 @@ namespace WebAPi.Controllers
                 _logger.LogError("Review not found");
                 return NotFound("Not found this Id");
             }
+            var user = _repository.Users.GetAll().FirstOrDefault(e => e.Email == User.Identity.Name);
+            review.DeletorId = user.Id;
             _repository.Reviews.Delete(Id);
             _repository.Save();
             return Ok();

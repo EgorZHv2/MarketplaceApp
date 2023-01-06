@@ -37,7 +37,6 @@ namespace WebAPi.Controllers
         public async Task<IActionResult> GetAllShops()
         {
             var list = _repository.Shops.GetAll().ToList();
-            _logger.LogError($"Тута лог {_repository.Users.GetAll().FirstOrDefault(e=> e.Email == User.Identity.Name).Id}");
             return Ok(list);
 
             
@@ -81,7 +80,9 @@ namespace WebAPi.Controllers
                 return StatusCode(500);
             }
             shop.Id = Guid.NewGuid();
-            
+            var user = _repository.Users.GetAll().FirstOrDefault(e => e.Email == User.Identity.Name);
+            shop.CreatorId = user.Id;
+            shop.UpdatorId = user.Id;
             _repository.Shops.Create(shop);
             _repository.Save();
             return Ok(shop.Id);
@@ -110,7 +111,8 @@ namespace WebAPi.Controllers
                  _logger.LogError("Error while mapping");
                 return StatusCode(500);
             }
-           
+             var user = _repository.Users.GetAll().FirstOrDefault(e => e.Email == User.Identity.Name);
+            shop.UpdatorId = user.Id;
             _repository.Shops.Update(shop);
             _repository.Save();
         
@@ -127,6 +129,8 @@ namespace WebAPi.Controllers
                 _logger.LogError("Shop not found");
                 return NotFound("Not found this Id");
             }
+            var user = _repository.Users.GetAll().FirstOrDefault(e => e.Email == User.Identity.Name);
+            shop.DeletorId = user.Id;
             _repository.Shops.Delete(Id);
             _repository.Save();
             return Ok();
