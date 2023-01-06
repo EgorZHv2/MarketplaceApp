@@ -37,7 +37,9 @@ namespace WebAPi.Controllers
         public async Task<IActionResult> GetAllShops()
         {
             var list = _repository.Shops.GetAll().ToList();
+            _logger.LogError($"Тута лог {_repository.Users.GetAll().FirstOrDefault(e=> e.Email == User.Identity.Name).Id}");
             return Ok(list);
+
             
         }
 
@@ -63,7 +65,7 @@ namespace WebAPi.Controllers
             {
                 return BadRequest(ModelState);
             }
-            if(!_iNNService.CheckINN(model.INN))
+            if(_iNNService.CheckINN("770303580308"))
             {
                 return NotFound("Inn not valid");
             }
@@ -79,6 +81,7 @@ namespace WebAPi.Controllers
                 return StatusCode(500);
             }
             shop.Id = Guid.NewGuid();
+            
             _repository.Shops.Create(shop);
             _repository.Save();
             return Ok(shop.Id);

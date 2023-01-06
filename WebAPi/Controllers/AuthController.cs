@@ -60,7 +60,7 @@ namespace WebAPi.Controllers
                 return StatusCode(403, "Wrong password");
             }
             var results = _tokenService.GetTokenAsync(user);
-
+            
             return Ok(results.Result);
         }
 

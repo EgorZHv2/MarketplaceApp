@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Data.IRepositories
 {
-    public interface IReviewRepository:IRepository<Review>
+    public interface IReviewRepository:IBaseRepository<Review>
     {
     }
 }

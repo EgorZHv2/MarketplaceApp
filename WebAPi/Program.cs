@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Text;
 using Logic.Configuration;
 using Microsoft.OpenApi.Models;
+using Data.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +38,7 @@ builder.Services.AddScoped<IPasswordGeneratorService, PasswordGeneratorService>(
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IImageConverter, ImageConverter>();
 builder.Services.AddScoped<IINNService, INNService>();
+
 
 builder.Services.AddSwaggerGen(c =>
 {

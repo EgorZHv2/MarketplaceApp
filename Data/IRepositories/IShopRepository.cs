@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Data.IRepositories
 {
-    public interface IShopRepository:IRepository<Shop>
+    public interface IShopRepository:IBaseRepository<Shop>
     {
     }
 }
