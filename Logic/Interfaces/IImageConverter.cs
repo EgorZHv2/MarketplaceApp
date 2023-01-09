@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Logic.Interfaces
+namespace WebAPi.Interfaces
 {
     public interface IImageConverter
     {

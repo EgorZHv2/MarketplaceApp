@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Data.Entities;
-using Logic.Models;
+using WebAPi.Models;
 
-namespace Logic.Mappers
+namespace WebAPi.Mappers
 {
     public class AppMappingProfile:Profile
     {

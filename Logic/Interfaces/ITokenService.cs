@@ -1,5 +1,5 @@
 ﻿using Data.Entities;
-using Logic.Configuration;
+using WebAPi.Configuration;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -11,7 +11,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Logic.Interfaces
+namespace WebAPi.Interfaces
 {
     public interface ITokenService
     {

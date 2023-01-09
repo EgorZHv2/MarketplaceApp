@@ -1,4 +1,4 @@
-﻿using Logic.Interfaces;
+﻿using WebAPi.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using MimeKit;
 using MailKit.Net.Smtp;
 
-namespace Logic.Services
+namespace WebAPi.Services
 {
     public class EmailService : IEmailService
     {

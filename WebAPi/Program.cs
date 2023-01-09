@@ -2,17 +2,18 @@ using Data;
 using Data.Repositories;
 using Data.IRepositories;
 using Microsoft.EntityFrameworkCore;
-using Logic.Interfaces;
-using Logic.Services;
+using WebAPi.Interfaces;
+using WebAPi.Services;
 using AutoMapper;
-using Logic.Mappers;
+using WebAPi.Mappers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
 using System.Text;
-using Logic.Configuration;
+using WebAPi.Configuration;
 using Microsoft.OpenApi.Models;
 using Data.Entities;
+using WebAPi.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -96,7 +97,11 @@ builder.Services.AddAuthentication(options =>
         };
     });
 
+
+
 var app = builder.Build();
+
+app.UseMiddleware<ErrorHandlingMiddleware>();
 
 using (var servicescope = app.Services.CreateScope())
 {

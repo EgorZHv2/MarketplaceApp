@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using Data.Entities;
 using Data.IRepositories;
-using Logic.Configuration;
-using Logic.Interfaces;
-using Logic.Models;
+using WebAPi.Configuration;
+using WebAPi.Exceptions;
+using WebAPi.Interfaces;
+using WebAPi.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -51,13 +52,14 @@ namespace WebAPi.Controllers
             var user = _repositoryWrapper.Users
                 .GetAll()
                 .FirstOrDefault(e => e.Email == model.Email);
+
             if (user == null)
             {
-                return NotFound("Wrong email");
+              throw new NotFoundException("Пользователь с данным email не найден");
             }
             if (model.Password != user.Password)
             {
-                return StatusCode(403, "Wrong password");
+                throw new AuthException("Неверный пароль", System.Net.HttpStatusCode.Unauthorized,DateTime.UtcNow,user.Email);
             }
             var results = _tokenService.GetTokenAsync(user);
             

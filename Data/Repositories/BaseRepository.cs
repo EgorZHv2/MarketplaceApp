@@ -11,7 +11,7 @@ namespace Data.Repositories
 {
     public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : BaseEntity
     {
-        private readonly ApplicationDbContext _context;
+        protected readonly ApplicationDbContext _context;
 
         public BaseRepository(ApplicationDbContext context)
         {

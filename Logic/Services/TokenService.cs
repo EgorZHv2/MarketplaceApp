@@ -1,6 +1,6 @@
 ﻿using Data.Entities;
-using Logic.Configuration;
-using Logic.Interfaces;
+using WebAPi.Configuration;
+using WebAPi.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -9,7 +9,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Logic.Services
+namespace WebAPi.Services
 {
     public class TokenService:ITokenService
     {

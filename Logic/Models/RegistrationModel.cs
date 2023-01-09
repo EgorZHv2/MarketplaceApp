@@ -7,7 +7,7 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Logic.Models
+namespace WebAPi.Models
 {
     public class RegistrationModel
     {

@@ -2,8 +2,8 @@ using Data;
 using Data.Entities;
 using Data.IRepositories;
 using Data.Repositories;
-using Logic.Configuration;
-using Logic.Services;
+using WebAPi.Configuration;
+using WebAPi.Services;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 

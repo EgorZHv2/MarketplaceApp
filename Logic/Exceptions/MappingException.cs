@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebAPi.Interfaces
+namespace Logic.Exceptions
 {
-    public interface IPasswordGeneratorService
+    internal class MappingException
     {
-        public string GeneratePassword();
     }
 }

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace Logic.Configuration
+namespace WebAPi.Configuration
 {
     public class JwtAuthOptions
     {
