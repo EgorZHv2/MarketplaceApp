@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Logic.Exceptions;
+using WebAPi.Exceptions;
 
 namespace WebAPi.Controllers
 {
@@ -34,8 +36,7 @@ namespace WebAPi.Controllers
             var entity = _repository.Reviews.GetById(Id);
             if(entity == null)
             {
-                _logger.LogError("Review not found");
-                return NotFound("Review not found");
+               throw new NotFoundException("Review not found");
             }
             return Ok(entity);
         }
@@ -68,8 +69,7 @@ namespace WebAPi.Controllers
             }
             catch
             {
-                 _logger.LogError("Error while mapping");
-                return StatusCode(500);
+                 throw new MappingException("Ошибка при маппинге",this.GetType().ToString());
             }
             review.Id = Guid.NewGuid();
             var user = _repository.Users.GetAll().FirstOrDefault(e => e.Email == User.Identity.Name);
@@ -94,8 +94,7 @@ namespace WebAPi.Controllers
             }
             catch
             {
-                 _logger.LogError("Error while mapping");
-                return StatusCode(500);
+                 throw new MappingException("Ошибка при маппинге",this.GetType().ToString());
             }
             var user = _repository.Users.GetAll().FirstOrDefault(e => e.Email == User.Identity.Name);
             review.UpdatorId = user.Id;
@@ -110,8 +109,7 @@ namespace WebAPi.Controllers
             Review review = _repository.Reviews.GetById(Id);
             if(review == null)
             {
-                _logger.LogError("Review not found");
-                return NotFound("Not found this Id");
+               throw new NotFoundException("Review id not found");
             }
             var user = _repository.Users.GetAll().FirstOrDefault(e => e.Email == User.Identity.Name);
             review.DeletorId = user.Id;

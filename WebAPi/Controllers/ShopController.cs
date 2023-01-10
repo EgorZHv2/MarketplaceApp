@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using Dadata;
 using Dadata.Model;
 using WebAPi.Interfaces;
+using Logic.Exceptions;
+using WebAPi.Exceptions;
 
 namespace WebAPi.Controllers
 {
@@ -49,8 +51,7 @@ namespace WebAPi.Controllers
             var entity = _repository.Shops.GetById(Id);
             if(entity == null)
             {
-                _logger.LogError("Review not found");
-                return NotFound("Review not found");
+               throw new NotFoundException("Shop not found");
             }
             return Ok(entity);
            
@@ -66,7 +67,7 @@ namespace WebAPi.Controllers
             }
             if(_iNNService.CheckINN("770303580308"))
             {
-                return NotFound("Inn not valid");
+                throw new NotFoundException("INN not valid");
             }
         
             Shop shop = new Shop();
@@ -76,8 +77,7 @@ namespace WebAPi.Controllers
             }
             catch
             {
-                 _logger.LogError("Error while mapping");
-                return StatusCode(500);
+                 throw new MappingException("Ошибка при маппинге",this.GetType().ToString());
             }
             shop.Id = Guid.NewGuid();
             var user = _repository.Users.GetAll().FirstOrDefault(e => e.Email == User.Identity.Name);
@@ -99,7 +99,7 @@ namespace WebAPi.Controllers
             }
             if(!_iNNService.CheckINN(model.INN))
             {
-                return NotFound("Inn not valid");
+                throw new NotFoundException("INN not valid");
             }
             Shop shop = new Shop();
             try
@@ -108,8 +108,7 @@ namespace WebAPi.Controllers
             }
             catch
             {
-                 _logger.LogError("Error while mapping");
-                return StatusCode(500);
+                  throw new MappingException("Ошибка при маппинге",this.GetType().ToString());
             }
              var user = _repository.Users.GetAll().FirstOrDefault(e => e.Email == User.Identity.Name);
             shop.UpdatorId = user.Id;
@@ -126,8 +125,7 @@ namespace WebAPi.Controllers
             Shop shop = _repository.Shops.GetById(Id);
             if(shop == null)
             {
-                _logger.LogError("Shop not found");
-                return NotFound("Not found this Id");
+                throw new NotFoundException("Shop Id not found");
             }
             var user = _repository.Users.GetAll().FirstOrDefault(e => e.Email == User.Identity.Name);
             shop.DeletorId = user.Id;

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Data.Entities;
+using Logic.Models;
 using WebAPi.Models;
 
 namespace WebAPi.Mappers
@@ -18,6 +19,8 @@ namespace WebAPi.Mappers
             CreateMap<ReviewModel,Review>().ReverseMap();
 
             CreateMap<ShopModel,Shop>().ReverseMap();
+
+            CreateMap<UpdateUserModel, User>().ReverseMap();
         }
     }
 }

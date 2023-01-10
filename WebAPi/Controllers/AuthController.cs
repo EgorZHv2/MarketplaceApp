@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Logic.Exceptions;
 
 namespace WebAPi.Controllers
 {
@@ -73,8 +74,7 @@ namespace WebAPi.Controllers
             {
                 return BadRequest(ModelState);
             }
-            if (model.Role == Data.Enums.Role.Buyer || model.Role == Data.Enums.Role.Seller)
-            {
+           
                 User user = new User();
                 try
                 {
@@ -83,8 +83,7 @@ namespace WebAPi.Controllers
                 catch
                 {
                     
-                    _logger.LogError("Error while mapping");
-                    return StatusCode(500);
+                    throw new MappingException("Ошибка при маппинге",this.GetType().ToString());
                 }
                 user.Password = _passwordGeneratorService.GeneratePassword();
                 _emailService.SendEmail(
@@ -95,11 +94,9 @@ namespace WebAPi.Controllers
                 _repositoryWrapper.Users.Create(user);
                 _repositoryWrapper.Save();
                 return Ok();
-            }
-            else
-            {
-               return StatusCode(500);
-            }
+            
+           
+            
         }
     }
 }
