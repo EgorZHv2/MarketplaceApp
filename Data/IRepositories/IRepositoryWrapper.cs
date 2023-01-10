@@ -11,6 +11,7 @@ namespace Data.IRepositories
          IUserRepository Users { get; }
         IShopRepository Shops { get; }
         IReviewRepository Reviews { get; }
+        IUsersFavShopsRepository UsersFavShops { get; }
         void Save();
     }
 }

@@ -16,5 +16,6 @@ namespace Data.Entities
         public Role Role { get; set; }
         public List<Shop> Shops { get; set; }
         public List<Review> Reviews { get; set; } 
+        public List<UsersFavShops> UsersFavShops { get; set; }
     }
 }

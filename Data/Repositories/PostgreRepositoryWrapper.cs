@@ -16,7 +16,7 @@ namespace Data.Repositories
         private IUserRepository _users;
         private IShopRepository _shops;
         private IReviewRepository _reviews;
-
+        private IUsersFavShopsRepository _usersFavShops;
         public PostgreRepositoryWrapper(ApplicationDbContext context)
         {
             _context = context;
@@ -53,6 +53,17 @@ namespace Data.Repositories
                     _reviews = new PostgreReviewRepository(_context);
                 }
                 return _reviews;
+            }
+        }
+        public IUsersFavShopsRepository UsersFavShops
+        {
+            get
+            {
+                if(_usersFavShops == null)
+                {
+                    _usersFavShops = new PostgreUsersFavShopsRepository(_context);
+                }
+                return _usersFavShops;
             }
         }
         public void Save()

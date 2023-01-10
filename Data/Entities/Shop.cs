@@ -17,6 +17,6 @@ namespace Data.Entities
         public Guid SellerId { get; set; }
         public User Seller { get; set; }
         public List<Review> Reviews { get; set; }
-        
+        public List<UsersFavShops> UsersFavShops { get; set; }
     }
 }
