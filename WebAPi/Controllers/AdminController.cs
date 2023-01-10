@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Data.Entities;
 using Data.IRepositories;
+using Logic.Exceptions;
 using Logic.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -55,6 +57,34 @@ namespace WebAPi.Controllers
             }
             _repositoryWrapper.Save();
             return Ok();
+        }
+        [HttpPost]
+        [Authorize(Roles ="Admin")]
+        public async Task<IActionResult> CreateAdmin(CreateAdminModel model)
+        {
+            var dbuser = _repositoryWrapper.Users.GetAll().FirstOrDefault(e => e.Email == User.Identity.Name);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            User user = new User();
+            try
+            {
+                user = _mapper.Map<User>(model);
+            }
+            catch
+            {
+                 throw new MappingException("Ошибка при маппинге",this.GetType().ToString());
+            }
+            user.Id = Guid.NewGuid();
+            user.Role = Data.Enums.Role.Admin;
+            user.CreateDateTime= DateTime.UtcNow;
+            user.UpdateDateTime = DateTime.UtcNow;
+            user.CreatorId = dbuser.Id;
+            user.UpdatorId = dbuser.Id;
+            _repositoryWrapper.Users.Create(user);
+            _repositoryWrapper.Save();
+            return Ok(user.Id);
         }
         
 

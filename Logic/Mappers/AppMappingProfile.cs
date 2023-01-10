@@ -21,6 +21,8 @@ namespace WebAPi.Mappers
             CreateMap<ShopModel,Shop>().ReverseMap();
 
             CreateMap<UpdateUserModel, User>().ReverseMap();
+
+            CreateMap<CreateAdminModel,User>().ReverseMap();
         }
     }
 }
