@@ -38,7 +38,8 @@ namespace WebAPi.Controllers
         [Authorize]
         public async Task<IActionResult> GetAllShops()
         {
-            var list = _repository.Shops.GetAll().ToList();
+            var user = _repository.Users.GetAll().FirstOrDefault(e => e.Email == User.Identity.Name); 
+            var list = _repository.Shops.GetAll().ToList().Where(e => (e.IsActive || user.Id == e.SellerId || user.Role == Data.Enums.Role.Admin));
             return Ok(list);
 
             

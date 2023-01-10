@@ -44,14 +44,16 @@ namespace WebAPi.Controllers
         [Authorize]
         public async Task<IActionResult> GetReviewsByShopId([FromQuery] Guid Id)
         {
-            var list = _repository.Reviews.GetAll().Where(e => e.ShopId == Id).ToList();
+            var user = _repository.Users.GetAll().FirstOrDefault(e => e.Email == User.Identity.Name); 
+            var list = _repository.Reviews.GetAll().Where(e => (e.ShopId == Id) && (e.IsActive || e.BuyerId == user.Id || user.Role == Data.Enums.Role.Admin)).ToList();
             return Ok(list);
         }
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetAllReviews()
         {
-             var list = _repository.Reviews.GetAll().ToList();
+             var user = _repository.Users.GetAll().FirstOrDefault(e => e.Email == User.Identity.Name); 
+             var list = _repository.Reviews.GetAll().Where(e => (e.IsActive || e.BuyerId == user.Id || user.Role == Data.Enums.Role.Admin)).ToList();
              return Ok(list);
         }
         [HttpPost]

@@ -85,6 +85,9 @@ namespace WebAPi.Controllers
                     
                     throw new MappingException("Ошибка при маппинге",this.GetType().ToString());
                 }
+            user.IsActive = true;
+            user.CreateDateTime = DateTime.UtcNow;
+            user.UpdateDateTime = DateTime.UtcNow;
                 user.Password = _passwordGeneratorService.GeneratePassword();
                 _emailService.SendEmail(
                     user.Email,

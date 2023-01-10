@@ -27,7 +27,6 @@ namespace WebAPi.Middleware
             if (!string.IsNullOrEmpty(token))
             {
                 var user = repositoryWrapper.Users.GetAll().FirstOrDefault(e=>e.Email == tokenService.DecryptToken(token).Result[0].Value);
-                _logger.LogError(user.IsActive.ToString());
                 if(user == null) 
                 {
                     throw new AuthException("Некорректный токен", HttpStatusCode.Forbidden, DateTime.UtcNow);
