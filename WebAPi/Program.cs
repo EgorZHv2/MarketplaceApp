@@ -14,6 +14,7 @@ using WebAPi.Configuration;
 using Microsoft.OpenApi.Models;
 using Data.Entities;
 using WebAPi.Middleware;
+using Microsoft.AspNetCore.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -79,10 +80,11 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddAuthentication(options =>
     {
-       options.DefaultAuthenticateScheme = "JwtBearer";
-       options.DefaultChallengeScheme = "JwtBearer";
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+      
     })
-    .AddJwtBearer("JwtBearer",jwtbeareroptions =>
+    .AddJwtBearer(jwtbeareroptions =>
     {
         jwtbeareroptions.TokenValidationParameters = new TokenValidationParameters()
         {
@@ -90,18 +92,15 @@ builder.Services.AddAuthentication(options =>
             ValidateIssuer = false,
             ValidateAudience = false,
             ValidateIssuerSigningKey = true,
-            ValidateLifetime = true,
-
-            
-           
+            ValidateLifetime = true,         
         };
     });
-
 
 
 var app = builder.Build();
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
+app.UseMiddleware<UserCheckMiddleware>();
 
 using (var servicescope = app.Services.CreateScope())
 {
@@ -127,7 +126,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
