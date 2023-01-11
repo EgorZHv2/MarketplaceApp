@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Data
 {
     public class DataSeed
@@ -25,7 +26,7 @@ namespace Data
                 {
                     FirstName = "Админ",
                     Email = AdminMail,
-                    Password = AdminPassword,
+                    Password = BCrypt.Net.BCrypt.HashPassword(AdminPassword),
                     Role = Enums.Role.Admin,
                     Id = Guid.NewGuid()
                 });

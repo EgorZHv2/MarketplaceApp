@@ -15,6 +15,8 @@ using Microsoft.OpenApi.Models;
 using Data.Entities;
 using WebAPi.Middleware;
 using Microsoft.AspNetCore.Authentication;
+using Logic.Interfaces;
+using Logic.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +42,7 @@ builder.Services.AddScoped<IPasswordGeneratorService, PasswordGeneratorService>(
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IImageConverter, ImageConverter>();
 builder.Services.AddScoped<IINNService, INNService>();
+builder.Services.AddScoped<IHashService, HashService>();
 
 
 builder.Services.AddSwaggerGen(c =>

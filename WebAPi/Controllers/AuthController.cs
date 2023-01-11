@@ -12,6 +12,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Logic.Exceptions;
+using Logic.Interfaces;
+using Data.Repositories;
 
 namespace WebAPi.Controllers
 {
@@ -25,6 +27,7 @@ namespace WebAPi.Controllers
         private IEmailService _emailService;
         private ILogger<AuthController> _logger;
         private ITokenService _tokenService;
+        private IHashService _hashService;
 
         public AuthController(
             IRepositoryWrapper repositoryWrapper,
@@ -32,7 +35,8 @@ namespace WebAPi.Controllers
             IPasswordGeneratorService passwordGeneratorService,
             IEmailService emailService,
             ILogger<AuthController> logger,
-            ITokenService tokenService
+            ITokenService tokenService,
+            IHashService hashService
         )
         {
             _repositoryWrapper = repositoryWrapper;
@@ -41,6 +45,7 @@ namespace WebAPi.Controllers
             _emailService = emailService;
             _logger = logger;
             _tokenService = tokenService;
+            _hashService = hashService;
         }
 
         [HttpPost]
@@ -56,14 +61,19 @@ namespace WebAPi.Controllers
 
             if (user == null)
             {
-              throw new NotFoundException("Пользователь с данным email не найден");
+                throw new NotFoundException("Пользователь с данным email не найден");
             }
-            if (model.Password != user.Password)
+            if (!_hashService.ComparePasswordWithHash(model.Password, user.Password).Result)
             {
-                throw new AuthException("Неверный пароль", System.Net.HttpStatusCode.Unauthorized,DateTime.UtcNow,user.Email);
+                throw new AuthException(
+                    "Неверный пароль",
+                    System.Net.HttpStatusCode.Unauthorized,
+                    DateTime.UtcNow,
+                    user.Email
+                );
             }
             var results = _tokenService.GetTokenAsync(user);
-            
+
             return Ok(results.Result);
         }
 
@@ -74,32 +84,29 @@ namespace WebAPi.Controllers
             {
                 return BadRequest(ModelState);
             }
-           
-                User user = new User();
-                try
-                {
-                    user = _mapper.Map<User>(model);
-                }
-                catch
-                {
-                    
-                    throw new MappingException("Ошибка при маппинге",this.GetType().ToString());
-                }
+
+            User user = new User();
+            try
+            {
+                user = _mapper.Map<User>(model);
+            }
+            catch
+            {
+                throw new MappingException("Ошибка при маппинге", this.GetType().ToString());
+            }
             user.IsActive = true;
             user.CreateDateTime = DateTime.UtcNow;
             user.UpdateDateTime = DateTime.UtcNow;
-                user.Password = _passwordGeneratorService.GeneratePassword();
-                _emailService.SendEmail(
-                    user.Email,
-                    "MarketPlaceApp",
-                    $"Your password = {user.Password}"
-                );
-                _repositoryWrapper.Users.Create(user);
-                _repositoryWrapper.Save();
-                return Ok();
-            
-           
-            
+            string password = _passwordGeneratorService.GeneratePassword();
+            user.Password = _hashService.HashPassword(password).Result;
+            _emailService.SendEmail(
+                user.Email,
+                "MarketPlaceApp",
+                $"Your password = {password}"
+            );
+            _repositoryWrapper.Users.Create(user);
+            _repositoryWrapper.Save();
+            return Ok();
         }
     }
 }
