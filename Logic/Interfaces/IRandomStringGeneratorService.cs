@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace WebAPi.Interfaces
 {
-    public interface IPasswordGeneratorService
+    public interface IRandomStringGeneratorService
     {
-        public string GeneratePassword();
+        public string Generate(int count);
     }
 }

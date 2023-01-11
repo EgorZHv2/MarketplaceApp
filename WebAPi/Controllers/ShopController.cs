@@ -81,7 +81,9 @@ namespace WebAPi.Controllers
             {
                  throw new MappingException("Ошибка при маппинге",this.GetType().ToString());
             }
-          var userid = new Guid(User.Claims.FirstOrDefault(e => e.ValueType == ClaimTypes.NameIdentifier).Value);
+            _logger.LogError(User.Claims.ToArray()[2].Value);
+  
+          var userid = new Guid(User.Claims.ToArray()[2].Value);
             _repository.Shops.Create(shop,userid);
             _repository.Save();
             return Ok(shop.Id);
@@ -109,7 +111,7 @@ namespace WebAPi.Controllers
             {
                   throw new MappingException("Ошибка при маппинге",this.GetType().ToString());
             }
-            var userid = new Guid(User.Claims.FirstOrDefault(e => e.ValueType == ClaimTypes.NameIdentifier).Value);
+            var userid = new Guid(User.Claims.ToArray()[2].Value);
             _repository.Shops.Update(shop,userid);
             _repository.Save();
         
@@ -125,7 +127,7 @@ namespace WebAPi.Controllers
             {
                 throw new NotFoundException("Shop Id not found");
             }
-           var userid = new Guid(User.Claims.FirstOrDefault(e => e.ValueType == ClaimTypes.NameIdentifier).Value);
+           var userid = new Guid(User.Claims.ToArray()[2].Value);
             _repository.Shops.Delete(Id, userid);
             _repository.Save();
             return Ok();

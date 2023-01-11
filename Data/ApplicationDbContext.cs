@@ -26,6 +26,9 @@ namespace Data
             modelBuilder.Entity<User>().HasKey(x => x.Id);
             modelBuilder.Entity<User>().Property(e => e.FirstName).IsRequired(false);
             modelBuilder.Entity<User>().HasQueryFilter(e => e.IsDeleted == false);
+            modelBuilder.Entity<User>().Property(e=>e.CreatorId).IsRequired(false);
+            modelBuilder.Entity<User>().Property(e=>e.UpdatorId).IsRequired(false);
+            modelBuilder.Entity<User>().Property(e=>e.EmailConfirmationCode).IsRequired(false);
 
             modelBuilder.Entity<Shop>().HasKey(x =>x.Id);
             modelBuilder.Entity<Shop>().HasOne(e => e.Seller).WithMany(t => t.Shops).HasForeignKey(e => e.SellerId).OnDelete(DeleteBehavior.Cascade);

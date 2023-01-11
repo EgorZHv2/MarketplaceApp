@@ -74,7 +74,7 @@ namespace WebAPi.Controllers
             {
                  throw new MappingException("Ошибка при маппинге",this.GetType().ToString());
             }
-            var userid = new Guid(User.Claims.FirstOrDefault(e => e.ValueType == ClaimTypes.NameIdentifier).Value);
+            var userid = new Guid(User.Claims.ToArray()[2].Value);
            
             _repository.Reviews.Create(review,userid);
             _repository.Save();
@@ -97,7 +97,7 @@ namespace WebAPi.Controllers
             {
                  throw new MappingException("Ошибка при маппинге",this.GetType().ToString());
             }
-             var userid = new Guid(User.Claims.FirstOrDefault(e => e.ValueType == ClaimTypes.NameIdentifier).Value);
+             var userid = new Guid(User.Claims.ToArray()[2].Value);
            
             _repository.Reviews.Update(review,userid);
             _repository.Save();
@@ -112,7 +112,7 @@ namespace WebAPi.Controllers
             {
                throw new NotFoundException("Review id not found");
             }
-             var userid = new Guid(User.Claims.FirstOrDefault(e => e.ValueType == ClaimTypes.NameIdentifier).Value);
+             var userid = new Guid(User.Claims.ToArray()[2].Value);
             
             _repository.Reviews.Delete(Id,userid);
             _repository.Save();

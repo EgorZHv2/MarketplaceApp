@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace WebAPi.Services
 {
-    public class PasswordGeneratorService : IPasswordGeneratorService
+    public class RandomStringGeneratorService : IRandomStringGeneratorService
     {
         Random rnd = new Random();
 
-        public string GeneratePassword()
+        public string Generate(int count)
         {
             string password = string.Empty;
-            for (int i = 0; i < rnd.Next(15, 20); i++)
+            for (int i = 0; i < count; i++)
             {
                 switch (rnd.Next(1, 4))
                 {
@@ -32,5 +32,6 @@ namespace WebAPi.Services
 
             return password;
         }
+        
     }
 }

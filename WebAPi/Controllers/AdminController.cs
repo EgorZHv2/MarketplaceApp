@@ -33,7 +33,7 @@ namespace WebAPi.Controllers
         [Authorize(Roles ="Admin")]
         public async Task<IActionResult> ChangeEntityActivity(EntityActivityModel model)
         {
-            var userid = new Guid(User.Claims.FirstOrDefault(e => e.ValueType == ClaimTypes.NameIdentifier).Value);
+            var userid = new Guid(User.Claims.ToArray()[2].Value);
             var user = _repositoryWrapper.Users.GetById(model.Id);
             if (user != null) 
             {
@@ -65,7 +65,7 @@ namespace WebAPi.Controllers
         [Authorize(Roles ="Admin")]
         public async Task<IActionResult> CreateAdmin(CreateAdminModel model)
         {
-            var userid = new Guid(User.Claims.FirstOrDefault(e => e.ValueType == ClaimTypes.NameIdentifier).Value);
+            var userid = new Guid(User.Claims.ToArray()[2].Value);
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

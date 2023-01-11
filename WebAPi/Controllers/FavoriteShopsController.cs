@@ -32,7 +32,7 @@ namespace WebAPi.Controllers
         [Authorize]
         public async Task<IActionResult> AddFavoriteShop([FromBody] FavoriteShopsModel model)
         {
-            var userid = new Guid(User.Claims.FirstOrDefault(e => e.ValueType == ClaimTypes.NameIdentifier).Value);
+            var userid = new Guid(User.Claims.ToArray()[2].Value);
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
