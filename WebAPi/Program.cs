@@ -43,6 +43,7 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IImageConverter, ImageConverter>();
 builder.Services.AddScoped<IINNService, INNService>();
 builder.Services.AddScoped<IHashService, HashService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 
 builder.Services.AddSwaggerGen(c =>

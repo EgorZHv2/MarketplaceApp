@@ -28,6 +28,7 @@ namespace WebAPi.Controllers
         private ILogger<AuthController> _logger;
         private ITokenService _tokenService;
         private IHashService _hashService;
+        private IAuthService _authService;
 
         public AuthController(
             IRepositoryWrapper repositoryWrapper,
@@ -36,7 +37,8 @@ namespace WebAPi.Controllers
             IEmailService emailService,
             ILogger<AuthController> logger,
             ITokenService tokenService,
-            IHashService hashService
+            IHashService hashService,
+            IAuthService authService
         )
         {
             _repositoryWrapper = repositoryWrapper;
@@ -46,6 +48,7 @@ namespace WebAPi.Controllers
             _logger = logger;
             _tokenService = tokenService;
             _hashService = hashService;
+            _authService = authService;
         }
 
         [HttpPost]
@@ -60,6 +63,13 @@ namespace WebAPi.Controllers
             if (user == null)
             {
                 throw new NotFoundException("Пользователь с данным email не найден");
+            }
+            if (!user.IsEmailConfirmed)
+            {
+                throw new AuthException(
+                   "Пароль не подтверждён",
+                   System.Net.HttpStatusCode.Forbidden,
+                   model.Email);
             }
             if (!_hashService.ComparePasswordWithHash(model.Password, user.Password).Result)
             {
@@ -105,6 +115,12 @@ namespace WebAPi.Controllers
             );
             _repositoryWrapper.Users.Create(user,Guid.Empty);
             _repositoryWrapper.Save();
+            return Ok();
+        }
+        [HttpPut]
+        public async Task<IActionResult> Verify([FromBody] LoginModel model)
+        {
+            _authService.VerifyEmail(model.Email,model.Password);
             return Ok();
         }
     }
