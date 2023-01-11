@@ -15,5 +15,10 @@ namespace Data.Repositories
         public PostgreUserRepository(ApplicationDbContext context) : base(context) { }
        
      
+        public User GetUserByEmail(string email)
+        {
+            var user = _context.Users.FirstOrDefault(e => e.Email == email);
+            return user;
+        }
     }
 }

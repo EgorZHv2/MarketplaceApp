@@ -38,7 +38,7 @@ builder.Services.AddAutoMapper(typeof(AppMappingProfile));
 
 builder.Services.AddScoped<IRepositoryWrapper, PostgreRepositoryWrapper>();
 builder.Services.AddScoped<IEmailService, EmailService>();
-builder.Services.AddScoped<IPasswordGeneratorService, PasswordGeneratorService>();
+builder.Services.AddScoped<IRandomStringGeneratorService, RandomStringGeneratorService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IImageConverter, ImageConverter>();
 builder.Services.AddScoped<IINNService, INNService>();

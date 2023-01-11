@@ -29,11 +29,11 @@ namespace WebAPi.Middleware
                 var user = repositoryWrapper.Users.GetAll().FirstOrDefault(e=>e.Email == tokenService.DecryptToken(token).Result[0].Value);
                 if(user == null) 
                 {
-                    throw new AuthException("Некорректный токен", HttpStatusCode.Forbidden, DateTime.UtcNow);
+                    throw new AuthException("Некорректный токен", HttpStatusCode.Forbidden);
                 }
                 if(!user.IsActive)
                 {
-                    throw new AuthException("Пользователь заблокирован", HttpStatusCode.Forbidden, DateTime.UtcNow,user.Email);
+                    throw new AuthException("Пользователь заблокирован", HttpStatusCode.Forbidden,user.Email);
                     
                 }
      

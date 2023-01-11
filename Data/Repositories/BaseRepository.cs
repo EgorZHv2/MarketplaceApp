@@ -46,51 +46,70 @@ namespace Data.Repositories
             return data;
         }
 
-        public void Create(TEntity entity)
+        public void Create(TEntity entity,Guid userid)
         {
+            entity.Id = Guid.NewGuid();
             entity.CreateDateTime = DateTime.UtcNow;
             entity.UpdateDateTime = DateTime.UtcNow;
+            entity.IsActive = true;
+            entity.IsDeleted = false;
+            entity.CreatorId = userid;
+            entity.UpdatorId = userid;
             _context.Set<TEntity>().Add(entity);
+            
             
         }
 
-        public void CreateMany(params TEntity[] entities)
+        public void CreateMany(Guid userid,params TEntity[] entities)
         {
             foreach (TEntity entity in entities)
             {
+                entity.Id = Guid.NewGuid();
                 entity.CreateDateTime = DateTime.UtcNow;
                 entity.UpdateDateTime = DateTime.UtcNow;
+                entity.IsActive = true;
+                entity.IsDeleted = false;
+                entity.CreatorId = userid;
+            entity.UpdatorId = userid;
                 _context.Set<TEntity>().Add(entity);
             }
             
         }
 
-        public void Update(TEntity entity)
+        public void Update(TEntity entity,Guid userid)
         {
             entity.UpdateDateTime = DateTime.UtcNow;
+            entity.UpdatorId = userid;
             _context.Set<TEntity>().Update(entity);
             
         }
 
-        public void UpdateMany(params TEntity[] entities)
+        public void UpdateMany(Guid userid,params TEntity[] entities)
         {
             foreach (TEntity entity in entities)
             {
                 entity.UpdateDateTime = DateTime.UtcNow;
+                entity.UpdatorId = userid;
                 _context.Set<TEntity>().Update(entity);
             }
             
         }
 
-        public void Delete(Guid Id)
+        public void Delete(Guid Id,Guid userid)
         {
             var data = _context.Set<TEntity>().Find(Id);
+            data.DeletorId = userid;
             _context.Set<TEntity>().Remove(data);
         }
 
-        public void DeleteMany(params Guid[] ids)
+        public void DeleteMany(Guid userid,params Guid[] ids)
         {
             var data =  _context.Set<TEntity>().Where(e => ids.Contains(e.Id));
+            foreach (var entity in data)
+            {
+                entity.DeletorId = userid;
+                entity.DeleteDateTime = DateTime.UtcNow;
+            }
             _context.Set<TEntity>().RemoveRange(data);
             
         }

@@ -27,9 +27,10 @@ namespace Data
                     FirstName = "Админ",
                     Email = AdminMail,
                     Password = BCrypt.Net.BCrypt.HashPassword(AdminPassword),
+                    IsEmailConfirmed = true,
                     Role = Enums.Role.Admin,
                     Id = Guid.NewGuid()
-                });
+                },Guid.Empty);
                 repositoryWrapper.Save();
             }
         }

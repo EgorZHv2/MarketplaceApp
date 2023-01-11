@@ -23,7 +23,7 @@ namespace WebAPi.Controllers
     {
         private IRepositoryWrapper _repositoryWrapper;
         private IMapper _mapper;
-        private IPasswordGeneratorService _passwordGeneratorService;
+        private IRandomStringGeneratorService _stringGeneratorService;
         private IEmailService _emailService;
         private ILogger<AuthController> _logger;
         private ITokenService _tokenService;
@@ -32,7 +32,7 @@ namespace WebAPi.Controllers
         public AuthController(
             IRepositoryWrapper repositoryWrapper,
             IMapper mapper,
-            IPasswordGeneratorService passwordGeneratorService,
+            IRandomStringGeneratorService stringGeneratorService,
             IEmailService emailService,
             ILogger<AuthController> logger,
             ITokenService tokenService,
@@ -41,7 +41,7 @@ namespace WebAPi.Controllers
         {
             _repositoryWrapper = repositoryWrapper;
             _mapper = mapper;
-            _passwordGeneratorService = passwordGeneratorService;
+            _stringGeneratorService = stringGeneratorService;
             _emailService = emailService;
             _logger = logger;
             _tokenService = tokenService;
@@ -55,9 +55,7 @@ namespace WebAPi.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var user = _repositoryWrapper.Users
-                .GetAll()
-                .FirstOrDefault(e => e.Email == model.Email);
+            var user = _repositoryWrapper.Users.GetUserByEmail(model.Email);
 
             if (user == null)
             {
@@ -68,8 +66,7 @@ namespace WebAPi.Controllers
                 throw new AuthException(
                     "Неверный пароль",
                     System.Net.HttpStatusCode.Unauthorized,
-                    DateTime.UtcNow,
-                    user.Email
+                    model.Email
                 );
             }
             var results = _tokenService.GetTokenAsync(user);
@@ -84,7 +81,11 @@ namespace WebAPi.Controllers
             {
                 return BadRequest(ModelState);
             }
-
+            var dbuser = _repositoryWrapper.Users.GetUserByEmail(model.Email);
+            if(dbuser != null)
+            {
+                throw new AuthException("This email already in user", System.Net.HttpStatusCode.Unauthorized);
+            }
             User user = new User();
             try
             {
@@ -94,17 +95,15 @@ namespace WebAPi.Controllers
             {
                 throw new MappingException("Ошибка при маппинге", this.GetType().ToString());
             }
-            user.IsActive = true;
-            user.CreateDateTime = DateTime.UtcNow;
-            user.UpdateDateTime = DateTime.UtcNow;
-            string password = _passwordGeneratorService.GeneratePassword();
-            user.Password = _hashService.HashPassword(password).Result;
+            string code = _stringGeneratorService.Generate(6); 
+            user.Password = _hashService.HashPassword(model.Password).Result;
+            user.EmailConfirmationCode = _hashService.HashPassword(code).Result;
             _emailService.SendEmail(
                 user.Email,
                 "MarketPlaceApp",
-                $"Your password = {password}"
+                $"Your verification code = {code}"
             );
-            _repositoryWrapper.Users.Create(user);
+            _repositoryWrapper.Users.Create(user,Guid.Empty);
             _repositoryWrapper.Save();
             return Ok();
         }

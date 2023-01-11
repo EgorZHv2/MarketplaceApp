@@ -10,6 +10,7 @@ using Dadata.Model;
 using WebAPi.Interfaces;
 using Logic.Exceptions;
 using WebAPi.Exceptions;
+using System.Security.Claims;
 
 namespace WebAPi.Controllers
 {
@@ -38,7 +39,7 @@ namespace WebAPi.Controllers
         [Authorize]
         public async Task<IActionResult> GetAllShops()
         {
-            var user = _repository.Users.GetAll().FirstOrDefault(e => e.Email == User.Identity.Name); 
+            var user = _repository.Users.GetUserByEmail(User.Identity.Name); 
             var list = _repository.Shops.GetAll().ToList().Where(e => (e.IsActive || user.Id == e.SellerId || user.Role == Data.Enums.Role.Admin));
             return Ok(list);
 
@@ -80,11 +81,8 @@ namespace WebAPi.Controllers
             {
                  throw new MappingException("Ошибка при маппинге",this.GetType().ToString());
             }
-            shop.Id = Guid.NewGuid();
-            var user = _repository.Users.GetAll().FirstOrDefault(e => e.Email == User.Identity.Name);
-            shop.CreatorId = user.Id;
-            shop.UpdatorId = user.Id;
-            _repository.Shops.Create(shop);
+          var userid = new Guid(User.Claims.FirstOrDefault(e => e.ValueType == ClaimTypes.NameIdentifier).Value);
+            _repository.Shops.Create(shop,userid);
             _repository.Save();
             return Ok(shop.Id);
             
@@ -111,9 +109,8 @@ namespace WebAPi.Controllers
             {
                   throw new MappingException("Ошибка при маппинге",this.GetType().ToString());
             }
-             var user = _repository.Users.GetAll().FirstOrDefault(e => e.Email == User.Identity.Name);
-            shop.UpdatorId = user.Id;
-            _repository.Shops.Update(shop);
+            var userid = new Guid(User.Claims.FirstOrDefault(e => e.ValueType == ClaimTypes.NameIdentifier).Value);
+            _repository.Shops.Update(shop,userid);
             _repository.Save();
         
             return Ok();
@@ -128,9 +125,8 @@ namespace WebAPi.Controllers
             {
                 throw new NotFoundException("Shop Id not found");
             }
-            var user = _repository.Users.GetAll().FirstOrDefault(e => e.Email == User.Identity.Name);
-            shop.DeletorId = user.Id;
-            _repository.Shops.Delete(Id);
+           var userid = new Guid(User.Claims.FirstOrDefault(e => e.ValueType == ClaimTypes.NameIdentifier).Value);
+            _repository.Shops.Delete(Id, userid);
             _repository.Save();
             return Ok();
         }

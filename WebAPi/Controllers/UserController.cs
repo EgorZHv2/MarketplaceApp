@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebAPi.Exceptions;
 using System.Web;
 using System.Net;
+using System.Security.Claims;
 
 namespace WebAPi.Controllers
 {
@@ -37,22 +38,20 @@ namespace WebAPi.Controllers
                 return BadRequest(ModelState);
             }
          
-            var user = _repositoryWrapper.Users.GetAll().FirstOrDefault(e=>e.Email == User.Identity.Name);
+            var user = _repositoryWrapper.Users.GetUserByEmail(User.Identity.Name);
             if(user == null) 
             {
                 throw new NotFoundException("Пользователь не найден");
             }
             if(model.OldPassword != user.Password)
             {
-                throw new AuthException("Старый пароль неверный", HttpStatusCode.Unauthorized,DateTime.UtcNow,user.Email);
+                throw new AuthException("Старый пароль неверный", HttpStatusCode.Unauthorized,user.Email);
             }
             
             user.Password = model.Password;
-            user.UpdateDateTime= DateTime.UtcNow;
             user.FirstName = model.FirstName;
-            user.UpdatorId = user.Id;
-            
-            _repositoryWrapper.Users.Update(user);
+
+            _repositoryWrapper.Users.Update(user,user.Id);
             _repositoryWrapper.Save();
             return Ok();
 

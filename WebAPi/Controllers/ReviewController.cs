@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Logic.Exceptions;
 using WebAPi.Exceptions;
+using System.Security.Claims;
 
 namespace WebAPi.Controllers
 {
@@ -44,7 +45,7 @@ namespace WebAPi.Controllers
         [Authorize]
         public async Task<IActionResult> GetReviewsByShopId([FromQuery] Guid Id)
         {
-            var user = _repository.Users.GetAll().FirstOrDefault(e => e.Email == User.Identity.Name); 
+            var user = _repository.Users.GetUserByEmail(User.Identity.Name); 
             var list = _repository.Reviews.GetAll().Where(e => (e.ShopId == Id) && (e.IsActive || e.BuyerId == user.Id || user.Role == Data.Enums.Role.Admin)).ToList();
             return Ok(list);
         }
@@ -52,7 +53,7 @@ namespace WebAPi.Controllers
         [Authorize]
         public async Task<IActionResult> GetAllReviews()
         {
-             var user = _repository.Users.GetAll().FirstOrDefault(e => e.Email == User.Identity.Name); 
+             var user = _repository.Users.GetUserByEmail(User.Identity.Name); 
              var list = _repository.Reviews.GetAll().Where(e => (e.IsActive || e.BuyerId == user.Id || user.Role == Data.Enums.Role.Admin)).ToList();
              return Ok(list);
         }
@@ -73,11 +74,9 @@ namespace WebAPi.Controllers
             {
                  throw new MappingException("Ошибка при маппинге",this.GetType().ToString());
             }
-            review.Id = Guid.NewGuid();
-            var user = _repository.Users.GetAll().FirstOrDefault(e => e.Email == User.Identity.Name);
-            review.CreatorId = user.Id;
-            review.UpdatorId = user.Id;
-            _repository.Reviews.Create(review);
+            var userid = new Guid(User.Claims.FirstOrDefault(e => e.ValueType == ClaimTypes.NameIdentifier).Value);
+           
+            _repository.Reviews.Create(review,userid);
             _repository.Save();
             return Ok(review.Id);
         }
@@ -98,9 +97,9 @@ namespace WebAPi.Controllers
             {
                  throw new MappingException("Ошибка при маппинге",this.GetType().ToString());
             }
-            var user = _repository.Users.GetAll().FirstOrDefault(e => e.Email == User.Identity.Name);
-            review.UpdatorId = user.Id;
-            _repository.Reviews.Update(review);
+             var userid = new Guid(User.Claims.FirstOrDefault(e => e.ValueType == ClaimTypes.NameIdentifier).Value);
+           
+            _repository.Reviews.Update(review,userid);
             _repository.Save();
             return Ok();
         }
@@ -113,9 +112,9 @@ namespace WebAPi.Controllers
             {
                throw new NotFoundException("Review id not found");
             }
-            var user = _repository.Users.GetAll().FirstOrDefault(e => e.Email == User.Identity.Name);
-            review.DeletorId = user.Id;
-            _repository.Reviews.Delete(Id);
+             var userid = new Guid(User.Claims.FirstOrDefault(e => e.ValueType == ClaimTypes.NameIdentifier).Value);
+            
+            _repository.Reviews.Delete(Id,userid);
             _repository.Save();
             return Ok();
         }

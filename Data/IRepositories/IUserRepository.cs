@@ -9,5 +9,6 @@ namespace Data.IRepositories
 {
     public interface IUserRepository:IBaseRepository<User>
     {
+        public User GetUserByEmail(string email);
     }
 }

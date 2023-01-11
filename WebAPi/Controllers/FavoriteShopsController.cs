@@ -5,6 +5,7 @@ using Logic.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using System.Security.Cryptography.Xml;
 
 namespace WebAPi.Controllers
@@ -31,6 +32,7 @@ namespace WebAPi.Controllers
         [Authorize]
         public async Task<IActionResult> AddFavoriteShop([FromBody] FavoriteShopsModel model)
         {
+            var userid = new Guid(User.Claims.FirstOrDefault(e => e.ValueType == ClaimTypes.NameIdentifier).Value);
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -38,11 +40,7 @@ namespace WebAPi.Controllers
             UsersFavShops entity = new UsersFavShops();
             entity.UserId = model.UserId;
             entity.ShopId = model.ShopId;
-            entity.CreateDateTime = DateTime.UtcNow;
-            entity.UpdateDateTime = DateTime.UtcNow;
-            entity.CreatorId = model.UserId;
-            entity.UpdatorId = model.UserId;
-            _repositoryWrapper.UsersFavShops.Create(entity);
+            _repositoryWrapper.UsersFavShops.Create(entity,userid);
             _repositoryWrapper.Save();
             return Ok();
         }

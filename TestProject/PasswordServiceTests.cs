@@ -9,12 +9,12 @@ namespace TestProject
 {
     public class PasswordServiceTests
     {
-        PasswordGeneratorService passwordservice = new PasswordGeneratorService();
+        RandomStringGeneratorService passwordservice = new RandomStringGeneratorService();
 
         [Fact]
         public void PasswordServiceTest()
         {
-            var result = passwordservice.GeneratePassword();
+            var result = passwordservice.Generate(10);
 
             Assert.NotNull(result);
             Assert.NotEmpty(result);

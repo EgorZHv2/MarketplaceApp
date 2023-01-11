@@ -20,7 +20,8 @@ namespace WebAPi.Services
             var claims = new Claim[]
             {
                 new Claim(ClaimTypes.Name, user.Email),
-                new Claim(ClaimTypes.Role, user.Role.ToString())
+                new Claim(ClaimTypes.Role, user.Role.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
             };
             var token = new JwtSecurityToken(
                 claims: claims,

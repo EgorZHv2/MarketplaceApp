@@ -14,10 +14,10 @@ namespace WebAPi.Exceptions
         public string? UserLogin { get; set; }
 
 
-        public AuthException(string message, HttpStatusCode statusCode, DateTime dateTime, string? userLogin = null ) : base(message)
+        public AuthException(string message, HttpStatusCode statusCode, string? userLogin = null ) : base(message)
         {
             StatusCode = statusCode;
-           DateTime = dateTime;
+           DateTime = DateTime.UtcNow;
             UserLogin = userLogin;
 
         }

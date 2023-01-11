@@ -6,6 +6,8 @@ using Logic.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel;
+using System.Security.Claims;
 
 namespace WebAPi.Controllers
 {
@@ -31,29 +33,30 @@ namespace WebAPi.Controllers
         [Authorize(Roles ="Admin")]
         public async Task<IActionResult> ChangeEntityActivity(EntityActivityModel model)
         {
+            var userid = new Guid(User.Claims.FirstOrDefault(e => e.ValueType == ClaimTypes.NameIdentifier).Value);
             var user = _repositoryWrapper.Users.GetById(model.Id);
             if (user != null) 
             {
                 user.IsActive = model.IsActive;
-                _repositoryWrapper.Users.Update(user);
+                _repositoryWrapper.Users.Update(user,userid);
             }
             var shop = _repositoryWrapper.Shops.GetById(model.Id);
             if(shop != null)
             {
                 shop.IsActive = model.IsActive;
-                _repositoryWrapper.Shops.Update(shop);
+                _repositoryWrapper.Shops.Update(shop,userid);
             }
             var review = _repositoryWrapper.Reviews.GetById(model.Id);
             if(review != null)
             {
                 shop.IsActive = model.IsActive;
-                _repositoryWrapper.Reviews.Update(review);
+                _repositoryWrapper.Reviews.Update(review, userid);
             }
             var favs = _repositoryWrapper.UsersFavShops.GetById(model.Id);
             if(favs != null)
             {
                 favs.IsActive = model.IsActive;
-                _repositoryWrapper.UsersFavShops.Update(favs);
+                _repositoryWrapper.UsersFavShops.Update(favs, userid);
             }
             _repositoryWrapper.Save();
             return Ok();
@@ -62,7 +65,7 @@ namespace WebAPi.Controllers
         [Authorize(Roles ="Admin")]
         public async Task<IActionResult> CreateAdmin(CreateAdminModel model)
         {
-            var dbuser = _repositoryWrapper.Users.GetAll().FirstOrDefault(e => e.Email == User.Identity.Name);
+            var userid = new Guid(User.Claims.FirstOrDefault(e => e.ValueType == ClaimTypes.NameIdentifier).Value);
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -76,13 +79,8 @@ namespace WebAPi.Controllers
             {
                  throw new MappingException("Ошибка при маппинге",this.GetType().ToString());
             }
-            user.Id = Guid.NewGuid();
             user.Role = Data.Enums.Role.Admin;
-            user.CreateDateTime= DateTime.UtcNow;
-            user.UpdateDateTime = DateTime.UtcNow;
-            user.CreatorId = dbuser.Id;
-            user.UpdatorId = dbuser.Id;
-            _repositoryWrapper.Users.Create(user);
+            _repositoryWrapper.Users.Create(user,userid);
             _repositoryWrapper.Save();
             return Ok(user.Id);
         }
