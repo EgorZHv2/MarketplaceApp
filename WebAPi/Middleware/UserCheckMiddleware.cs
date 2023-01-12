@@ -1,7 +1,7 @@
 ﻿
 using Data.Entities;
 using Data.IRepositories;
-using WebAPi.Exceptions;
+using Logic.Exceptions;
 using System.Net;
 using Microsoft.Extensions.Logging;
 using WebAPi.Interfaces;

@@ -103,7 +103,9 @@ namespace Data.Repositories
         {
             var data = _context.Set<TEntity>().Find(Id);
             data.DeletorId = userid;
-            _context.Set<TEntity>().Remove(data);
+            data.DeleteDateTime = DateTime.UtcNow;
+            data.IsDeleted = true;
+            _context.Set<TEntity>().Update(data);
         }
 
         public void DeleteMany(Guid userid,params Guid[] ids)
@@ -113,8 +115,9 @@ namespace Data.Repositories
             {
                 entity.DeletorId = userid;
                 entity.DeleteDateTime = DateTime.UtcNow;
+                entity.IsDeleted = true;
             }
-            _context.Set<TEntity>().RemoveRange(data);
+            _context.Set<TEntity>().UpdateRange(data);
             
         }
     }

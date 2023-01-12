@@ -43,6 +43,7 @@ namespace Data
             modelBuilder.Entity<UsersFavShops>().HasKey(x => x.Id);
             modelBuilder.Entity<UsersFavShops>().HasOne(e => e.User).WithMany(t=>t.UsersFavShops).HasForeignKey(e=>e.UserId).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<UsersFavShops>().HasOne(e=>e.Shop).WithMany(t=>t.UsersFavShops).HasForeignKey(e=>e.ShopId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<UsersFavShops>().HasQueryFilter(e => e.IsDeleted == false);
 
         }
 

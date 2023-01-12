@@ -4,7 +4,7 @@ using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using WebAPi.Exceptions;
+using Logic.Exceptions;
 using System.Web;
 using System.Net;
 using System.Security.Claims;
@@ -55,6 +55,21 @@ namespace WebAPi.Controllers
             _repositoryWrapper.Save();
             return Ok();
 
+        }
+        [HttpPut]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ChangeUserActivity([FromBody] EntityActivityModel model)
+        {
+            var user = _repositoryWrapper.Users.GetUserByEmail(User.Identity.Name);
+            var entity = _repositoryWrapper.Users.GetById(model.Id);
+            if(entity == null)
+            {
+                 throw new NotFoundException("Пользователь не найден","User not found");
+            }
+            entity.IsActive = model.IsActive;
+            _repositoryWrapper.Users.Update(entity,user.Id);
+            _repositoryWrapper.Save();
+            return Ok();
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Data
         }
         private static void SeedAdmin(IRepositoryWrapper repositoryWrapper)
         {
-            var user = repositoryWrapper.Users.GetAll().FirstOrDefault(e => e.Email == AdminMail);
+            var user = repositoryWrapper.Users.GetUserByEmail(AdminMail);
             if (user == null)
             {
                 repositoryWrapper.Users.Create(new Entities.User

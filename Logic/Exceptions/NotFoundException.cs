@@ -6,7 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebAPi.Exceptions
+namespace Logic.Exceptions
 {
     public class NotFoundException:ApiException
     {

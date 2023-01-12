@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WebAPi.Exceptions;
+using Logic.Exceptions;
 
 namespace Logic.Services
 {

@@ -2,7 +2,6 @@
 using Data.Entities;
 using Data.IRepositories;
 using WebAPi.Configuration;
-using WebAPi.Exceptions;
 using WebAPi.Interfaces;
 using Data.Models;
 using Microsoft.AspNetCore.Http;

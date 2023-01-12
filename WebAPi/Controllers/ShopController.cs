@@ -9,7 +9,6 @@ using Dadata;
 using Dadata.Model;
 using WebAPi.Interfaces;
 using Logic.Exceptions;
-using WebAPi.Exceptions;
 using System.Security.Claims;
 using Data.DTO;
 
@@ -146,6 +145,21 @@ namespace WebAPi.Controllers
             }
            var userid = new Guid(User.Claims.ToArray()[2].Value);
             _repository.Shops.Delete(Id, userid);
+            _repository.Save();
+            return Ok();
+        }
+        [HttpPut]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ChangeShopActivity([FromBody] EntityActivityModel model)
+        {
+            var user = _repository.Users.GetUserByEmail(User.Identity.Name);
+            var entity = _repository.Shops.GetById(model.Id);
+            if(entity == null)
+            {
+                throw new NotFoundException("Магазин не найден","Shop not found");
+            }
+            entity.IsActive = model.IsActive;
+            _repository.Shops.Update(entity,user.Id);
             _repository.Save();
             return Ok();
         }

@@ -68,5 +68,20 @@ namespace WebAPi.Controllers
             
             return Ok(result);
         }
+        [HttpPut]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ChangeFavShopActivity([FromBody] EntityActivityModel model)
+        {
+            var user = _repositoryWrapper.Users.GetUserByEmail(User.Identity.Name);
+            var entity = _repositoryWrapper.UsersFavShops.GetById(model.Id);
+            if(entity == null)
+            {
+                throw new NotFoundException("Избранное не найдено", "Users favorite shops entity not found");
+            }
+            entity.IsActive = model.IsActive;
+            _repositoryWrapper.UsersFavShops.Update(entity,user.Id);
+            _repositoryWrapper.Save();
+            return Ok();
+        }
     }
 }
