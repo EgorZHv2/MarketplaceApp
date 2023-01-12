@@ -1,5 +1,6 @@
 ﻿using Data.Entities;
 using Data.IRepositories;
+using Data.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -36,14 +37,17 @@ namespace Data.Repositories
             return data;
         }
 
-        public IEnumerable<TEntity> GetPage(
-            IQueryable queryable,
-            int pagenumber,
-            int pagesize
-        )
+        public PageModel<TEntity> GetPage(IQueryable<TEntity> queryable,int pagenumber,int pagesize)
         {
-            var data =  _context.Set<TEntity>();
-            return data;
+            PageModel<TEntity> pageModel = new PageModel<TEntity>
+            {
+                Values = queryable.Skip(pagenumber - 1).Take(pagesize),
+                ItemsOnPage = pagesize,
+                CurrentPage = pagenumber,
+                TotalItems = queryable.Count(),
+                TotalPages = Math.Ceiling(queryable.Count() / (double)pagesize)
+            };
+            return pagemodel;
         }
 
         public void Create(TEntity entity,Guid userid)

@@ -1,21 +1,17 @@
 ﻿using Data.Enums;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace WebAPi.Models
+namespace Data.Models
 {
     public class RegistrationModel
     {
         [Required]
         public string Email { get; set; }
+
         [Required]
         public string Password { get; set; }
+
         [Required]
-        public Role Role{ get; set; }
+        public Role Role { get; set; }
     }
 }

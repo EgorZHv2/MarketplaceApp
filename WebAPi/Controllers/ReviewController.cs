@@ -2,7 +2,7 @@
 using AutoMapper;
 using Data.Entities;
 using Data.IRepositories;
-using WebAPi.Models;
+using Data.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

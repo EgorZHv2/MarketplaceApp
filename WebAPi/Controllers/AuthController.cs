@@ -4,7 +4,7 @@ using Data.IRepositories;
 using WebAPi.Configuration;
 using WebAPi.Exceptions;
 using WebAPi.Interfaces;
-using WebAPi.Models;
+using Data.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;

@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using WebAPi.Models;
+using Data.Models;
 using Logic.Exceptions;
 using System.Net;
 

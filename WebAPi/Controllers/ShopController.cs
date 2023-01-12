@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Data.Entities;
 using Data.IRepositories;
-using WebAPi.Models;
+using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
