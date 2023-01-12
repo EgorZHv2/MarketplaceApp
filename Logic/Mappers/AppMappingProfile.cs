@@ -6,22 +6,25 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Data.Entities;
 using Data.Models;
+using Data.DTO;
+
 
 namespace WebAPi.Mappers
 {
-    public class AppMappingProfile:Profile
+    public class AppMappingProfile : Profile
     {
-        public AppMappingProfile() 
+        public AppMappingProfile()
         {
             CreateMap<RegistrationModel, User>();
-
-            CreateMap<ReviewModel,Review>().ReverseMap();
-
-            CreateMap<ShopModel,Shop>().ReverseMap();
-
+            CreateMap<ReviewModel, Review>().ReverseMap();
+            CreateMap<ShopModel, Shop>().ReverseMap();
             CreateMap<UpdateUserModel, User>().ReverseMap();
-
-            CreateMap<CreateAdminModel,User>().ReverseMap();
+            CreateMap<CreateAdminModel, User>().ReverseMap();
+            CreateMap<User,UserDTO>().ReverseMap();
+            CreateMap<Shop,ShopDTO>().ReverseMap();
+            CreateMap<Review,ReviewDTO>().ReverseMap();
+            CreateMap<UsersFavShops, UsersFavShopsDTO>().ReverseMap();
+            
         }
     }
 }

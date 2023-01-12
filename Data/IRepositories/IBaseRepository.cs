@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Data.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,7 @@ namespace Data.IRepositories
        IEnumerable<TEntity> GetAll();
        TEntity GetById(Guid Id);
        IEnumerable<TEntity> GetManyByIds(params Guid[] ids);
-      IEnumerable<TEntity> GetPage(IQueryable queryable,int pagenumber,int pagesize);
+        PageModel<TEntity> GetPage(IQueryable<TEntity> queryable, int pagenumber, int pagesize);
         void Create(TEntity entity,Guid userid);
         void CreateMany(Guid userid,params TEntity[] entities);
         void Update(TEntity entity,Guid userid);

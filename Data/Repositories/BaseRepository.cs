@@ -45,9 +45,9 @@ namespace Data.Repositories
                 ItemsOnPage = pagesize,
                 CurrentPage = pagenumber,
                 TotalItems = queryable.Count(),
-                TotalPages = Math.Ceiling(queryable.Count() / (double)pagesize)
+                TotalPages = (int)Math.Ceiling(queryable.Count() /(double)pagesize)
             };
-            return pagemodel;
+            return pageModel;
         }
 
         public void Create(TEntity entity,Guid userid)

@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Data.DTO;
 using Data.Entities;
 using Data.IRepositories;
 using Data.Models;
+using Logic.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -52,7 +54,18 @@ namespace WebAPi.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var result = _repositoryWrapper.UsersFavShops.GetAll().Where(e=>e.UserId == Id).ToList();
+            List<UsersFavShopsDTO> result = new List<UsersFavShopsDTO>();
+            var list = _repositoryWrapper.UsersFavShops.GetAll().Where(e=>e.UserId == Id).AsQueryable();
+            try
+            {
+                result = _mapper.ProjectTo<UsersFavShopsDTO>(list).ToList();
+            }
+            catch
+            {
+                throw new MappingException(this.GetType().ToString());
+            }
+            
+            
             return Ok(result);
         }
     }

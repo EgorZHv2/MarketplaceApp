@@ -1,5 +1,4 @@
-﻿
-using AutoMapper;
+﻿using AutoMapper;
 using Data.Entities;
 using Data.IRepositories;
 using Data.Models;
@@ -10,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Logic.Exceptions;
 using WebAPi.Exceptions;
 using System.Security.Claims;
+using Data.DTO;
 
 namespace WebAPi.Controllers
 {
@@ -21,9 +21,11 @@ namespace WebAPi.Controllers
         private IMapper _mapper;
         private ILogger<ReviewController> _logger;
 
-        public ReviewController(IRepositoryWrapper repository,
+        public ReviewController(
+            IRepositoryWrapper repository,
             IMapper mapper,
-            ILogger<ReviewController> logger)
+            ILogger<ReviewController> logger
+        )
         {
             _repository = repository;
             _mapper = mapper;
@@ -35,33 +37,77 @@ namespace WebAPi.Controllers
         public async Task<IActionResult> GetReviewById([FromQuery] Guid Id)
         {
             var entity = _repository.Reviews.GetById(Id);
-            if(entity == null)
+            ReviewDTO result = new ReviewDTO();
+            if (entity == null)
             {
-                 throw new NotFoundException("Отзыв не найден","Review not found");
+                throw new NotFoundException("Отзыв не найден", "Review not found");
             }
-            return Ok(entity);
+            try
+            {
+                result = _mapper.Map<ReviewDTO>(entity);
+            }
+            catch
+            {
+                throw new MappingException(this.GetType().ToString());
+            }
+            return Ok(result);
         }
+
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetReviewsByShopId([FromQuery] Guid Id)
         {
-            var user = _repository.Users.GetUserByEmail(User.Identity.Name); 
-            var list = _repository.Reviews.GetAll().Where(e => (e.ShopId == Id) && (e.IsActive || e.BuyerId == user.Id || user.Role == Data.Enums.Role.Admin)).ToList();
-            return Ok(list);
+            var user = _repository.Users.GetUserByEmail(User.Identity.Name);
+            var list = _repository.Reviews
+                .GetAll()
+                .Where(
+                    e =>
+                        (e.ShopId == Id)
+                        && (
+                            e.IsActive || e.BuyerId == user.Id || user.Role == Data.Enums.Role.Admin
+                        )
+                )
+                .AsQueryable();
+            List<ReviewDTO> result = new List<ReviewDTO>();
+            try
+            {
+                result = _mapper.ProjectTo<ReviewDTO>(list).ToList();
+            }
+            catch
+            {
+                throw new MappingException(this.GetType().ToString());
+            }
+            return Ok(result);
         }
+
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetAllReviews()
         {
-             var user = _repository.Users.GetUserByEmail(User.Identity.Name); 
-             var list = _repository.Reviews.GetAll().Where(e => (e.IsActive || e.BuyerId == user.Id || user.Role == Data.Enums.Role.Admin)).ToList();
-             return Ok(list);
+            var user = _repository.Users.GetUserByEmail(User.Identity.Name);
+            var list = _repository.Reviews
+                .GetAll()
+                .Where(
+                    e => (e.IsActive || e.BuyerId == user.Id || user.Role == Data.Enums.Role.Admin)
+                )
+                .AsQueryable();
+            List<ReviewDTO> result = new List<ReviewDTO>();
+            try
+            {
+                result = _mapper.ProjectTo<ReviewDTO>(list).ToList();
+            }
+            catch
+            {
+                throw new MappingException(this.GetType().ToString());
+            }
+            return Ok(result);
         }
+
         [HttpPost]
         [Authorize(Roles = "Buyer,Admin")]
         public async Task<IActionResult> CreateReview([FromBody] ReviewModel model)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -75,16 +121,17 @@ namespace WebAPi.Controllers
                 throw new MappingException(this.GetType().ToString());
             }
             var userid = new Guid(User.Claims.ToArray()[2].Value);
-           
-            _repository.Reviews.Create(review,userid);
+
+            _repository.Reviews.Create(review, userid);
             _repository.Save();
             return Ok(review.Id);
         }
+
         [HttpPut]
         [Authorize(Roles = "Buyer,Admin")]
         public async Task<IActionResult> UpdateReview([FromBody] ReviewModel model)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -95,26 +142,27 @@ namespace WebAPi.Controllers
             }
             catch
             {
-                  throw new MappingException(this.GetType().ToString());
+                throw new MappingException(this.GetType().ToString());
             }
-             var userid = new Guid(User.Claims.ToArray()[2].Value);
-           
-            _repository.Reviews.Update(review,userid);
+            var userid = new Guid(User.Claims.ToArray()[2].Value);
+
+            _repository.Reviews.Update(review, userid);
             _repository.Save();
             return Ok();
         }
+
         [HttpDelete]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteReview([FromQuery] Guid Id)
         {
             Review review = _repository.Reviews.GetById(Id);
-            if(review == null)
+            if (review == null)
             {
-                throw new NotFoundException("Email не найден","User email not found");
+                throw new NotFoundException("Email не найден", "User email not found");
             }
-             var userid = new Guid(User.Claims.ToArray()[2].Value);
-            
-            _repository.Reviews.Delete(Id,userid);
+            var userid = new Guid(User.Claims.ToArray()[2].Value);
+
+            _repository.Reviews.Delete(Id, userid);
             _repository.Save();
             return Ok();
         }

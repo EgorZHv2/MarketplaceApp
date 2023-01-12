@@ -11,6 +11,7 @@ using WebAPi.Interfaces;
 using Logic.Exceptions;
 using WebAPi.Exceptions;
 using System.Security.Claims;
+using Data.DTO;
 
 namespace WebAPi.Controllers
 {
@@ -40,10 +41,17 @@ namespace WebAPi.Controllers
         public async Task<IActionResult> GetAllShops()
         {
             var user = _repository.Users.GetUserByEmail(User.Identity.Name); 
-            var list = _repository.Shops.GetAll().ToList().Where(e => (e.IsActive || user.Id == e.SellerId || user.Role == Data.Enums.Role.Admin));
-            return Ok(list);
-
-            
+            var list = _repository.Shops.GetAll().Where(e => (e.IsActive || user.Id == e.SellerId || user.Role == Data.Enums.Role.Admin)).AsQueryable();
+            List<ShopDTO> result = new List<ShopDTO>();
+            try
+            {
+                result = _mapper.ProjectTo<ShopDTO>(list).ToList();
+            }
+            catch
+            {
+                throw new MappingException(this.GetType().ToString());
+            }
+            return Ok(result);        
         }
 
         [HttpGet]
@@ -55,7 +63,16 @@ namespace WebAPi.Controllers
             {
                throw new NotFoundException("Магазин не найден","Shop not found");
             }
-            return Ok(entity);
+            ShopDTO result = new ShopDTO();
+            try
+            {
+                result = _mapper.Map<ShopDTO>(entity);
+            }
+            catch
+            {
+                throw new MappingException(this.GetType().ToString());
+            }
+            return Ok(result);
            
         }
 
