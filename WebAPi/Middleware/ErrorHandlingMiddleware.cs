@@ -30,21 +30,21 @@ namespace WebAPi.Middleware
             {
                 await _next.Invoke(context);
             }
-            catch(NotFoundException e)
+            catch(ApiException ex)
             {
-                _logger.LogError($"NotFoundError. Code: {(int)e.StatusCode} Message: {e.Message}");
-                ResponseError(context, e.Message, e.StatusCode);
+                string logmessage = $"Date: {ex.DateTime} | Exception: {ex.GetType().Name} | Code: {ex.StatusCode} | Message: {ex.LogMessage} | ";
+                if(ex is AuthException authException)
+                {
+                    logmessage += "User login: " + (string.IsNullOrEmpty(authException.UserLogin)?"none":authException.UserLogin);
+                }
+                if(ex is MappingException mappingException)
+                {
+                    logmessage += $"ExceptionClassName: {mappingException.ExceptionClass}";
+                }
+                _logger.LogError(logmessage, ex);
+                ResponseError(context, ex.UserMessage, ex.StatusCode);
             }
-            catch(AuthException e)
-            {
-                _logger.LogError($"AuthError. Code: {(int)e.StatusCode} Date: {e.DateTime} User: {e.UserLogin}");
-                ResponseError(context, e.Message, e.StatusCode);
-            }
-            catch(MappingException e)
-            {
-                _logger.LogError($"Error while mapping. Code: {(int)e.StatusCode} Message: {e.Message} ExceptionClassName: {e.ExceptionClass} ");
-                ResponseError(context, e.Message, e.StatusCode);
-            }
+           
         }
         public async Task ResponseError(HttpContext context,string message, HttpStatusCode code)
         {

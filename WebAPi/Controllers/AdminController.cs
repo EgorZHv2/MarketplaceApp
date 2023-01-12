@@ -77,7 +77,7 @@ namespace WebAPi.Controllers
             }
             catch
             {
-                 throw new MappingException("Ошибка при маппинге",this.GetType().ToString());
+                 throw new MappingException(this.GetType().ToString());
             }
             user.Role = Data.Enums.Role.Admin;
             _repositoryWrapper.Users.Create(user,userid);

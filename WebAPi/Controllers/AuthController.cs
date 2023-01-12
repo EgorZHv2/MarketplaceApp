@@ -62,22 +62,15 @@ namespace WebAPi.Controllers
 
             if (user == null)
             {
-                throw new NotFoundException("Пользователь с данным email не найден");
+                 throw new NotFoundException("Email не найден","User email not found");
             }
             if (!user.IsEmailConfirmed)
             {
-                throw new AuthException(
-                   "Пароль не подтверждён",
-                   System.Net.HttpStatusCode.Forbidden,
-                   model.Email);
+                throw new AuthException("Почта не подтверждёна","Email not verified",System.Net.HttpStatusCode.Forbidden,model.Email);
             }
             if (!_hashService.ComparePasswordWithHash(model.Password, user.Password).Result)
             {
-                throw new AuthException(
-                    "Неверный пароль",
-                    System.Net.HttpStatusCode.Unauthorized,
-                    model.Email
-                );
+                throw new AuthException("Неверный пароль","Wrong password",System.Net.HttpStatusCode.Unauthorized,model.Email);
             }
             var results = _tokenService.GetTokenAsync(user);
 
@@ -94,7 +87,7 @@ namespace WebAPi.Controllers
             var dbuser = _repositoryWrapper.Users.GetUserByEmail(model.Email);
             if(dbuser != null)
             {
-                throw new AuthException("This email already in user", System.Net.HttpStatusCode.Unauthorized);
+                throw new AuthException("Email занят","Email already in use", System.Net.HttpStatusCode.Unauthorized,string.Empty);
             }
             User user = new User();
             try
@@ -103,7 +96,7 @@ namespace WebAPi.Controllers
             }
             catch
             {
-                throw new MappingException("Ошибка при маппинге", this.GetType().ToString());
+                throw new MappingException(this.GetType().ToString());
             }
             string code = _stringGeneratorService.Generate(6); 
             user.Password = _hashService.HashPassword(model.Password).Result;

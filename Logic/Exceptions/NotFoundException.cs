@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Logic.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -7,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace WebAPi.Exceptions
 {
-    public class NotFoundException:Exception
+    public class NotFoundException:ApiException
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public NotFoundException(string message) : base(message)
+  
+        public NotFoundException(string userMessage, string logMessage) : base(userMessage,  logMessage,HttpStatusCode.NotFound)
         {
-            StatusCode = HttpStatusCode.NotFound;
+           
         }
         
     }

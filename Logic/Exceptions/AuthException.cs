@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Logic.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -7,19 +8,16 @@ using System.Threading.Tasks;
 
 namespace WebAPi.Exceptions
 {
-    public class AuthException : Exception
+    public class AuthException : ApiException
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public DateTime DateTime { get; set; }
+      
         public string? UserLogin { get; set; }
 
 
-        public AuthException(string message, HttpStatusCode statusCode, string? userLogin = null ) : base(message)
+        public AuthException(string userMessage, string logMessage,HttpStatusCode statusCode, string? userLogin = null) : base(userMessage,  logMessage, statusCode)
         {
-            StatusCode = statusCode;
-           DateTime = DateTime.UtcNow;
-            UserLogin = userLogin;
 
+            UserLogin = userLogin;
         }
     }
 }

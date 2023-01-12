@@ -37,7 +37,7 @@ namespace WebAPi.Controllers
             var entity = _repository.Reviews.GetById(Id);
             if(entity == null)
             {
-               throw new NotFoundException("Review not found");
+                 throw new NotFoundException("Отзыв не найден","Review not found");
             }
             return Ok(entity);
         }
@@ -72,7 +72,7 @@ namespace WebAPi.Controllers
             }
             catch
             {
-                 throw new MappingException("Ошибка при маппинге",this.GetType().ToString());
+                throw new MappingException(this.GetType().ToString());
             }
             var userid = new Guid(User.Claims.ToArray()[2].Value);
            
@@ -95,7 +95,7 @@ namespace WebAPi.Controllers
             }
             catch
             {
-                 throw new MappingException("Ошибка при маппинге",this.GetType().ToString());
+                  throw new MappingException(this.GetType().ToString());
             }
              var userid = new Guid(User.Claims.ToArray()[2].Value);
            
@@ -110,7 +110,7 @@ namespace WebAPi.Controllers
             Review review = _repository.Reviews.GetById(Id);
             if(review == null)
             {
-               throw new NotFoundException("Review id not found");
+                throw new NotFoundException("Email не найден","User email not found");
             }
              var userid = new Guid(User.Claims.ToArray()[2].Value);
             

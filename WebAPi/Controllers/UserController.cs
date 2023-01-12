@@ -41,11 +41,11 @@ namespace WebAPi.Controllers
             var user = _repositoryWrapper.Users.GetUserByEmail(User.Identity.Name);
             if(user == null) 
             {
-                throw new NotFoundException("Пользователь не найден");
+                throw new NotFoundException("Пользователь не найден","User not found");
             }
             if(model.OldPassword != user.Password)
             {
-                throw new AuthException("Старый пароль неверный", HttpStatusCode.Unauthorized,user.Email);
+                throw new AuthException("Старый пароль неверный","Wrong old password", HttpStatusCode.Unauthorized,user.Email);
             }
             
             user.Password = model.Password;

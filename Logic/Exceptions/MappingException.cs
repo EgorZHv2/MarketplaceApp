@@ -7,15 +7,14 @@ using System.Threading.Tasks;
 
 namespace Logic.Exceptions
 {
-    public class MappingException : Exception
+    public class MappingException : ApiException
     {
         public  string ExceptionClass { get; set; }
-        public HttpStatusCode StatusCode { get; set; }
+       
 
-        public MappingException(string message, string exceptionclass) : base(message)
-        {
-            ExceptionClass = exceptionclass;
-            StatusCode = HttpStatusCode.InternalServerError;
+        public MappingException(string exceptionclass) :base("Внутренняя ошибка сервера","Error while mapping",HttpStatusCode.InternalServerError)
+        { 
+            ExceptionClass = exceptionclass;  
         }
     }
 }

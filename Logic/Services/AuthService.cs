@@ -23,11 +23,11 @@ namespace Logic.Services
             var user = _repositoryWrapper.Users.GetUserByEmail(email);
             if (user == null)
             {
-                throw new NotFoundException("User not found");
+                throw new NotFoundException("Email не найден","User email not found");
             }
             if (!_hashService.ComparePasswordWithHash(code, user.EmailConfirmationCode).Result)
             {
-                throw new AuthException("Wrong code", System.Net.HttpStatusCode.Unauthorized, user.Email);
+                throw new AuthException("Неправильный код","Wrong email verification code", System.Net.HttpStatusCode.Unauthorized, user.Email);
             }
             user.IsEmailConfirmed = true;
             _repositoryWrapper.Users.Update(user, user.Id);

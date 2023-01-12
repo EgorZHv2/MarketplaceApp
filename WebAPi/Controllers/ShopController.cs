@@ -53,7 +53,7 @@ namespace WebAPi.Controllers
             var entity = _repository.Shops.GetById(Id);
             if(entity == null)
             {
-               throw new NotFoundException("Shop not found");
+               throw new NotFoundException("Магазин не найден","Shop not found");
             }
             return Ok(entity);
            
@@ -69,7 +69,7 @@ namespace WebAPi.Controllers
             }
             if(_iNNService.CheckINN("770303580308"))
             {
-                throw new NotFoundException("INN not valid");
+                throw new NotFoundException("INN не найден", "INN not valid");
             }
         
             Shop shop = new Shop();
@@ -79,7 +79,7 @@ namespace WebAPi.Controllers
             }
             catch
             {
-                 throw new MappingException("Ошибка при маппинге",this.GetType().ToString());
+                  throw new MappingException(this.GetType().ToString());
             }
             _logger.LogError(User.Claims.ToArray()[2].Value);
   
@@ -100,7 +100,7 @@ namespace WebAPi.Controllers
             }
             if(!_iNNService.CheckINN(model.INN))
             {
-                throw new NotFoundException("INN not valid");
+               throw new NotFoundException("INN не найден", "INN not valid");
             }
             Shop shop = new Shop();
             try
@@ -109,7 +109,7 @@ namespace WebAPi.Controllers
             }
             catch
             {
-                  throw new MappingException("Ошибка при маппинге",this.GetType().ToString());
+                   throw new MappingException(this.GetType().ToString());
             }
             var userid = new Guid(User.Claims.ToArray()[2].Value);
             _repository.Shops.Update(shop,userid);
@@ -125,7 +125,7 @@ namespace WebAPi.Controllers
             Shop shop = _repository.Shops.GetById(Id);
             if(shop == null)
             {
-                throw new NotFoundException("Shop Id not found");
+                throw new NotFoundException("Магазин не найден","Shop not found");
             }
            var userid = new Guid(User.Claims.ToArray()[2].Value);
             _repository.Shops.Delete(Id, userid);
