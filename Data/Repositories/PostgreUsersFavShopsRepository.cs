@@ -10,6 +10,6 @@ namespace Data.Repositories
 {
     public class PostgreUsersFavShopsRepository:BaseRepository<UsersFavShops>,IUsersFavShopsRepository
     {
-        public PostgreUsersFavShopsRepository(ApplicationDbContext context):base(context) { }
+        public PostgreUsersFavShopsRepository(ApplicationDbContext context):base(context.UsersFavShops) { }
     }
 }

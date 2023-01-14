@@ -11,7 +11,7 @@ namespace Data.Repositories
     public class PostgreShopRepository : BaseRepository<Shop>,IShopRepository
     {
        
-       public  PostgreShopRepository(ApplicationDbContext context):base(context) { }
+       public  PostgreShopRepository(ApplicationDbContext context):base(context.Shops) { }
 
 
     }

@@ -12,7 +12,7 @@ namespace Data.Repositories
     {
         
 
-        public PostgreReviewRepository(ApplicationDbContext context):base(context) 
+        public PostgreReviewRepository(ApplicationDbContext context):base(context.Reviews) 
         {
           
         }

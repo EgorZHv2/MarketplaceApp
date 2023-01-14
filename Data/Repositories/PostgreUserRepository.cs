@@ -12,12 +12,12 @@ namespace Data.Repositories
     {
 
 
-        public PostgreUserRepository(ApplicationDbContext context) : base(context) { }
+        public PostgreUserRepository(ApplicationDbContext context) : base(context.Users) { }
        
      
         public User GetUserByEmail(string email)
         {
-            var user = _context.Users.FirstOrDefault(e => e.Email == email);
+            var user = _dbset.FirstOrDefault(e => e.Email == email);
             return user;
         }
     }

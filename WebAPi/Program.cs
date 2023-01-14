@@ -103,8 +103,7 @@ builder.Services.AddAuthentication(options =>
 
 var app = builder.Build();
 
-app.UseMiddleware<ErrorHandlingMiddleware>();
-app.UseMiddleware<UserCheckMiddleware>();
+
 
 using (var servicescope = app.Services.CreateScope())
 {
@@ -132,6 +131,9 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseMiddleware<ErrorHandlingMiddleware>();
+app.UseMiddleware<UserCheckMiddleware>();
 
 app.MapControllers();
 

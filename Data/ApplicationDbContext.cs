@@ -13,6 +13,7 @@ namespace Data
         public DbSet<User> Users { get; set; } = null!;
         public DbSet<Shop> Shops { get; set; } = null!;
         public DbSet<Review> Reviews { get; set; } = null!;
+        public DbSet<UsersFavShops> UsersFavShops { get; set; } = null!;
         
         public ApplicationDbContext(DbContextOptions options):base(options)        
         {

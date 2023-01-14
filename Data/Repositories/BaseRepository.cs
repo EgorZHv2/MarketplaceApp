@@ -12,29 +12,29 @@ namespace Data.Repositories
 {
     public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : BaseEntity
     {
-        protected readonly ApplicationDbContext _context;
 
-        public BaseRepository(ApplicationDbContext context)
+        protected readonly DbSet<TEntity> _dbset;
+        public BaseRepository(DbSet<TEntity> dbset)
         {
-            _context = context;
+            _dbset = dbset;
         }
 
         public IEnumerable<TEntity> GetAll()
         {
-            var data =  _context.Set<TEntity>();
-            return data;
+           
+            return _dbset;
         }
 
         public TEntity GetById(Guid Id)
         {
-            var data =  _context.Set<TEntity>().Find(Id);
-            return data;
+            
+            return _dbset.Find(Id);
         }
 
         public IEnumerable<TEntity> GetManyByIds(params Guid[] ids)
         {
-            var data = _context.Set<TEntity>().Where(e => ids.Contains(e.Id));
-            return data;
+            
+            return _dbset.Where(e => ids.Contains(e.Id));;
         }
 
         public PageModel<TEntity> GetPage(IQueryable<TEntity> queryable,int pagenumber,int pagesize)
@@ -59,7 +59,7 @@ namespace Data.Repositories
             entity.IsDeleted = false;
             entity.CreatorId = userid;
             entity.UpdatorId = userid;
-            _context.Set<TEntity>().Add(entity);
+            _dbset.Add(entity);
             
             
         }
@@ -74,8 +74,8 @@ namespace Data.Repositories
                 entity.IsActive = true;
                 entity.IsDeleted = false;
                 entity.CreatorId = userid;
-            entity.UpdatorId = userid;
-                _context.Set<TEntity>().Add(entity);
+                entity.UpdatorId = userid;
+                _dbset.Add(entity);
             }
             
         }
@@ -84,7 +84,7 @@ namespace Data.Repositories
         {
             entity.UpdateDateTime = DateTime.UtcNow;
             entity.UpdatorId = userid;
-            _context.Set<TEntity>().Update(entity);
+            _dbset.Update(entity);
             
         }
 
@@ -94,30 +94,30 @@ namespace Data.Repositories
             {
                 entity.UpdateDateTime = DateTime.UtcNow;
                 entity.UpdatorId = userid;
-                _context.Set<TEntity>().Update(entity);
+                _dbset.Update(entity);
             }
             
         }
 
         public void Delete(Guid Id,Guid userid)
         {
-            var data = _context.Set<TEntity>().Find(Id);
+            var data = _dbset.Find(Id);
             data.DeletorId = userid;
             data.DeleteDateTime = DateTime.UtcNow;
             data.IsDeleted = true;
-            _context.Set<TEntity>().Update(data);
+            _dbset.Update(data);
         }
 
         public void DeleteMany(Guid userid,params Guid[] ids)
         {
-            var data =  _context.Set<TEntity>().Where(e => ids.Contains(e.Id));
+            var data =  _dbset.Where(e => ids.Contains(e.Id));
             foreach (var entity in data)
             {
                 entity.DeletorId = userid;
                 entity.DeleteDateTime = DateTime.UtcNow;
                 entity.IsDeleted = true;
             }
-            _context.Set<TEntity>().UpdateRange(data);
+           _dbset.UpdateRange(data);
             
         }
     }
