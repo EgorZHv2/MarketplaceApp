@@ -57,7 +57,7 @@ namespace WebAPi.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var user = _repositoryWrapper.Users.GetUserByEmail(model.Email);
+            var user = _repositoryWrapper.Users.GetUserByEmail(model.Email).Result;
 
             if (user == null)
             {

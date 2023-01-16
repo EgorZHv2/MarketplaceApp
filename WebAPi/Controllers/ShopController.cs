@@ -39,7 +39,7 @@ namespace WebAPi.Controllers
         [Authorize]
         public async Task<IActionResult> GetAllShops()
         {
-            var user = _repository.Users.GetUserByEmail(User.Identity.Name); 
+            var user = _repository.Users.GetUserByEmail(User.Identity.Name).Result; 
             var list = _repository.Shops.GetAll().Where(e => (e.IsActive || user.Id == e.SellerId || user.Role == Data.Enums.Role.Admin)).AsQueryable();
             List<ShopDTO> result = new List<ShopDTO>();
             try
@@ -138,7 +138,7 @@ namespace WebAPi.Controllers
         [Authorize(Roles = "Seller, Admin")]
         public async Task<IActionResult> DeleteShop([FromQuery] Guid Id)
         {
-            Shop shop = _repository.Shops.GetById(Id);
+            Shop shop = _repository.Shops.GetById(Id).Result;
             if(shop == null)
             {
                 throw new NotFoundException("Магазин не найден","Shop not found");
@@ -152,8 +152,8 @@ namespace WebAPi.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ChangeShopActivity([FromBody] EntityActivityModel model)
         {
-            var user = _repository.Users.GetUserByEmail(User.Identity.Name);
-            var entity = _repository.Shops.GetById(model.Id);
+            var user = _repository.Users.GetUserByEmail(User.Identity.Name).Result;
+            var entity = _repository.Shops.GetById(model.Id).Result;
             if(entity == null)
             {
                 throw new NotFoundException("Магазин не найден","Shop not found");

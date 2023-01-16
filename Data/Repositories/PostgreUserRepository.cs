@@ -1,5 +1,6 @@
 ﻿using Data.Entities;
 using Data.IRepositories;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,10 +16,12 @@ namespace Data.Repositories
         public PostgreUserRepository(ApplicationDbContext context) : base(context.Users) { }
        
      
-        public User GetUserByEmail(string email)
+        public async Task<User> GetUserByEmail(string email)
         {
-            var user = _dbset.FirstOrDefault(e => e.Email == email);
+            var user = await _dbset.FirstOrDefaultAsync(e => e.Email == email);
             return user;
         }
+
+      
     }
 }

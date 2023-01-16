@@ -20,7 +20,7 @@ namespace Logic.Services
         }
         public async Task VerifyEmail(string email,string code)
         {
-            var user = _repositoryWrapper.Users.GetUserByEmail(email);
+            var user = _repositoryWrapper.Users.GetUserByEmail(email).Result;
             if (user == null)
             {
                 throw new NotFoundException("Email не найден","User email not found");

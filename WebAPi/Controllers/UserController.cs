@@ -38,7 +38,7 @@ namespace WebAPi.Controllers
                 return BadRequest(ModelState);
             }
          
-            var user = _repositoryWrapper.Users.GetUserByEmail(User.Identity.Name);
+            var user = _repositoryWrapper.Users.GetUserByEmail(User.Identity.Name).Result;
             if(user == null) 
             {
                 throw new NotFoundException("Пользователь не найден","User not found");
@@ -60,8 +60,8 @@ namespace WebAPi.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ChangeUserActivity([FromBody] EntityActivityModel model)
         {
-            var user = _repositoryWrapper.Users.GetUserByEmail(User.Identity.Name);
-            var entity = _repositoryWrapper.Users.GetById(model.Id);
+            var user = _repositoryWrapper.Users.GetUserByEmail(User.Identity.Name).Result;
+            var entity = _repositoryWrapper.Users.GetById(model.Id).Result;
             if(entity == null)
             {
                  throw new NotFoundException("Пользователь не найден","User not found");

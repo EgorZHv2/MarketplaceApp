@@ -10,11 +10,11 @@ namespace Data.IRepositories
     public interface IBaseRepository<TEntity> where TEntity : class
     {
        IEnumerable<TEntity> GetAll();
-       TEntity GetById(Guid Id);
+       Task<TEntity> GetById(Guid Id);
        IEnumerable<TEntity> GetManyByIds(params Guid[] ids);
         PageModel<TEntity> GetPage(IQueryable<TEntity> queryable, int pagenumber, int pagesize);
-        void Create(TEntity entity,Guid userid);
-        void CreateMany(Guid userid,params TEntity[] entities);
+        Task Create(TEntity entity,Guid userid);
+        Task CreateMany(Guid userid,params TEntity[] entities);
         void Update(TEntity entity,Guid userid);
         void UpdateMany(Guid userid,params TEntity[] entities);
         void Delete(Guid Id,Guid userid);

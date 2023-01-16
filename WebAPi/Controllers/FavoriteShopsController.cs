@@ -72,8 +72,8 @@ namespace WebAPi.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ChangeFavShopActivity([FromBody] EntityActivityModel model)
         {
-            var user = _repositoryWrapper.Users.GetUserByEmail(User.Identity.Name);
-            var entity = _repositoryWrapper.UsersFavShops.GetById(model.Id);
+            var user = _repositoryWrapper.Users.GetUserByEmail(User.Identity.Name).Result;
+            var entity = _repositoryWrapper.UsersFavShops.GetById(model.Id).Result;
             if(entity == null)
             {
                 throw new NotFoundException("Избранное не найдено", "Users favorite shops entity not found");

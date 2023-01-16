@@ -22,13 +22,13 @@ namespace Data.Repositories
         public IEnumerable<TEntity> GetAll()
         {
            
-            return _dbset;
+            return  _dbset;
         }
 
-        public TEntity GetById(Guid Id)
+        public async Task<TEntity> GetById(Guid Id)
         {
             
-            return _dbset.Find(Id);
+            return await _dbset.FindAsync(Id);
         }
 
         public IEnumerable<TEntity> GetManyByIds(params Guid[] ids)
@@ -50,7 +50,7 @@ namespace Data.Repositories
             return pageModel;
         }
 
-        public void Create(TEntity entity,Guid userid)
+        public async Task Create(TEntity entity,Guid userid)
         {
             entity.Id = Guid.NewGuid();
             entity.CreateDateTime = DateTime.UtcNow;
@@ -59,12 +59,12 @@ namespace Data.Repositories
             entity.IsDeleted = false;
             entity.CreatorId = userid;
             entity.UpdatorId = userid;
-            _dbset.Add(entity);
+            await _dbset.AddAsync(entity);
             
             
         }
 
-        public void CreateMany(Guid userid,params TEntity[] entities)
+        public async Task CreateMany(Guid userid,params TEntity[] entities)
         {
             foreach (TEntity entity in entities)
             {
@@ -75,7 +75,7 @@ namespace Data.Repositories
                 entity.IsDeleted = false;
                 entity.CreatorId = userid;
                 entity.UpdatorId = userid;
-                _dbset.Add(entity);
+                await _dbset.FindAsync(entity);
             }
             
         }
@@ -120,5 +120,7 @@ namespace Data.Repositories
            _dbset.UpdateRange(data);
             
         }
+
+      
     }
 }

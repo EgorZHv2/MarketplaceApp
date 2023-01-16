@@ -56,7 +56,7 @@ namespace WebAPi.Controllers
         [Authorize]
         public async Task<IActionResult> GetReviewsByShopId([FromQuery] Guid Id)
         {
-            var user = _repository.Users.GetUserByEmail(User.Identity.Name);
+            var user = _repository.Users.GetUserByEmail(User.Identity.Name).Result;
             var list = _repository.Reviews
                 .GetAll()
                 .Where(
@@ -83,7 +83,7 @@ namespace WebAPi.Controllers
         [Authorize]
         public async Task<IActionResult> GetAllReviews()
         {
-            var user = _repository.Users.GetUserByEmail(User.Identity.Name);
+            var user = _repository.Users.GetUserByEmail(User.Identity.Name).Result;
             var list = _repository.Reviews
                 .GetAll()
                 .Where(
@@ -154,7 +154,7 @@ namespace WebAPi.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteReview([FromQuery] Guid Id)
         {
-            Review review = _repository.Reviews.GetById(Id);
+            Review review = _repository.Reviews.GetById(Id).Result;
             if (review == null)
             {
                 throw new NotFoundException("Email не найден", "User email not found");
@@ -169,8 +169,8 @@ namespace WebAPi.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ChangeReviewActivity([FromBody] EntityActivityModel model)
         {
-            var user = _repository.Users.GetUserByEmail(User.Identity.Name);
-            var entity = _repository.Reviews.GetById(model.Id);
+            var user = _repository.Users.GetUserByEmail(User.Identity.Name).Result;
+            var entity = _repository.Reviews.GetById(model.Id).Result;
             if(entity == null)
             {
                 throw new NotFoundException("Отзыв не найден", "Review not found");
