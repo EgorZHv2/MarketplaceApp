@@ -19,5 +19,6 @@ namespace Data.Entities
         public List<Shop> Shops { get; set; }
         public List<Review> Reviews { get; set; } 
         public List<UsersFavShops> UsersFavShops { get; set; }
+        public List<StaticFileInfo> Files { get; set; }
     }
 }

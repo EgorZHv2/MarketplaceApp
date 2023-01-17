@@ -12,6 +12,7 @@ namespace Data.IRepositories
         IShopRepository Shops { get; }
         IReviewRepository Reviews { get; }
         IUsersFavShopsRepository UsersFavShops { get; }
+        IStaticFileInfoRepository StaticFileInfos { get; }
         void Save();
     }
 }

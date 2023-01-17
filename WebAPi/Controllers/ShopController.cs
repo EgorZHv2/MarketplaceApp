@@ -97,9 +97,7 @@ namespace WebAPi.Controllers
             {
                   throw new MappingException(this.GetType().ToString());
             }
-            _logger.LogError(User.Claims.ToArray()[2].Value);
-  
-          var userid = new Guid(User.Claims.ToArray()[2].Value);
+            var userid = new Guid(User.Claims.ToArray()[2].Value);
             _repository.Shops.Create(shop,userid);
             _repository.Save();
             return Ok(shop.Id);

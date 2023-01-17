@@ -17,6 +17,7 @@ namespace Data.Repositories
         private IShopRepository _shops;
         private IReviewRepository _reviews;
         private IUsersFavShopsRepository _usersFavShops;
+        private IStaticFileInfoRepository _staticFileInfos;
         public PostgreRepositoryWrapper(ApplicationDbContext context)
         {
             _context = context;
@@ -64,6 +65,17 @@ namespace Data.Repositories
                     _usersFavShops = new PostgreUsersFavShopsRepository(_context);
                 }
                 return _usersFavShops;
+            }
+        }
+        public IStaticFileInfoRepository StaticFileInfos
+        {
+            get
+            {
+                if (_staticFileInfos == null)
+                {
+                    _staticFileInfos = new PostgreStaticFileInfoRepository(_context);
+                }
+                return _staticFileInfos;
             }
         }
         public void Save()

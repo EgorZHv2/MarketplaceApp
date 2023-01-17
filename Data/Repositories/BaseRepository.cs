@@ -59,7 +59,8 @@ namespace Data.Repositories
             entity.IsDeleted = false;
             entity.CreatorId = userid;
             entity.UpdatorId = userid;
-            await _dbset.AddAsync(entity);
+             await _dbset.AddAsync(entity);
+           
             
             
         }

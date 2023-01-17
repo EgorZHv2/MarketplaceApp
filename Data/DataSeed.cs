@@ -14,15 +14,15 @@ namespace Data
         private const string AdminPassword = "12345678";
         public static void SeedData(IRepositoryWrapper repositoryWrapper)
         {
-            SeedAdmin(repositoryWrapper);
+            SeedAdmin(repositoryWrapper).Wait();
             
         }
-        private static void SeedAdmin(IRepositoryWrapper repositoryWrapper)
+        public  static async Task SeedAdmin(IRepositoryWrapper repositoryWrapper)
         {
-            var user = repositoryWrapper.Users.GetUserByEmail(AdminMail);
+            var user = await repositoryWrapper.Users.GetUserByEmail(AdminMail);
             if (user == null)
             {
-                repositoryWrapper.Users.Create(new Entities.User
+              await repositoryWrapper.Users.Create(new Entities.User
                 {
                     FirstName = "Админ",
                     Email = AdminMail,
