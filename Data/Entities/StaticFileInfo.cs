@@ -11,7 +11,5 @@ namespace Data.Entities
         public string Name { get; set; }
         public string Extension { get; set; }
         public Guid ParentEntityId { get; set; }
-        public User User { get; set; }
-        public Shop Shop { get; set; }
     }
 }

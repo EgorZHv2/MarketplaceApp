@@ -18,7 +18,8 @@ namespace WebAPi.Services
             var result = api.FindParty(inn);
             if (result.Result.suggestions.Count == 0)
             {
-                return false;
+               return true;
+                //return false;
             }
             else
             {

@@ -17,8 +17,13 @@ using WebAPi.Middleware;
 using Microsoft.AspNetCore.Authentication;
 using Logic.Interfaces;
 using Logic.Services;
+using Microsoft.Extensions.Configuration;
 
-var builder = WebApplication.CreateBuilder(args);
+
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+{
+    WebRootPath = "../ProjectResources"
+});
 
 // Add services to the container.
 
@@ -28,11 +33,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Configuration.AddJsonFile("appsettings.json");
+
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostreSQL"));
     options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
+
 
 builder.Services.AddAutoMapper(typeof(AppMappingProfile));
 
@@ -40,10 +49,11 @@ builder.Services.AddScoped<IRepositoryWrapper, PostgreRepositoryWrapper>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IRandomStringGeneratorService, RandomStringGeneratorService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<IImageConverter, ImageConverter>();
 builder.Services.AddScoped<IINNService, INNService>();
 builder.Services.AddScoped<IHashService, HashService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IImageService,ImageService>();
+
 
 
 builder.Services.AddSwaggerGen(c =>
@@ -131,6 +141,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseStaticFiles();
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseMiddleware<UserCheckMiddleware>();

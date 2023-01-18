@@ -47,8 +47,6 @@ namespace Data
             modelBuilder.Entity<UsersFavShops>().HasQueryFilter(e => e.IsDeleted == false);
 
             modelBuilder.Entity<StaticFileInfo>().HasKey(x => x.Id);
-            modelBuilder.Entity<StaticFileInfo>().HasOne(e => e.Shop).WithMany(t => t.Files).HasForeignKey(e => e.ParentEntityId).OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<StaticFileInfo>().HasOne(e => e.User).WithMany(t => t.Files).HasForeignKey(e => e.ParentEntityId).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<UsersFavShops>().HasQueryFilter(e => e.IsDeleted == false);
             
         }

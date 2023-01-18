@@ -11,6 +11,7 @@ using WebAPi.Interfaces;
 using Logic.Exceptions;
 using System.Security.Claims;
 using Data.DTO;
+using Logic.Interfaces;
 
 namespace WebAPi.Controllers
 {
@@ -22,29 +23,45 @@ namespace WebAPi.Controllers
         private IMapper _mapper;
         private ILogger<ShopController> _logger;
         private IINNService _iNNService;
+        private IImageService _imageService;
+        private IConfiguration _configuration;
         public ShopController(
             IRepositoryWrapper repository,
             IMapper mapper,
             ILogger<ShopController> logger,
-            IINNService iNNService
+            IINNService iNNService,
+            IImageService imageService,
+            IConfiguration configuration
+            
         )
         {
             _repository = repository;
             _mapper = mapper;
             _logger = logger;
             _iNNService = iNNService;
+            _imageService = imageService;
+            _configuration = configuration;
+
         }
 
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetAllShops()
         {
-            var user = _repository.Users.GetUserByEmail(User.Identity.Name).Result; 
-            var list = _repository.Shops.GetAll().Where(e => (e.IsActive || user.Id == e.SellerId || user.Role == Data.Enums.Role.Admin)).AsQueryable();
+            var user = _repository.Users.GetUserByEmail(User.Identity.Name).Result;
+            var list = _repository.Shops.GetAll().Where(e => (e.IsActive || user.Id == e.SellerId || user.Role == Data.Enums.Role.Admin)).ToList();
             List<ShopDTO> result = new List<ShopDTO>();
+            string basepath = _configuration.GetSection("BaseImagePath").Value;
             try
             {
-                result = _mapper.ProjectTo<ShopDTO>(list).ToList();
+                foreach(var item in list )
+                {
+                    ShopDTO dto = new ShopDTO();
+                    var fileinfo = _repository.StaticFileInfos.GetByParentId(item.Id).Result;
+                    dto = _mapper.Map<ShopDTO>(item);
+                    dto.ImagePath = basepath + fileinfo.ParentEntityId.ToString() + "/" + fileinfo.Name + "." + fileinfo.Extension; 
+                    result.Add(dto);
+                }
             }
             catch
             {
@@ -57,15 +74,18 @@ namespace WebAPi.Controllers
         [Authorize]
         public async Task<IActionResult> GetShopById([FromQuery] Guid Id)
         {
-            var entity = _repository.Shops.GetById(Id);
+            var entity = _repository.Shops.GetById(Id).Result;
             if(entity == null)
             {
                throw new NotFoundException("Магазин не найден","Shop not found");
             }
             ShopDTO result = new ShopDTO();
+            string basepath = _configuration.GetSection("BaseImagePath").Value;
             try
-            {
+            { 
+                var fileinfo = _repository.StaticFileInfos.GetByParentId(entity.Id).Result;
                 result = _mapper.Map<ShopDTO>(entity);
+                result.ImagePath = basepath + fileinfo.ParentEntityId.ToString() + "/" + fileinfo.Name + "." + fileinfo.Extension; 
             }
             catch
             {
@@ -83,7 +103,7 @@ namespace WebAPi.Controllers
             {
                 return BadRequest(ModelState);
             }
-            if(_iNNService.CheckINN("770303580308"))
+            if(!_iNNService.CheckINN(model.INN))
             {
                 throw new NotFoundException("INN не найден", "INN not valid");
             }
@@ -97,6 +117,7 @@ namespace WebAPi.Controllers
             {
                   throw new MappingException(this.GetType().ToString());
             }
+           
             var userid = new Guid(User.Claims.ToArray()[2].Value);
             _repository.Shops.Create(shop,userid);
             _repository.Save();
@@ -106,7 +127,7 @@ namespace WebAPi.Controllers
 
         [HttpPut]
         [Authorize(Roles = "Seller, Admin")]
-        public async Task<IActionResult> UpdateShop([FromBody] ShopModel model)
+        public async Task<IActionResult> UpdateShop([FromForm] UpdateShopModel model)
         {
             if(!ModelState.IsValid)
             {
@@ -116,14 +137,13 @@ namespace WebAPi.Controllers
             {
                throw new NotFoundException("INN не найден", "INN not valid");
             }
-            Shop shop = new Shop();
-            try
+            Shop shop = _repository.Shops.GetById(model.Id).Result;
+            shop.Title = model.Title;
+            shop.INN = model.INN;
+            shop.Description = model.Description;
+            if (model.Image != null)
             {
-                shop = _mapper.Map<Shop>(model);
-            }
-            catch
-            {
-                   throw new MappingException(this.GetType().ToString());
+                await _imageService.CreateImage(model.Image, model.Id);
             }
             var userid = new Guid(User.Claims.ToArray()[2].Value);
             _repository.Shops.Update(shop,userid);

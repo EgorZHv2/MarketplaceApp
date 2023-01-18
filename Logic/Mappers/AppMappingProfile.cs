@@ -18,10 +18,10 @@ namespace WebAPi.Mappers
             CreateMap<RegistrationModel, User>();
             CreateMap<ReviewModel, Review>().ReverseMap();
             CreateMap<ShopModel, Shop>().ReverseMap();
-            CreateMap<UpdateUserModel, User>().ReverseMap();
+            CreateMap<ChangePasswordModel, User>().ReverseMap();
             CreateMap<CreateAdminModel, User>().ReverseMap();
             CreateMap<User,UserDTO>().ReverseMap();
-            CreateMap<Shop,ShopDTO>().ReverseMap();
+            CreateMap<Shop,ShopDTO>().ForMember(x => x.ImagePath, opt => opt.Ignore());
             CreateMap<Review,ReviewDTO>().ReverseMap();
             CreateMap<UsersFavShops, UsersFavShopsDTO>().ReverseMap();
             

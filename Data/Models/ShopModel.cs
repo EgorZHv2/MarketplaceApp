@@ -12,8 +12,6 @@ namespace Data.Models
         [Required]
         public string Description { get; set; }
 
-        public byte[] Logo { get; set; }
-
         [Required]
         public string INN { get; set; }
 

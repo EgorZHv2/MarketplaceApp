@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebAPi.Interfaces
+namespace Logic.Interfaces
 {
-    public interface IImageConverter
+    public interface IImageService
     {
-         byte[] ConvertFormFileToByte(IFormFile image);
+        Task CreateImage(IFormFile file, Guid entityid);
     }
 }

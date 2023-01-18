@@ -83,7 +83,7 @@ namespace WebAPi.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var dbuser = _repositoryWrapper.Users.GetUserByEmail(model.Email);
+            var dbuser = _repositoryWrapper.Users.GetUserByEmail(model.Email).Result;
             if(dbuser != null)
             {
                 throw new AuthException("Email занят","Email already in use", System.Net.HttpStatusCode.Unauthorized,string.Empty);
