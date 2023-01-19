@@ -1,4 +1,5 @@
-﻿using Data.IRepositories;
+﻿using Data.Entities;
+using Data.IRepositories;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,10 @@ namespace Data.Repositories
         private IReviewRepository _reviews;
         private IUsersFavShopsRepository _usersFavShops;
         private IStaticFileInfoRepository _staticFileInfos;
+        private BaseDictionaryRepository<Category> _categories;
+        private BaseDictionaryRepository<Data.Entities.Type> _types;
+        private BaseDictionaryRepository<DeliveryType> _deliveryTypes;
+        private BaseDictionaryRepository<PaymentMethod> _paymentMethods;
         public PostgreRepositoryWrapper(ApplicationDbContext context)
         {
             _context = context;
@@ -78,6 +83,11 @@ namespace Data.Repositories
                 return _staticFileInfos;
             }
         }
+        public BaseDictionaryRepository<Category> Categories => _categories ??= new BaseDictionaryRepository<Category>(_context.Categories);
+        public BaseDictionaryRepository<Data.Entities.Type> Types => _types ??= new BaseDictionaryRepository<Data.Entities.Type>(_context.Types);
+        public BaseDictionaryRepository<DeliveryType> DeliveryTypes => _deliveryTypes ??= new BaseDictionaryRepository<DeliveryType>(_context.DeliveryTypes);
+        public BaseDictionaryRepository<PaymentMethod> PaymentMethods => _paymentMethods ??= new BaseDictionaryRepository<PaymentMethod>(_context.PaymentMethods);
+
         public void Save()
         {
             _context.SaveChanges();
