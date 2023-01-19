@@ -14,8 +14,12 @@ namespace WebAPi.Controllers
     [ApiController]
     public abstract class BaseDictionaryController<TEntity,TDTO>:BaseController where TEntity : BaseDictionaryEntity where TDTO: DictionaryDTO
     {
-        protected IBaseDictionaryService<TEntity,TDTO> _dictionaryService;
+        private IBaseDictionaryService<TEntity,TDTO> _dictionaryService;
         
+        public BaseDictionaryController(IBaseDictionaryService<TEntity,TDTO> dictionaryService)
+        {
+            _dictionaryService = dictionaryService;
+        }
         
         [HttpPost]
         [Authorize(Roles ="Admin")]

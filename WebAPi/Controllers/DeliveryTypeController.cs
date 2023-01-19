@@ -11,9 +11,7 @@ namespace WebAPi.Controllers
     [ApiController]
     public class DeliveryTypeController : BaseDictionaryController<DeliveryType,DeliveryTypeDTO>
     {
-        public DeliveryTypeController(IBaseDictionaryService<DeliveryType, DeliveryTypeDTO> dictionaryService)
-        {
-            _dictionaryService= dictionaryService;
-        }
+        public DeliveryTypeController(IBaseDictionaryService<DeliveryType, DeliveryTypeDTO> dictionaryService):base(dictionaryService) { }
+     
     }
 }

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Logic.Interfaces
 {
-    public interface IBaseDictionaryService<TEntity,TDTO> where TEntity :BaseDictionaryEntity where TDTO:DictionaryDTO
+    public interface IBaseDictionaryService<TEntity,TDTO> where TEntity: BaseDictionaryEntity where TDTO: DictionaryDTO
     {
         public  Task Create(Guid userid, TDTO model);
 

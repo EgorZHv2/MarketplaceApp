@@ -11,9 +11,7 @@ namespace WebAPi.Controllers
     [ApiController]
     public class PaymentMethodController : BaseDictionaryController<PaymentMethod,PaymentMethodDTO>
     {
-        public PaymentMethodController(IBaseDictionaryService<PaymentMethod, PaymentMethodDTO> dictionaryService)
-        {
-            _dictionaryService= dictionaryService;
-        }
+        public PaymentMethodController(IBaseDictionaryService<PaymentMethod, PaymentMethodDTO> dictionaryService):base(dictionaryService) { }
+ 
     }
 }

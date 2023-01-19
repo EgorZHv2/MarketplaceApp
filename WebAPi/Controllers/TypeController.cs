@@ -11,9 +11,6 @@ namespace WebAPi.Controllers
     [ApiController]
     public class TypeController : BaseDictionaryController<Data.Entities.Type,TypeDTO>
     {
-        public TypeController(IBaseDictionaryService<Data.Entities.Type,TypeDTO> dictionaryService)
-        {
-            _dictionaryService= dictionaryService;
-        }
+        public TypeController(IBaseDictionaryService<Data.Entities.Type,TypeDTO> dictionaryService) : base(dictionaryService) { }
     }
 }
