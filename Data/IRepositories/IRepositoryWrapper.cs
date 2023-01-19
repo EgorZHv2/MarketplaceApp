@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Data.Entities;
+using Data.Repositories;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +16,11 @@ namespace Data.IRepositories
         IReviewRepository Reviews { get; }
         IUsersFavShopsRepository UsersFavShops { get; }
         IStaticFileInfoRepository StaticFileInfos { get; }
+
+        BaseDictionaryRepository<Category> Categories { get; } 
+       BaseDictionaryRepository<Data.Entities.Type> Types { get; } 
+        BaseDictionaryRepository<DeliveryType> DeliveryTypes { get; }
+       BaseDictionaryRepository<PaymentMethod> PaymentMethods { get; }
         void Save();
     }
 }

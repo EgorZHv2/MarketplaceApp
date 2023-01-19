@@ -10,37 +10,37 @@ using Data.Entities;
 
 namespace Data.Repositories
 {
-    public class BaseDictionaryRepository<TEntity>:IBaseRepository<TEntity> where TEntity : BaseDictionaryEntity
+    public class BaseDictionaryRepository<TEntity>:IBaseDictionaryRepository<TEntity> where TEntity : BaseDictionaryEntity
     {
-            protected readonly DbSet<TEntity> _dbset;
-        public BaseDictionaryRepository(DbSet<TEntity> dbset)
+            protected readonly ApplicationDbContext _context;
+        public BaseDictionaryRepository(ApplicationDbContext context)
         {
-            _dbset = dbset;
+            _context = context;
         }
 
         public IEnumerable<TEntity> GetAll()
         {
            
-            return  _dbset;
+            return  _context.Set<TEntity>();
         }
 
         public async Task<TEntity> GetById(Guid Id)
         {
             
-            return await _dbset.FindAsync(Id);
+            return await _context.Set<TEntity>().FindAsync(Id);
         }
 
         public IEnumerable<TEntity> GetManyByIds(params Guid[] ids)
         {
             
-            return _dbset.Where(e => ids.Contains(e.Id));;
+            return _context.Set<TEntity>().Where(e => ids.Contains(e.Id));;
         }
 
         public PageModel<TEntity> GetPage(IQueryable<TEntity> queryable,int pagenumber,int pagesize)
         {
             PageModel<TEntity> pageModel = new PageModel<TEntity>
             {
-                Values = queryable.Skip(pagenumber - 1).Take(pagesize),
+                Values = queryable.Skip(pagesize*(pagenumber-1)).Take(pagesize),
                 ItemsOnPage = pagesize,
                 CurrentPage = pagenumber,
                 TotalItems = queryable.Count(),
@@ -58,7 +58,7 @@ namespace Data.Repositories
             entity.IsDeleted = false;
             entity.CreatorId = userid;
             entity.UpdatorId = userid;
-             await _dbset.AddAsync(entity);
+             await _context.Set<TEntity>().AddAsync(entity);
            
             
             
@@ -75,7 +75,7 @@ namespace Data.Repositories
                 entity.IsDeleted = false;
                 entity.CreatorId = userid;
                 entity.UpdatorId = userid;
-                await _dbset.FindAsync(entity);
+                await _context.Set<TEntity>().FindAsync(entity);
             }
             
         }
@@ -84,7 +84,7 @@ namespace Data.Repositories
         {
             entity.UpdateDateTime = DateTime.UtcNow;
             entity.UpdatorId = userid;
-            _dbset.Update(entity);
+            _context.Set<TEntity>().Update(entity);
             
         }
 
@@ -94,30 +94,30 @@ namespace Data.Repositories
             {
                 entity.UpdateDateTime = DateTime.UtcNow;
                 entity.UpdatorId = userid;
-                _dbset.Update(entity);
+                _context.Set<TEntity>().Update(entity);
             }
             
         }
 
         public void Delete(Guid Id,Guid userid)
         {
-            var data = _dbset.Find(Id);
+            var data = _context.Set<TEntity>().Find(Id);
             data.DeletorId = userid;
             data.DeleteDateTime = DateTime.UtcNow;
             data.IsDeleted = true;
-            _dbset.Update(data);
+            _context.Set<TEntity>().Update(data);
         }
 
         public void DeleteMany(Guid userid,params Guid[] ids)
         {
-            var data =  _dbset.Where(e => ids.Contains(e.Id));
+            var data =  _context.Set<TEntity>().Where(e => ids.Contains(e.Id));
             foreach (var entity in data)
             {
                 entity.DeletorId = userid;
                 entity.DeleteDateTime = DateTime.UtcNow;
                 entity.IsDeleted = true;
             }
-           _dbset.UpdateRange(data);
+           _context.Set<TEntity>().UpdateRange(data);
             
         }
     }

@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data.Entities
+namespace Data.DTO
 {
-    public abstract class BaseDictionaryEntity:BaseEntity
+    public class TypeDTO:DictionaryDTO
     {
-        public string Name { get; set; }
     }
 }

@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data.Entities
+namespace Data.DTO
 {
-    public abstract class BaseDictionaryEntity:BaseEntity
+    public abstract class DictionaryDTO
     {
+        public Guid Id { get; set; }
         public string Name { get; set; }
     }
 }

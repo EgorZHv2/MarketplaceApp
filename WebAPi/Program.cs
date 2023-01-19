@@ -18,7 +18,7 @@ using Microsoft.AspNetCore.Authentication;
 using Logic.Interfaces;
 using Logic.Services;
 using Microsoft.Extensions.Configuration;
-
+using Data.DTO;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
@@ -53,6 +53,8 @@ builder.Services.AddScoped<IINNService, INNService>();
 builder.Services.AddScoped<IHashService, HashService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IImageService,ImageService>();
+builder.Services.AddScoped<IBaseDictionaryRepository<BaseDictionaryEntity>, BaseDictionaryRepository<BaseDictionaryEntity>>();
+builder.Services.AddScoped<IBaseDictionaryService<BaseDictionaryEntity,DictionaryDTO>,BaseDictionaryService<BaseDictionaryEntity,DictionaryDTO>>();
 
 
 

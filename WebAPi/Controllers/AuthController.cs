@@ -28,7 +28,7 @@ namespace WebAPi.Controllers
         private ITokenService _tokenService;
         private IHashService _hashService;
         private IAuthService _authService;
-
+        private IBaseDictionaryRepository<Category> _baseDictionaryRepository;
         public AuthController(
             IRepositoryWrapper repositoryWrapper,
             IMapper mapper,
@@ -38,6 +38,7 @@ namespace WebAPi.Controllers
             ITokenService tokenService,
             IHashService hashService,
             IAuthService authService
+           
         )
         {
             _repositoryWrapper = repositoryWrapper;
@@ -48,6 +49,8 @@ namespace WebAPi.Controllers
             _tokenService = tokenService;
             _hashService = hashService;
             _authService = authService;
+            _logger.LogError("Конструктор аутх стработал");
+
         }
 
         [HttpPost]

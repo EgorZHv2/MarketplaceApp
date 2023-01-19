@@ -83,10 +83,10 @@ namespace Data.Repositories
                 return _staticFileInfos;
             }
         }
-        public BaseDictionaryRepository<Category> Categories => _categories ??= new BaseDictionaryRepository<Category>(_context.Categories);
-        public BaseDictionaryRepository<Data.Entities.Type> Types => _types ??= new BaseDictionaryRepository<Data.Entities.Type>(_context.Types);
-        public BaseDictionaryRepository<DeliveryType> DeliveryTypes => _deliveryTypes ??= new BaseDictionaryRepository<DeliveryType>(_context.DeliveryTypes);
-        public BaseDictionaryRepository<PaymentMethod> PaymentMethods => _paymentMethods ??= new BaseDictionaryRepository<PaymentMethod>(_context.PaymentMethods);
+        public BaseDictionaryRepository<Category> Categories => _categories ??= new BaseDictionaryRepository<Category>(_context);
+        public BaseDictionaryRepository<Data.Entities.Type> Types => _types ??= new BaseDictionaryRepository<Data.Entities.Type>(_context);
+        public BaseDictionaryRepository<DeliveryType> DeliveryTypes => _deliveryTypes ??= new BaseDictionaryRepository<DeliveryType>(_context);
+        public BaseDictionaryRepository<PaymentMethod> PaymentMethods => _paymentMethods ??= new BaseDictionaryRepository<PaymentMethod>(_context);
 
         public void Save()
         {
