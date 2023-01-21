@@ -39,6 +39,10 @@ namespace Data
             modelBuilder.Entity<Shop>().HasKey(x =>x.Id);
             modelBuilder.Entity<Shop>().HasOne(e => e.Seller).WithMany(t => t.Shops).HasForeignKey(e => e.SellerId).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Shop>().HasQueryFilter(e => e.IsDeleted == false);
+            modelBuilder.Entity<Shop>().HasMany<Category>(e => e.Categories).WithMany(e => e.Shops).UsingEntity("ShopCategories");
+            modelBuilder.Entity<Shop>().HasMany<Data.Entities.Type>(e => e.Types).WithMany(e => e.Shops).UsingEntity("ShopTypes");
+            modelBuilder.Entity<Shop>().HasMany<DeliveryType>(e => e.DeliveryTypes).WithMany(e => e.Shops).UsingEntity("ShopDeliveryTypes");
+            modelBuilder.Entity<Shop>().HasMany<PaymentMethod>(e => e.PaymentMethods).WithMany(e => e.Shops).UsingEntity("ShopPaymentMethods");
 
             modelBuilder.Entity<Review>().HasKey(x =>x.Id);
             modelBuilder.Entity<Review>().HasOne(e => e.Shop).WithMany(t=> t.Reviews).HasForeignKey(e => e.ShopId).OnDelete(DeleteBehavior.Cascade);
@@ -55,19 +59,19 @@ namespace Data
 
             modelBuilder.Entity<Category>().HasKey(x => x.Id);
             modelBuilder.Entity<Category>().HasQueryFilter(e => e.IsDeleted == false);
-            modelBuilder.Entity<Category>().HasMany(e => e.Shops).WithMany(e => e.Categories).UsingEntity(e => e.ToTable("ShopCategories"));
+           
 
             modelBuilder.Entity<Data.Entities.Type>().HasKey(x => x.Id);
             modelBuilder.Entity<Data.Entities.Type>().HasQueryFilter(e => e.IsDeleted == false);
-            modelBuilder.Entity<Data.Entities.Type>().HasMany(e => e.Shops).WithMany(e => e.Types).UsingEntity(e => e.ToTable("ShopTypes"));
+  
             
             modelBuilder.Entity<PaymentMethod>().HasKey(x => x.Id);
             modelBuilder.Entity<PaymentMethod>().HasQueryFilter(e => e.IsDeleted == false);
-            modelBuilder.Entity<PaymentMethod>().HasMany(e => e.Shops).WithMany(e => e.PaymentMethods).UsingEntity(e => e.ToTable("ShopPatmentMethods"));
+
 
             modelBuilder.Entity<DeliveryType>().HasKey(x => x.Id);
             modelBuilder.Entity<DeliveryType>().HasQueryFilter(e => e.IsDeleted == false);
-            modelBuilder.Entity<DeliveryType>().HasMany(e => e.Shops).WithMany(e => e.DeliveryTypes).UsingEntity(e => e.ToTable("ShopDeliveryTypes"));
+
         }
 
     }

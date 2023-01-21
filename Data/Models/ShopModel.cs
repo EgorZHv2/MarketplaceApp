@@ -19,5 +19,10 @@ namespace Data.Models
 
         [Required]
         public Guid SellerId { get; set; }
+
+        public Guid[] CategoriesId { get; set; } 
+        public Guid[] TypesId { get; set; }
+        public Guid[] DeliveryTypesId { get; set; }
+        public Guid[] PaymentMethodsId { get; set; }
     }
 }

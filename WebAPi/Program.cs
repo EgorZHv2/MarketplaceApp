@@ -54,16 +54,8 @@ builder.Services.AddScoped<IHashService, HashService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IImageService,ImageService>();
 
-builder.Services.AddScoped<IBaseDictionaryRepository<DeliveryType>, BaseDictionaryRepository<DeliveryType>>();
-builder.Services.AddScoped<IBaseDictionaryRepository<Data.Entities.Type>, BaseDictionaryRepository<Data.Entities.Type>>();
-builder.Services.AddScoped<IBaseDictionaryRepository<PaymentMethod>, BaseDictionaryRepository<PaymentMethod>>();
-builder.Services.AddScoped<IBaseDictionaryRepository<Category>, BaseDictionaryRepository<Category>>();
-
-
-builder.Services.AddScoped<IBaseDictionaryService<DeliveryType, DeliveryTypeDTO>, BaseDictionaryService<DeliveryType, DeliveryTypeDTO>>();
-builder.Services.AddScoped<IBaseDictionaryService<Data.Entities.Type, TypeDTO>, BaseDictionaryService<Data.Entities.Type, TypeDTO>>();
-builder.Services.AddScoped<IBaseDictionaryService<PaymentMethod, PaymentMethodDTO>, BaseDictionaryService<PaymentMethod, PaymentMethodDTO>>();
-builder.Services.AddScoped<IBaseDictionaryService<Category, CategoryDTO>, BaseDictionaryService<Category, CategoryDTO>>();
+builder.Services.AddScoped(typeof(IBaseDictionaryRepository<>), typeof(BaseDictionaryRepository<>));
+builder.Services.AddScoped(typeof(IBaseDictionaryService<,>), typeof(BaseDictionaryService<,>));
 
 
 

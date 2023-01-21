@@ -8,6 +8,6 @@ namespace Data.Entities
 {
     public class Type:BaseDictionaryEntity
     {
-        public List<Shop> Shops { get; set; }
+        public List<Shop> Shops { get; set; }= new List<Shop>();
     }
 }
