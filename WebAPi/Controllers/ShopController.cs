@@ -119,10 +119,22 @@ namespace WebAPi.Controllers
             }         
             var userid = new Guid(User.Claims.ToArray()[2].Value);
             _repository.Shops.Create(shop,userid);
-             _repository.Save();
+            _repository.Save();
             foreach(var item in model.CategoriesId)
             {
                 shop.Categories.Add(_repository.Categories.GetById(item).Result);
+            }
+             foreach(var item in model.DeliveryTypesId)
+            {
+                shop.DeliveryTypes.Add(_repository.DeliveryTypes.GetById(item).Result);
+            }
+              foreach(var item in model.PaymentMethodsId)
+            {
+                shop.PaymentMethods.Add(_repository.PaymentMethods.GetById(item).Result);
+            }
+               foreach(var item in model.TypesId)
+            {
+                shop.Types.Add(_repository.Types.GetById(item).Result);
             }
             _repository.Shops.Update(shop,userid);
             _repository.Save();
@@ -151,6 +163,22 @@ namespace WebAPi.Controllers
                 await _imageService.CreateImage(model.Image, model.Id);
             }
             var userid = new Guid(User.Claims.ToArray()[2].Value);
+                  foreach(var item in model.CategoriesId)
+            {
+                shop.Categories.Add(_repository.Categories.GetById(item).Result);
+            }
+             foreach(var item in model.DeliveryTypesId)
+            {
+                shop.DeliveryTypes.Add(_repository.DeliveryTypes.GetById(item).Result);
+            }
+              foreach(var item in model.PaymentMethodsId)
+            {
+                shop.PaymentMethods.Add(_repository.PaymentMethods.GetById(item).Result);
+            }
+               foreach(var item in model.TypesId)
+            {
+                shop.Types.Add(_repository.Types.GetById(item).Result);
+            }
             _repository.Shops.Update(shop,userid);
             _repository.Save();
         
