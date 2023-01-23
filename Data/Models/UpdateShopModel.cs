@@ -19,5 +19,10 @@ namespace Data.Models
         public string? INN { get; set; }
 
         public IFormFile? Image { get; set; }
+
+         public Guid[] CategoriesId { get; set; } 
+        public Guid[] TypesId { get; set; }
+        public Guid[] DeliveryTypesId { get; set; }
+        public Guid[] PaymentMethodsId { get; set; }
     }
 }

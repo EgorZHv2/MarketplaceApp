@@ -16,8 +16,8 @@ namespace Data.Entities
         public bool IsEmailConfirmed { get; set; }
         public string EmailConfirmationCode { get; set; }
         public Role Role { get; set; }
-        public List<Shop> Shops { get; set; }
+        public List<Shop> Shops { get; set; } 
         public List<Review> Reviews { get; set; } 
-        public List<UsersFavShops> UsersFavShops { get; set; }
+        public List<Shop> FavoriteShops { get; set; }= new List<Shop>();
     }
 }

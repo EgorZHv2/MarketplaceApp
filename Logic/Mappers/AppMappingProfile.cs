@@ -23,7 +23,6 @@ namespace WebAPi.Mappers
             CreateMap<User,UserDTO>().ReverseMap();
             CreateMap<Shop,ShopDTO>().ForMember(x => x.ImagePath, opt => opt.Ignore());
             CreateMap<Review,ReviewDTO>().ReverseMap();
-            CreateMap<UsersFavShops, UsersFavShopsDTO>().ReverseMap();
             CreateMap<Category, CategoryDTO>().ReverseMap();
             CreateMap<Data.Entities.Type, TypeDTO>().ReverseMap();
             CreateMap<DeliveryType, DeliveryTypeDTO>().ReverseMap();

@@ -14,7 +14,6 @@ namespace Data.IRepositories
          IUserRepository Users { get; }
         IShopRepository Shops { get; }
         IReviewRepository Reviews { get; }
-        IUsersFavShopsRepository UsersFavShops { get; }
         IStaticFileInfoRepository StaticFileInfos { get; }
 
         BaseDictionaryRepository<Category> Categories { get; } 

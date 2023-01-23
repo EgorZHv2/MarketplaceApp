@@ -21,6 +21,11 @@ namespace Data.Repositories
             var user = await _dbset.FirstOrDefaultAsync(e => e.Email == email);
             return user;
         }
+        public async Task<IQueryable<Shop>> GetFavoriteShopsByUserId(Guid userId)
+        {
+            var result =  _dbset.Include(e=>e.FavoriteShops).FirstOrDefaultAsync(e=>e.Id == userId).Result.FavoriteShops.AsQueryable();
+            return result;
+        }
 
       
     }

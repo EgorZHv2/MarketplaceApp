@@ -49,7 +49,6 @@ namespace WebAPi.Controllers
             _tokenService = tokenService;
             _hashService = hashService;
             _authService = authService;
-            _logger.LogError("Конструктор аутх стработал");
 
         }
 

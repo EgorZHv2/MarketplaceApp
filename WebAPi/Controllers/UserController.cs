@@ -9,6 +9,10 @@ using System.Web;
 using System.Net;
 using System.Security.Claims;
 using Logic.Interfaces;
+using Data.DTO;
+using Data.Entities;
+using Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebAPi.Controllers
 {
@@ -20,18 +24,20 @@ namespace WebAPi.Controllers
         private IRepositoryWrapper _repositoryWrapper;
         private IMapper _mapper;
         private IImageService _imageService;
-
+        private ApplicationDbContext _context;
         public UserController(
             ILogger<UserController> logger,
             IRepositoryWrapper repositoryWrapper,
             IMapper mapper,
-            IImageService imageService
+            IImageService imageService,
+            ApplicationDbContext context
         )
         {
             _logger = logger;
             _repositoryWrapper = repositoryWrapper;
             _imageService = imageService;
             _mapper = mapper;
+            _context = context;
         }
 
         [Authorize]
@@ -59,6 +65,41 @@ namespace WebAPi.Controllers
             _repositoryWrapper.Users.Update(user, user.Id);
             _repositoryWrapper.Save();
             return Ok();
+        }
+        [Authorize] 
+        [HttpPut]
+
+        public async Task<IActionResult> AddFavoriteShop([FromBody] FavoriteShopsModel model)
+        {
+           var userid = new Guid(User.Claims.ToArray()[2].Value);
+           var user = _repositoryWrapper.Users.GetById(userid).Result;
+           foreach(var Id in model.ShopIds)
+           {
+              user.FavoriteShops.Add(_repositoryWrapper.Shops.GetById(Id).Result);
+           }
+           _repositoryWrapper.Users.Update(user,userid);
+           _repositoryWrapper.Save();
+           return Ok();
+        }
+
+        //[Authorize]
+        [HttpGet]
+        public async Task<IActionResult> ShowUserFavoriteShops()
+        {
+            List<ShopDTO> result = new List<ShopDTO>();
+            var userid = new Guid(User.Claims.ToArray()[2].Value);
+            var shops = _repositoryWrapper.Users.GetFavoriteShopsByUserId(userid).Result;
+            try
+            {
+                result = _mapper.ProjectTo<ShopDTO>(shops).ToList();
+            }
+            catch
+            {
+                throw new MappingException(this.GetType().ToString());
+            }
+
+
+            return Ok(result);
         }
 
         [Authorize]

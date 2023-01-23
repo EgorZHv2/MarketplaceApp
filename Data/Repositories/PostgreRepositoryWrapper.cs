@@ -17,7 +17,6 @@ namespace Data.Repositories
         private IUserRepository _users;
         private IShopRepository _shops;
         private IReviewRepository _reviews;
-        private IUsersFavShopsRepository _usersFavShops;
         private IStaticFileInfoRepository _staticFileInfos;
         private BaseDictionaryRepository<Category> _categories;
         private BaseDictionaryRepository<Data.Entities.Type> _types;
@@ -61,17 +60,7 @@ namespace Data.Repositories
                 return _reviews;
             }
         }
-        public IUsersFavShopsRepository UsersFavShops
-        {
-            get
-            {
-                if(_usersFavShops == null)
-                {
-                    _usersFavShops = new PostgreUsersFavShopsRepository(_context);
-                }
-                return _usersFavShops;
-            }
-        }
+      
         public IStaticFileInfoRepository StaticFileInfos
         {
             get
