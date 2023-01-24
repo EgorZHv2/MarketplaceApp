@@ -64,7 +64,7 @@ namespace Logic.Services
                 TotalItems = pagemodel.TotalItems,
                 TotalPages = pagemodel.TotalPages,
                 ItemsOnPage = pagemodel.ItemsOnPage,
-                Values = _mapper.Map<IEnumerable<TDTO>>(pagemodel.Values)
+                Values = _mapper.Map<List<TDTO>>(pagemodel.Values)
             };
             return result;
 

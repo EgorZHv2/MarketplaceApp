@@ -12,9 +12,9 @@ namespace Logic.Exceptions
         public  string ExceptionClass { get; set; }
        
 
-        public MappingException(string exceptionclass) :base("Внутренняя ошибка сервера","Error while mapping",HttpStatusCode.InternalServerError)
+        public MappingException(Object obj) :base("Внутренняя ошибка сервера","Error while mapping",HttpStatusCode.InternalServerError)
         { 
-            ExceptionClass = exceptionclass;  
+            ExceptionClass = obj.GetType().ToString();  
         }
     }
 }

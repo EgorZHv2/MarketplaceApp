@@ -10,15 +10,9 @@ namespace Data.Repositories
 {
     public class PostgreReviewRepository:BaseRepository<Review>,IReviewRepository
     {
-        
-
-        public PostgreReviewRepository(ApplicationDbContext context):base(context.Reviews) 
+        public PostgreReviewRepository(ApplicationDbContext context):base(context) 
         {
           
         }
-        
-     
-        
-     
     }
 }

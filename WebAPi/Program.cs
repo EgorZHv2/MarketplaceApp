@@ -45,6 +45,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddAutoMapper(typeof(AppMappingProfile));
 
+builder.Services.AddScoped<IShopRepository, PostgreShopRepository>();
+builder.Services.AddScoped<IReviewRepository, PostgreReviewRepository>();
 builder.Services.AddScoped<IRepositoryWrapper, PostgreRepositoryWrapper>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IRandomStringGeneratorService, RandomStringGeneratorService>();
@@ -53,7 +55,9 @@ builder.Services.AddScoped<IINNService, INNService>();
 builder.Services.AddScoped<IHashService, HashService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IImageService,ImageService>();
-
+builder.Services.AddScoped<IShopService, ShopService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
+builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 builder.Services.AddScoped(typeof(IBaseDictionaryRepository<>), typeof(BaseDictionaryRepository<>));
 builder.Services.AddScoped(typeof(IBaseDictionaryService<,>), typeof(BaseDictionaryService<,>));
 

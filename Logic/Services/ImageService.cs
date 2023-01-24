@@ -26,7 +26,7 @@ namespace Logic.Services
             _logger = logger;
             _repositoryWrapper = repositoryWrapper;
         }
-        public async Task CreateImage(IFormFile file, Guid entityid)
+        public async Task CreateImage(IFormFile file, Guid entityid,CancellationToken cancellationToken = default)
         {
             string fileextension = file.FileName.Split(".").Last();
             if (!(fileextension == "png" || fileextension == "jpg" || fileextension == "jpeg"))
@@ -52,7 +52,7 @@ namespace Logic.Services
                 Name = filename,
                 ParentEntityId = entityid
             };
-            _repositoryWrapper.StaticFileInfos.Create(entity,Guid.Empty);
+            _repositoryWrapper.StaticFileInfos.Create(entity,cancellationToken);
             _repositoryWrapper.Save();
         }
     }

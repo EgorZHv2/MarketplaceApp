@@ -62,7 +62,7 @@ namespace WebAPi.Controllers
             {
                 await _imageService.CreateImage(model.Photo, user.Id);
             }
-            _repositoryWrapper.Users.Update(user, user.Id);
+            _repositoryWrapper.Users.Update(user);
             _repositoryWrapper.Save();
             return Ok();
         }
@@ -77,12 +77,12 @@ namespace WebAPi.Controllers
            {
               user.FavoriteShops.Add(_repositoryWrapper.Shops.GetById(Id).Result);
            }
-           _repositoryWrapper.Users.Update(user,userid);
+           _repositoryWrapper.Users.Update(user);
            _repositoryWrapper.Save();
            return Ok();
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> ShowUserFavoriteShops()
         {
@@ -97,8 +97,6 @@ namespace WebAPi.Controllers
             {
                 throw new MappingException(this.GetType().ToString());
             }
-
-
             return Ok(result);
         }
 
@@ -126,7 +124,7 @@ namespace WebAPi.Controllers
             }
 
             user.Password = model.Password;
-            _repositoryWrapper.Users.Update(user, user.Id);
+            _repositoryWrapper.Users.Update(user);
             _repositoryWrapper.Save();
             return Ok();
         }
@@ -142,7 +140,7 @@ namespace WebAPi.Controllers
                 throw new NotFoundException("Пользователь не найден", "User not found");
             }
             entity.IsActive = model.IsActive;
-            _repositoryWrapper.Users.Update(entity, user.Id);
+            _repositoryWrapper.Users.Update(entity);
             _repositoryWrapper.Save();
             return Ok();
         }

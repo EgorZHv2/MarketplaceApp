@@ -13,35 +13,35 @@ namespace Data.Repositories
     public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : BaseEntity
     {
 
-        protected readonly DbSet<TEntity> _dbset;
-        public BaseRepository(DbSet<TEntity> dbset)
+        protected readonly ApplicationDbContext _context;
+        public BaseRepository(ApplicationDbContext context)
         {
-            _dbset = dbset;
+            _context= context;
         }
 
         public IEnumerable<TEntity> GetAll()
         {
            
-            return  _dbset;
+            return  _context.Set<TEntity>().AsNoTracking();
         }
 
-        public async Task<TEntity> GetById(Guid Id)
+        public async Task<TEntity> GetById(Guid Id,CancellationToken cancellationToken =default)
         {
             
-            return await _dbset.FindAsync(Id);
+            return await _context.Set<TEntity>().FirstOrDefaultAsync(e=>e.Id == Id,cancellationToken);
         }
 
         public IEnumerable<TEntity> GetManyByIds(params Guid[] ids)
         {
             
-            return _dbset.Where(e => ids.Contains(e.Id));;
+            return _context.Set<TEntity>().Where(e => ids.Contains(e.Id));
         }
 
-        public PageModel<TEntity> GetPage(IQueryable<TEntity> queryable,int pagenumber,int pagesize)
+        public async Task<PageModel<TEntity>> GetPage(IQueryable<TEntity> queryable,int pagenumber,int pagesize)
         {
             PageModel<TEntity> pageModel = new PageModel<TEntity>
             {
-                Values = queryable.Skip(pagenumber - 1).Take(pagesize),
+                Values = await queryable.Skip(pagenumber - 1).Take(pagesize).ToListAsync(),
                 ItemsOnPage = pagesize,
                 CurrentPage = pagenumber,
                 TotalItems = queryable.Count(),
@@ -50,19 +50,11 @@ namespace Data.Repositories
             return pageModel;
         }
 
-        public async Task Create(TEntity entity,Guid userid)
+        public async Task<Guid> Create(TEntity entity,CancellationToken cancellationToken = default)
         {
             entity.Id = Guid.NewGuid();
-            entity.CreateDateTime = DateTime.UtcNow;
-            entity.UpdateDateTime = DateTime.UtcNow;
-            entity.IsActive = true;
-            entity.IsDeleted = false;
-            entity.CreatorId = userid;
-            entity.UpdatorId = userid;
-             await _dbset.AddAsync(entity);
-           
-            
-            
+            await _context.Set<TEntity>().AddAsync(entity,cancellationToken);
+            return entity.Id;
         }
 
         public async Task CreateMany(Guid userid,params TEntity[] entities)
@@ -76,16 +68,15 @@ namespace Data.Repositories
                 entity.IsDeleted = false;
                 entity.CreatorId = userid;
                 entity.UpdatorId = userid;
-                await _dbset.FindAsync(entity);
+                await _context.Set<TEntity>().FindAsync(entity);
             }
             
         }
 
-        public void Update(TEntity entity,Guid userid)
+        public void Update(TEntity entity)
         {
-            entity.UpdateDateTime = DateTime.UtcNow;
-            entity.UpdatorId = userid;
-            _dbset.Update(entity);
+         
+            _context.Set<TEntity>().Update(entity);
             
         }
 
@@ -95,30 +86,30 @@ namespace Data.Repositories
             {
                 entity.UpdateDateTime = DateTime.UtcNow;
                 entity.UpdatorId = userid;
-                _dbset.Update(entity);
+                _context.Set<TEntity>().Update(entity);
             }
             
         }
 
         public void Delete(Guid Id,Guid userid)
         {
-            var data = _dbset.Find(Id);
+            var data = _context.Set<TEntity>().Find(Id);
             data.DeletorId = userid;
             data.DeleteDateTime = DateTime.UtcNow;
             data.IsDeleted = true;
-            _dbset.Update(data);
+            _context.Set<TEntity>().Update(data);
         }
 
         public void DeleteMany(Guid userid,params Guid[] ids)
         {
-            var data =  _dbset.Where(e => ids.Contains(e.Id));
+            var data =  _context.Set<TEntity>().Where(e => ids.Contains(e.Id));
             foreach (var entity in data)
             {
                 entity.DeletorId = userid;
                 entity.DeleteDateTime = DateTime.UtcNow;
                 entity.IsDeleted = true;
             }
-           _dbset.UpdateRange(data);
+          _context.Set<TEntity>().UpdateRange(data);
             
         }
 

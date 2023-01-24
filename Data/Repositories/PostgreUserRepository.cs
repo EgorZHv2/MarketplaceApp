@@ -13,17 +13,17 @@ namespace Data.Repositories
     {
 
 
-        public PostgreUserRepository(ApplicationDbContext context) : base(context.Users) { }
+        public PostgreUserRepository(ApplicationDbContext context) : base(context) { }
        
      
         public async Task<User> GetUserByEmail(string email)
         {
-            var user = await _dbset.FirstOrDefaultAsync(e => e.Email == email);
+            var user = await _context.Set<User>().FirstOrDefaultAsync(e => e.Email == email);
             return user;
         }
         public async Task<IQueryable<Shop>> GetFavoriteShopsByUserId(Guid userId)
         {
-            var result =  _dbset.Include(e=>e.FavoriteShops).FirstOrDefaultAsync(e=>e.Id == userId).Result.FavoriteShops.AsQueryable();
+            var result =  _context.Set<User>().Include(e=>e.FavoriteShops).FirstOrDefaultAsync(e=>e.Id == userId).Result.FavoriteShops.AsQueryable();
             return result;
         }
 

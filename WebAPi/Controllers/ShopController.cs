@@ -17,7 +17,7 @@ namespace WebAPi.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class ShopController : ControllerBase
+    public class ShopController:BaseController
     {
         private IRepositoryWrapper _repository;
         private IMapper _mapper;
@@ -25,13 +25,15 @@ namespace WebAPi.Controllers
         private IINNService _iNNService;
         private IImageService _imageService;
         private IConfiguration _configuration;
+        private IShopService _shopService;
         public ShopController(
             IRepositoryWrapper repository,
             IMapper mapper,
             ILogger<ShopController> logger,
             IINNService iNNService,
             IImageService imageService,
-            IConfiguration configuration
+            IConfiguration configuration,
+            IShopService shopService
             
         )
         {
@@ -41,7 +43,7 @@ namespace WebAPi.Controllers
             _iNNService = iNNService;
             _imageService = imageService;
             _configuration = configuration;
-
+            _shopService = shopService;
         }
 
         [HttpGet]
@@ -103,42 +105,8 @@ namespace WebAPi.Controllers
             {
                 return BadRequest(ModelState);
             }
-            if(!_iNNService.CheckINN(model.INN))
-            {
-                throw new NotFoundException("INN не найден", "INN not valid");
-            }
-        
-            Shop shop = new Shop();
-            try
-            {
-                shop = _mapper.Map<Shop>(model);
-            }
-            catch
-            {
-                  throw new MappingException(this.GetType().ToString());
-            }         
-            var userid = new Guid(User.Claims.ToArray()[2].Value);
-            _repository.Shops.Create(shop,userid);
-            _repository.Save();
-            foreach(var item in model.CategoriesId)
-            {
-                shop.Categories.Add(_repository.Categories.GetById(item).Result);
-            }
-             foreach(var item in model.DeliveryTypesId)
-            {
-                shop.DeliveryTypes.Add(_repository.DeliveryTypes.GetById(item).Result);
-            }
-              foreach(var item in model.PaymentMethodsId)
-            {
-                shop.PaymentMethods.Add(_repository.PaymentMethods.GetById(item).Result);
-            }
-               foreach(var item in model.TypesId)
-            {
-                shop.Types.Add(_repository.Types.GetById(item).Result);
-            }
-            _repository.Shops.Update(shop,userid);
-            _repository.Save();
-            return Ok(shop.Id);
+            var result = await _shopService.Create(UserId,model);  
+            return Ok(result);
             
         }
 
@@ -150,39 +118,9 @@ namespace WebAPi.Controllers
             {
                 return BadRequest(ModelState);
             }
-            if(!_iNNService.CheckINN(model.INN))
-            {
-               throw new NotFoundException("INN не найден", "INN not valid");
-            }
-            Shop shop = _repository.Shops.GetById(model.Id).Result;
-            shop.Title = model.Title;
-            shop.INN = model.INN;
-            shop.Description = model.Description;
-            if (model.Image != null)
-            {
-                await _imageService.CreateImage(model.Image, model.Id);
-            }
-            var userid = new Guid(User.Claims.ToArray()[2].Value);
-                  foreach(var item in model.CategoriesId)
-            {
-                shop.Categories.Add(_repository.Categories.GetById(item).Result);
-            }
-             foreach(var item in model.DeliveryTypesId)
-            {
-                shop.DeliveryTypes.Add(_repository.DeliveryTypes.GetById(item).Result);
-            }
-              foreach(var item in model.PaymentMethodsId)
-            {
-                shop.PaymentMethods.Add(_repository.PaymentMethods.GetById(item).Result);
-            }
-               foreach(var item in model.TypesId)
-            {
-                shop.Types.Add(_repository.Types.GetById(item).Result);
-            }
-            _repository.Shops.Update(shop,userid);
-            _repository.Save();
+            var result = await _shopService.Update(UserId, model);
         
-            return Ok();
+            return Ok(result);
         }
 
         [HttpDelete]
@@ -210,7 +148,7 @@ namespace WebAPi.Controllers
                 throw new NotFoundException("Магазин не найден","Shop not found");
             }
             entity.IsActive = model.IsActive;
-            _repository.Shops.Update(entity,user.Id);
+            _repository.Shops.Update(entity);
             _repository.Save();
             return Ok();
         }

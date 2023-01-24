@@ -40,7 +40,7 @@ namespace Data.Repositories
         {
             PageModel<TEntity> pageModel = new PageModel<TEntity>
             {
-                Values = queryable.Skip(pagesize*(pagenumber-1)).Take(pagesize),
+                Values =  queryable.Skip(pagesize*(pagenumber-1)).Take(pagesize),
                 ItemsOnPage = pagesize,
                 CurrentPage = pagenumber,
                 TotalItems = queryable.Count(),

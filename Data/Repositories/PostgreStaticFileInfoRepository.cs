@@ -11,10 +11,10 @@ namespace Data.Repositories
 {
     public class PostgreStaticFileInfoRepository:BaseRepository<StaticFileInfo>, IStaticFileInfoRepository
     {
-        public PostgreStaticFileInfoRepository(ApplicationDbContext context):base(context.StaticFileInfos) { }
+        public PostgreStaticFileInfoRepository(ApplicationDbContext context):base(context) { }
         public async Task<StaticFileInfo> GetByParentId(Guid Id)
         {
-            var file = await _dbset.FirstOrDefaultAsync(e => e.ParentEntityId == Id);
+            var file = await _context.Set<StaticFileInfo>().FirstOrDefaultAsync(e => e.ParentEntityId == Id);
             return file;
         }
     }

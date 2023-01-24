@@ -30,7 +30,7 @@ namespace Data
                     IsEmailConfirmed = true,
                     Role = Enums.Role.Admin,
                     Id = Guid.NewGuid()
-                },Guid.Empty);
+                });
                 repositoryWrapper.Save();
             }
         }

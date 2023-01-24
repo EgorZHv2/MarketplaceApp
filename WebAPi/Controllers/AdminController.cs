@@ -51,7 +51,7 @@ namespace WebAPi.Controllers
                 throw new MappingException(this.GetType().ToString());
             }
             user.Role = Data.Enums.Role.Admin;
-            _repositoryWrapper.Users.Create(user, userid);
+            _repositoryWrapper.Users.Create(user);
             _repositoryWrapper.Save();
             return Ok(user.Id);
         }

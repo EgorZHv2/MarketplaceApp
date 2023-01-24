@@ -9,10 +9,7 @@ using System.Threading.Tasks;
 namespace Data.Repositories
 {
     public class PostgreShopRepository : BaseRepository<Shop>,IShopRepository
-    {
-       
-       public  PostgreShopRepository(ApplicationDbContext context):base(context.Shops) { }
-
-
+    {       
+       public  PostgreShopRepository(ApplicationDbContext context):base(context) { }
     }
 }

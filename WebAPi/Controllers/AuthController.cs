@@ -74,7 +74,6 @@ namespace WebAPi.Controllers
                 throw new AuthException("Неверный пароль","Wrong password",System.Net.HttpStatusCode.Unauthorized,model.Email);
             }
             var results = _tokenService.GetTokenAsync(user);
-
             return Ok(results.Result);
         }
 
@@ -107,7 +106,7 @@ namespace WebAPi.Controllers
                 "MarketPlaceApp",
                 $"Your verification code = {code}"
             );
-            _repositoryWrapper.Users.Create(user,Guid.Empty);
+            _repositoryWrapper.Users.Create(user);
             _repositoryWrapper.Save();
             return Ok();
         }

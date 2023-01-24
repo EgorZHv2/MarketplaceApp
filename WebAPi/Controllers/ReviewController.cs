@@ -121,7 +121,7 @@ namespace WebAPi.Controllers
             }
             var userid = new Guid(User.Claims.ToArray()[2].Value);
 
-            _repository.Reviews.Create(review, userid);
+            _repository.Reviews.Create(review);
             _repository.Save();
             return Ok(review.Id);
         }
@@ -145,7 +145,7 @@ namespace WebAPi.Controllers
             }
             var userid = new Guid(User.Claims.ToArray()[2].Value);
 
-            _repository.Reviews.Update(review, userid);
+            _repository.Reviews.Update(review);
             _repository.Save();
             return Ok();
         }
@@ -176,7 +176,7 @@ namespace WebAPi.Controllers
                 throw new NotFoundException("Отзыв не найден", "Review not found");
             }
             entity.IsActive = model.IsActive;
-            _repository.Reviews.Update(entity,user.Id);
+            _repository.Reviews.Update(entity);
             _repository.Save();
             return Ok();
         }

@@ -30,7 +30,7 @@ namespace Logic.Services
                 throw new AuthException("Неправильный код","Wrong email verification code", System.Net.HttpStatusCode.Unauthorized, user.Email);
             }
             user.IsEmailConfirmed = true;
-            _repositoryWrapper.Users.Update(user, user.Id);
+            _repositoryWrapper.Users.Update(user);
             _repositoryWrapper.Save();
             
         }

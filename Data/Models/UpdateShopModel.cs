@@ -20,9 +20,9 @@ namespace Data.Models
 
         public IFormFile? Image { get; set; }
 
-         public Guid[] CategoriesId { get; set; } 
-        public Guid[] TypesId { get; set; }
-        public Guid[] DeliveryTypesId { get; set; }
-        public Guid[] PaymentMethodsId { get; set; }
+        public List<Guid> CategoriesId { get; set; } = new List<Guid>();
+        public List<Guid> TypesId { get; set; }= new List<Guid>();
+        public List<Guid> DeliveryTypesId { get; set; }= new List<Guid>();
+        public List<Guid> PaymentMethodsId { get; set; }= new List<Guid>();
     }
 }
