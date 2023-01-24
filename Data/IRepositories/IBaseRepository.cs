@@ -17,7 +17,7 @@ namespace Data.IRepositories
         Task CreateMany(Guid userid,params TEntity[] entities);
         void Update(TEntity entity);
         void UpdateMany(Guid userid,params TEntity[] entities);
-        void Delete(Guid Id,Guid userid);
+        Task Delete(Guid Id,Guid userid);
         void DeleteMany(Guid userid,params Guid[] ids);
     }
 }

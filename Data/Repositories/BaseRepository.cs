@@ -91,13 +91,14 @@ namespace Data.Repositories
             
         }
 
-        public void Delete(Guid Id,Guid userid)
+        public async Task Delete(Guid Id,Guid userid)
         {
             var data = _context.Set<TEntity>().Find(Id);
             data.DeletorId = userid;
             data.DeleteDateTime = DateTime.UtcNow;
             data.IsDeleted = true;
             _context.Set<TEntity>().Update(data);
+             await _context.SaveChangesAsync();
         }
 
         public void DeleteMany(Guid userid,params Guid[] ids)

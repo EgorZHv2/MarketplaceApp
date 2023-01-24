@@ -50,25 +50,7 @@ namespace WebAPi.Controllers
         [Authorize]
         public async Task<IActionResult> GetAllShops()
         {
-            var user = _repository.Users.GetUserByEmail(User.Identity.Name).Result;
-            var list = _repository.Shops.GetAll().Where(e => (e.IsActive || user.Id == e.SellerId || user.Role == Data.Enums.Role.Admin)).ToList();
-            List<ShopDTO> result = new List<ShopDTO>();
-            string basepath = _configuration.GetSection("BaseImagePath").Value;
-            try
-            {
-                foreach(var item in list )
-                {
-                    ShopDTO dto = new ShopDTO();
-                    var fileinfo = _repository.StaticFileInfos.GetByParentId(item.Id).Result;
-                    dto = _mapper.Map<ShopDTO>(item);
-                    dto.ImagePath = basepath + fileinfo.ParentEntityId.ToString() + "/" + fileinfo.Name + "." + fileinfo.Extension; 
-                    result.Add(dto);
-                }
-            }
-            catch
-            {
-                throw new MappingException(this.GetType().ToString());
-            }
+            var result = await _shopService.GetAll(UserId);
             return Ok(result);        
         }
 
@@ -76,23 +58,7 @@ namespace WebAPi.Controllers
         [Authorize]
         public async Task<IActionResult> GetShopById([FromQuery] Guid Id)
         {
-            var entity = _repository.Shops.GetById(Id).Result;
-            if(entity == null)
-            {
-               throw new NotFoundException("Магазин не найден","Shop not found");
-            }
-            ShopDTO result = new ShopDTO();
-            string basepath = _configuration.GetSection("BaseImagePath").Value;
-            try
-            { 
-                var fileinfo = _repository.StaticFileInfos.GetByParentId(entity.Id).Result;
-                result = _mapper.Map<ShopDTO>(entity);
-                result.ImagePath = basepath + fileinfo.ParentEntityId.ToString() + "/" + fileinfo.Name + "." + fileinfo.Extension; 
-            }
-            catch
-            {
-                throw new MappingException(this.GetType().ToString());
-            }
+            var result = await _shopService.GetById(Id);
             return Ok(result);
            
         }
@@ -127,14 +93,7 @@ namespace WebAPi.Controllers
         [Authorize(Roles = "Seller, Admin")]
         public async Task<IActionResult> DeleteShop([FromQuery] Guid Id)
         {
-            Shop shop = _repository.Shops.GetById(Id).Result;
-            if(shop == null)
-            {
-                throw new NotFoundException("Магазин не найден","Shop not found");
-            }
-           var userid = new Guid(User.Claims.ToArray()[2].Value);
-            _repository.Shops.Delete(Id, userid);
-            _repository.Save();
+            await _shopService.Delete(UserId,Id);
             return Ok();
         }
         [HttpPut]

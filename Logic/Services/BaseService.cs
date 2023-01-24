@@ -53,7 +53,9 @@ namespace Logic.Services
         public virtual async Task<List<TDTO>> GetAll(CancellationToken cancellationToken = default)
         {
             List<TDTO> result = new List<TDTO>();
-            var list = _repository.GetAll().AsQueryable();
+            var list = _repository.GetAll().Where(e => e.IsActive).AsQueryable();
+          
+         
             try
             {
                 result = await _mapper.ProjectTo<TDTO>(list).ToListAsync(cancellationToken);

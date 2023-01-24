@@ -11,5 +11,6 @@ namespace Logic.Interfaces
 {
     public interface IShopService:IBaseService<Shop,ShopDTO,ShopModel,UpdateShopModel>
     {
+        public Task<List<ShopDTO>> GetAll(Guid userid, CancellationToken cancellationToken = default);
     }
 }

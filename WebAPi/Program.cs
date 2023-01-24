@@ -47,6 +47,7 @@ builder.Services.AddAutoMapper(typeof(AppMappingProfile));
 
 builder.Services.AddScoped<IShopRepository, PostgreShopRepository>();
 builder.Services.AddScoped<IReviewRepository, PostgreReviewRepository>();
+builder.Services.AddScoped<IUserRepository,PostgreUserRepository>();
 builder.Services.AddScoped<IRepositoryWrapper, PostgreRepositoryWrapper>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IRandomStringGeneratorService, RandomStringGeneratorService>();
