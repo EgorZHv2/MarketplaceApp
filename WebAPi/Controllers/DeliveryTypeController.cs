@@ -9,9 +9,9 @@ namespace WebAPi.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class DeliveryTypeController : BaseDictionaryController<DeliveryType,DeliveryTypeDTO>
+    public class DeliveryTypeController : BaseDictionaryController<DeliveryType,CreateDeliveryTypeDTO,CreateDeliveryTypeDTO>
     {
-        public DeliveryTypeController(IBaseDictionaryService<DeliveryType, DeliveryTypeDTO> dictionaryService):base(dictionaryService) { }
+        public DeliveryTypeController(IDeliveryTypeService deliveryTypeService):base(deliveryTypeService) { }
      
     }
 }

@@ -12,18 +12,18 @@ namespace WebAPi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public abstract class BaseDictionaryController<TEntity,TDTO>:BaseController where TEntity : BaseDictionaryEntity where TDTO: DictionaryDTO
+    public  class BaseDictionaryController<TEntity,TCreateDTO,TDTO>:BaseController where TEntity : BaseDictionaryEntity where TDTO: DictionaryDTO
     {
-        private IBaseDictionaryService<TEntity,TDTO> _dictionaryService;
+        protected IBaseDictionaryService<TEntity,TCreateDTO,TDTO> _dictionaryService;
         
-        public BaseDictionaryController(IBaseDictionaryService<TEntity,TDTO> dictionaryService)
+        public BaseDictionaryController(IBaseDictionaryService<TEntity,TCreateDTO,TDTO> dictionaryService)
         {
             _dictionaryService = dictionaryService;
         }
         
         [HttpPost]
         [Authorize(Roles ="Admin")]
-        public async Task<IActionResult> Create(TDTO model)
+        public async Task<IActionResult> Create(TCreateDTO model)
         {
            
             _dictionaryService.Create(UserId, model);
@@ -31,18 +31,18 @@ namespace WebAPi.Controllers
         }
         [HttpPut]
         [Authorize(Roles ="Admin")]
-        public async Task<IActionResult> Update(TDTO model)
+        public virtual async Task<IActionResult> Update(TCreateDTO model)
         {
             
             _dictionaryService.Update(UserId, model);
             return Ok();
         }
         [HttpGet] 
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> GetPage([FromQuery] FilterPagingModel pagingModel)
         {
            
-            var result = _dictionaryService.GetPage(pagingModel);
+            var result = await _dictionaryService.GetPage(pagingModel);
             return Ok(result);
         }
         [HttpDelete]

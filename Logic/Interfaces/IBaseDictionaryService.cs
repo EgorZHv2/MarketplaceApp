@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace Logic.Interfaces
 {
-    public interface IBaseDictionaryService<TEntity,TDTO> where TEntity: BaseDictionaryEntity where TDTO: DictionaryDTO
+    public interface IBaseDictionaryService<TEntity,TCreateDTO,TDTO> where TEntity: BaseDictionaryEntity where TDTO: DictionaryDTO
     {
-        public  Task Create(Guid userid, TDTO model);
+        public  Task Create(Guid userid, TCreateDTO model);
 
-        public  Task Update(Guid userid, TDTO model);
+        public  Task Update(Guid userid, TCreateDTO model);
 
         public  Task<PageModel<TDTO>> GetPage(FilterPagingModel model);
 

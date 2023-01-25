@@ -22,9 +22,10 @@ namespace WebAPi.Mappers
             CreateMap<User, UserDTO>().ReverseMap();
             CreateMap<Shop, ShopDTO>().ForMember(x => x.ImagePath, opt => opt.Ignore());
             CreateMap<Review, ReviewDTO>().ReverseMap();
-            CreateMap<Category, CategoryDTO>().ReverseMap();
+            CreateMap<Category, CreateCategoryDTO>().ReverseMap();
+            CreateMap<Category, CategoryDTO>();
             CreateMap<Data.Entities.Type, TypeDTO>().ReverseMap();
-            CreateMap<DeliveryType, DeliveryTypeDTO>().ReverseMap();
+            CreateMap<DeliveryType, CreateDeliveryTypeDTO>().ReverseMap();
             CreateMap<PaymentMethod, PaymentMethodDTO>().ReverseMap();
             CreateMap<UpdateShopModel, Shop>();
         }

@@ -9,9 +9,9 @@ namespace WebAPi.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class PaymentMethodController : BaseDictionaryController<PaymentMethod,PaymentMethodDTO>
+    public class PaymentMethodController : BaseDictionaryController<PaymentMethod,PaymentMethodDTO,PaymentMethodDTO>
     {
-        public PaymentMethodController(IBaseDictionaryService<PaymentMethod, PaymentMethodDTO> dictionaryService):base(dictionaryService) { }
+        public PaymentMethodController(IPaymentMethodService paymentMethodService):base(paymentMethodService) { }
  
     }
 }

@@ -9,8 +9,8 @@ namespace WebAPi.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class TypeController : BaseDictionaryController<Data.Entities.Type,TypeDTO>
+    public class TypeController : BaseDictionaryController<Data.Entities.Type,TypeDTO,TypeDTO>
     {
-        public TypeController(IBaseDictionaryService<Data.Entities.Type,TypeDTO> dictionaryService) : base(dictionaryService) { }
+        public TypeController(ITypeService typeService) : base(typeService) { }
     }
 }

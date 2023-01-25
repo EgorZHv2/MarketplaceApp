@@ -37,7 +37,7 @@ namespace Data.Repositories
             return _context.Set<TEntity>().Where(e => ids.Contains(e.Id));
         }
 
-        public async Task<PageModel<TEntity>> GetPage(IQueryable<TEntity> queryable,int pagenumber,int pagesize)
+        public virtual async Task<PageModel<TEntity>> GetPage(IQueryable<TEntity> queryable,int pagenumber,int pagesize)
         {
             PageModel<TEntity> pageModel = new PageModel<TEntity>
             {

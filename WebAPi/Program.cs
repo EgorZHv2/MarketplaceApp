@@ -20,6 +20,7 @@ using Logic.Services;
 using Microsoft.Extensions.Configuration;
 using Data.DTO;
 
+
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
     WebRootPath = "../ProjectResources"
@@ -27,7 +28,18 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 
 // Add services to the container.
 
-builder.Services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+{
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+});
+
+
+
+//builder.Services.AddControllers().AddJsonOptions(options =>
+//{
+//    options.JsonSerializerOptions.WriteIndented = true;
+//    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+//});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -48,6 +60,11 @@ builder.Services.AddAutoMapper(typeof(AppMappingProfile));
 builder.Services.AddScoped<IShopRepository, PostgreShopRepository>();
 builder.Services.AddScoped<IReviewRepository, PostgreReviewRepository>();
 builder.Services.AddScoped<IUserRepository,PostgreUserRepository>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ITypeService,TypeService>();
+builder.Services.AddScoped<IDeliveryTypeService, DeliveryTypeService>();
+builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
+builder.Services.AddScoped<IPostgreCategoryRepository, PostgreCategoryRepository>();
 builder.Services.AddScoped<IRepositoryWrapper, PostgreRepositoryWrapper>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IRandomStringGeneratorService, RandomStringGeneratorService>();
@@ -60,7 +77,6 @@ builder.Services.AddScoped<IShopService, ShopService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 builder.Services.AddScoped(typeof(IBaseDictionaryRepository<>), typeof(BaseDictionaryRepository<>));
-builder.Services.AddScoped(typeof(IBaseDictionaryService<,>), typeof(BaseDictionaryService<,>));
 
 
 

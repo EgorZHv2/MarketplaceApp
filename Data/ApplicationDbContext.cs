@@ -55,10 +55,13 @@ namespace Data
 
             modelBuilder.Entity<Category>().HasKey(x => x.Id);
             modelBuilder.Entity<Category>().HasQueryFilter(e => e.IsDeleted == false);
+            modelBuilder.Entity<Category>().Property(e => e.ParentCategoryId).IsRequired(false);
+            modelBuilder.Entity<Category>().HasOne(e => e.ParentCategory).WithMany(e => e.Categories).HasForeignKey(e => e.ParentCategoryId).OnDelete(DeleteBehavior.Cascade);
            
 
             modelBuilder.Entity<Data.Entities.Type>().HasKey(x => x.Id);
             modelBuilder.Entity<Data.Entities.Type>().HasQueryFilter(e => e.IsDeleted == false);
+            modelBuilder.Entity<Data.Entities.Type>().Property(e => e.Description).HasMaxLength(500);
   
             
             modelBuilder.Entity<PaymentMethod>().HasKey(x => x.Id);

@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Data.DTO
 {
-    public class DeliveryTypeDTO:DictionaryDTO
+    public class CreateCategoryDTO:DictionaryDTO
     {
+        public Guid? ParentCategoryId { get; set; }
     }
 }

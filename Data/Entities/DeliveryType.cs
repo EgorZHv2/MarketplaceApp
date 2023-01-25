@@ -8,6 +8,7 @@ namespace Data.Entities
 {
     public class DeliveryType : BaseDictionaryEntity
     {
+        public bool CanBeFree { get; set; }
         public List<Shop> Shops { get; set; }= new List<Shop>();
     }
 }
