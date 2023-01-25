@@ -10,5 +10,6 @@ namespace Data.Entities
     {
         public bool CanBeFree { get; set; }
         public List<Shop> Shops { get; set; }= new List<Shop>();
+           public List<ShopDeliveryTypes> ShopDeliveryTypes { get; set; } = new List<ShopDeliveryTypes>();
     }
 }

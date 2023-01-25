@@ -20,6 +20,8 @@ namespace Data.Entities
         public List<Category> Categories { get; set; } = new List<Category>();
         public List<DeliveryType> DeliveryTypes { get; set; } = new List<DeliveryType>();
         public List<Type> Types { get; set; } = new List<Type>();
-        public List<PaymentMethod> PaymentMethods { get;} = new List<PaymentMethod>();
+        public List<PaymentMethod> PaymentMethods { get; set; } = new List<PaymentMethod>();
+        public List<ShopDeliveryTypes> ShopDeliveryTypes { get; set; } = new List<ShopDeliveryTypes>();
+        public List<ShopPaymentMethod> ShopPaymentMethods { get; set; } = new List<ShopPaymentMethod>();
     }
 }

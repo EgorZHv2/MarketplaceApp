@@ -147,11 +147,8 @@ namespace Logic.Services
             shop.UpdateDateTime = DateTime.UtcNow;
             _repository.Update(shop);
             _repositoryWrapper.Save();
-            foreach (var item in UpdateDTO.CategoriesId)
-            {
-                shop.Categories.Add(_repositoryWrapper.Categories.GetById(item).Result);
-            }
-            foreach (var item in UpdateDTO.DeliveryTypesId)
+       
+             foreach (var item in UpdateDTO.DeliveryTypesId)
             {
                 shop.DeliveryTypes.Add(_repositoryWrapper.DeliveryTypes.GetById(item).Result);
             }
@@ -159,6 +156,10 @@ namespace Logic.Services
             {
                 shop.PaymentMethods.Add(_repositoryWrapper.PaymentMethods.GetById(item).Result);
             }
+            foreach (var item in UpdateDTO.CategoriesId)
+            {
+                shop.Categories.Add(_repositoryWrapper.Categories.GetById(item).Result);
+            }         
             foreach (var item in UpdateDTO.TypesId)
             {
                 shop.Types.Add(_repositoryWrapper.Types.GetById(item).Result);

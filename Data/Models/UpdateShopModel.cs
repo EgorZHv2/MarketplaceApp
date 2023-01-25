@@ -19,7 +19,6 @@ namespace Data.Models
         public string? INN { get; set; }
 
         public IFormFile? Image { get; set; }
-
         public List<Guid> CategoriesId { get; set; } = new List<Guid>();
         public List<Guid> TypesId { get; set; }= new List<Guid>();
         public List<Guid> DeliveryTypesId { get; set; }= new List<Guid>();
