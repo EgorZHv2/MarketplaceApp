@@ -147,15 +147,23 @@ namespace Logic.Services
             shop.UpdateDateTime = DateTime.UtcNow;
             _repository.Update(shop);
             _repositoryWrapper.Save();
-       
-             foreach (var item in UpdateDTO.DeliveryTypesId)
+
+            shop.ShopDeliveryTypes = UpdateDTO.ShopDeliveryTypes.Select(entity => new ShopDeliveryType
             {
-                shop.DeliveryTypes.Add(_repositoryWrapper.DeliveryTypes.GetById(item).Result);
-            }
-            foreach (var item in UpdateDTO.PaymentMethodsId)
+                ShopId = shop.Id,
+                Shop = shop,
+                DeliveryType = _repositoryWrapper.DeliveryTypes.GetById(entity.Id).Result,
+                DeliveryTypeId = entity.Id,
+                FreeDeliveryThreshold = _repositoryWrapper.DeliveryTypes.GetById(entity.Id).Result.CanBeFree ? entity.FreeDeliveryThreshold : null
+            }).ToList();
+            shop.ShopPaymentMethods = UpdateDTO.ShopPaymentMethods.Select(entity => new ShopPaymentMethod
             {
-                shop.PaymentMethods.Add(_repositoryWrapper.PaymentMethods.GetById(item).Result);
-            }
+                ShopId = shop.Id,
+                 Shop = shop,
+                 PaymentMethod = _repositoryWrapper.PaymentMethods.GetById(entity.Id).Result,
+                PaymentMethodId = entity.Id,
+                Сommission = _repositoryWrapper.PaymentMethods.GetById(entity.Id).Result.HasCommission ? entity.Сommission : null
+            }).ToList();
             foreach (var item in UpdateDTO.CategoriesId)
             {
                 shop.Categories.Add(_repositoryWrapper.Categories.GetById(item).Result);

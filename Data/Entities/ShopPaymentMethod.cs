@@ -12,7 +12,7 @@ namespace Data.Entities
         public Shop Shop { get; set; }
         public Guid PaymentMethodId { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
-        public double Сommission { get; set; }
+        public double? Сommission { get; set; }
         
     }
 }

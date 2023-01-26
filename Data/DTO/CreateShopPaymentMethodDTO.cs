@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Data.DTO
 {
-    public class TypeDTO:DictionaryDTO
+    public class CreateShopPaymentMethodDTO
     {
-        public string Description { get; set; }
+        public Guid Id { get; set; }
+        public double Сommission { get; set; }
     }
 }

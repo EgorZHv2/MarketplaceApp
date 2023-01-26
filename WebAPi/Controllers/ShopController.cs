@@ -78,7 +78,7 @@ namespace WebAPi.Controllers
 
         [HttpPut]
         [Authorize(Roles = "Seller, Admin")]
-        public async Task<IActionResult> UpdateShop([FromForm] UpdateShopModel model)
+        public async Task<IActionResult> UpdateShop([FromBody] UpdateShopModel model)
         {
             if(!ModelState.IsValid)
             {

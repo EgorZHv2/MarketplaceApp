@@ -60,7 +60,7 @@ namespace Data
                 .Entity<Shop>()
                 .HasMany<DeliveryType>(e => e.DeliveryTypes)
                 .WithMany(e => e.Shops)
-                .UsingEntity<ShopDeliveryTypes>(e =>
+                .UsingEntity<ShopDeliveryType>(e =>
                 {
                     e.HasOne(e => e.Shop)
                         .WithMany(e => e.ShopDeliveryTypes)
@@ -69,6 +69,7 @@ namespace Data
                         .WithMany(e => e.ShopDeliveryTypes)
                         .HasForeignKey(e => e.DeliveryTypeId);
                     e.ToTable("ShopDeliveryTypes");
+                    e.Property(p => p.FreeDeliveryThreshold).IsRequired(false);
                 });
              modelBuilder
                 .Entity<Shop>()
@@ -83,7 +84,8 @@ namespace Data
                         .WithMany(e => e.ShopPaymentMethods)
                         .HasForeignKey(e => e.PaymentMethodId);
                     e.ToTable("ShopPaymentMethods");
-                });
+                    e.Property(p => p.Сommission).IsRequired(false);
+                });                    
             modelBuilder.Entity<Review>().HasKey(x => x.Id);
             modelBuilder
                 .Entity<Review>()

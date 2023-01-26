@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Data.DTO
 {
-    public class TypeDTO:DictionaryDTO
+    public class CreateShopDeliveryTypeDTO
     {
-        public string Description { get; set; }
+        public Guid Id { get; set; }
+        public decimal FreeDeliveryThreshold { get; set; }
     }
 }
