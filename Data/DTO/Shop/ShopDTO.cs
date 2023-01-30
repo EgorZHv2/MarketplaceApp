@@ -1,4 +1,4 @@
-﻿namespace Data.DTO
+﻿namespace Data.DTO.Shop
 {
     public class ShopDTO
     {

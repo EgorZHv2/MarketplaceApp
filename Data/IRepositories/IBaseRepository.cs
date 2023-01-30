@@ -14,10 +14,10 @@ namespace Data.IRepositories
        IEnumerable<TEntity> GetManyByIds(params Guid[] ids);
         Task<PageModel<TEntity>> GetPage(IQueryable<TEntity> queryable, int pagenumber, int pagesize);
         Task<Guid> Create(TEntity entity, CancellationToken cancellationToken = default);
-        Task CreateMany(Guid userid,params TEntity[] entities);
-        void Update(TEntity entity);
-        void UpdateMany(Guid userid,params TEntity[] entities);
-        Task Delete(Guid Id,Guid userid);
-        void DeleteMany(Guid userid,params Guid[] ids);
+        Task CreateMany(Guid userid,CancellationToken cancellationToken = default,params TEntity[] entities);
+        Task Update(TEntity entity,CancellationToken cancellationToken = default);
+        Task UpdateMany(Guid userid,CancellationToken cancellationToken = default,params TEntity[] entities);
+        Task Delete(Guid userId,Guid entityId, CancellationToken cancellationToken = default);
+        Task DeleteMany(Guid userid,CancellationToken cancellationToken = default,params Guid[] ids);
     }
 }

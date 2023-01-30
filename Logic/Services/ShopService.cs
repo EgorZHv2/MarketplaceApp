@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Data.DTO;
+using Data.DTO.Shop;
 using Data.Entities;
 using Data.IRepositories;
 using Data.Models;
@@ -17,7 +18,7 @@ using WebAPi.Interfaces;
 
 namespace Logic.Services
 {
-    public class ShopService : BaseService<Shop, ShopDTO, ShopModel, UpdateShopModel>, IShopService
+    public class ShopService : BaseService<Shop, ShopDTO, CreateShopDTO, UpdateShopDTO,IShopRepository>, IShopService
     {
         private IINNService _iNNService;
         private IRepositoryWrapper _repositoryWrapper;
@@ -56,7 +57,6 @@ namespace Logic.Services
                 foreach (var item in list)
                 {
                     ShopDTO dto = new ShopDTO();
-
                     dto = _mapper.Map<ShopDTO>(item);
                     var fileinfo = _repositoryWrapper.StaticFileInfos.GetByParentId(item.Id).Result;
                     if (fileinfo != null)
@@ -79,9 +79,9 @@ namespace Logic.Services
             return result;
         }
 
-        public override Task<Guid> Create(
+        public override async Task<Guid> Create(
             Guid userId,
-            ShopModel createDTO,
+            CreateShopDTO createDTO,
             CancellationToken cancellationToken = default
         )
         {
@@ -102,32 +102,15 @@ namespace Logic.Services
             shop.UpdatorId = userId;
             shop.CreateDateTime = DateTime.UtcNow;
             shop.UpdateDateTime = DateTime.UtcNow;
-            var result = _repository.Create(shop);
-            _repositoryWrapper.Save();
-            foreach (var item in createDTO.CategoriesId)
-            {
-                shop.Categories.Add(_repositoryWrapper.Categories.GetById(item).Result);
-            }
-            foreach (var item in createDTO.DeliveryTypesId)
-            {
-                shop.DeliveryTypes.Add(_repositoryWrapper.DeliveryTypes.GetById(item).Result);
-            }
-            foreach (var item in createDTO.PaymentMethodsId)
-            {
-                shop.PaymentMethods.Add(_repositoryWrapper.PaymentMethods.GetById(item).Result);
-            }
-            foreach (var item in createDTO.TypesId)
-            {
-                shop.Types.Add(_repositoryWrapper.Types.GetById(item).Result);
-            }
-            _repository.Update(shop);
-            _repositoryWrapper.Save();
+            shop.SellerId = userId;
+            shop.Blocked = false;
+            var result = await _repository.Create(shop,cancellationToken);   
             return result;
         }
 
-        public override async Task<UpdateShopModel> Update(
+        public override async Task<UpdateShopDTO> Update(
             Guid userId,
-            UpdateShopModel UpdateDTO,
+            UpdateShopDTO UpdateDTO,
             CancellationToken cancellationToken = default
         )
         {
@@ -145,8 +128,8 @@ namespace Logic.Services
             }
             shop.UpdatorId = userId;
             shop.UpdateDateTime = DateTime.UtcNow;
-            _repository.Update(shop);
-            _repositoryWrapper.Save();
+            await  _repository.Update(shop,cancellationToken);
+
 
             shop.ShopDeliveryTypes = UpdateDTO.ShopDeliveryTypes.Select(entity => new ShopDeliveryType
             {
@@ -172,8 +155,7 @@ namespace Logic.Services
             {
                 shop.Types.Add(_repositoryWrapper.Types.GetById(item).Result);
             }
-            _repository.Update(shop);
-            _repositoryWrapper.Save();
+            await _repository.Update(shop,cancellationToken);
             return UpdateDTO;
         }
     }

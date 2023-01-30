@@ -9,73 +9,46 @@ using Microsoft.AspNetCore.Mvc;
 using Logic.Exceptions;
 using System.Security.Claims;
 using Data.DTO;
+using Data.DTO.Review;
+using Logic.Interfaces;
 
 namespace WebAPi.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class ReviewController : ControllerBase
+    public class ReviewController : BaseController
     {
         private IRepositoryWrapper _repository;
         private IMapper _mapper;
         private ILogger<ReviewController> _logger;
+        private IReviewService _reviewService;
 
         public ReviewController(
             IRepositoryWrapper repository,
             IMapper mapper,
-            ILogger<ReviewController> logger
+            ILogger<ReviewController> logger,
+            IReviewService reviewService
         )
         {
             _repository = repository;
             _mapper = mapper;
             _logger = logger;
+            _reviewService = reviewService;
         }
 
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetReviewById([FromQuery] Guid Id)
         {
-            var entity = _repository.Reviews.GetById(Id);
-            ReviewDTO result = new ReviewDTO();
-            if (entity == null)
-            {
-                throw new NotFoundException("Отзыв не найден", "Review not found");
-            }
-            try
-            {
-                result = _mapper.Map<ReviewDTO>(entity);
-            }
-            catch
-            {
-                throw new MappingException(this.GetType().ToString());
-            }
+            var result = await _reviewService.GetById(Id);
             return Ok(result);
         }
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetReviewsByShopId([FromQuery] Guid Id)
+        public async Task<IActionResult> GetReviewsByShopId([FromQuery] Guid shopId)
         {
-            var user = _repository.Users.GetUserByEmail(User.Identity.Name).Result;
-            var list = _repository.Reviews
-                .GetAll()
-                .Where(
-                    e =>
-                        (e.ShopId == Id)
-                        && (
-                            e.IsActive || e.BuyerId == user.Id || user.Role == Data.Enums.Role.Admin
-                        )
-                )
-                .AsQueryable();
-            List<ReviewDTO> result = new List<ReviewDTO>();
-            try
-            {
-                result = _mapper.ProjectTo<ReviewDTO>(list).ToList();
-            }
-            catch
-            {
-                throw new MappingException(this.GetType().ToString());
-            }
+            var result = await _reviewService.GetReviewsByShopId(UserId,shopId);
             return Ok(result);
         }
 
@@ -83,86 +56,39 @@ namespace WebAPi.Controllers
         [Authorize]
         public async Task<IActionResult> GetAllReviews()
         {
-            var user = _repository.Users.GetUserByEmail(User.Identity.Name).Result;
-            var list = _repository.Reviews
-                .GetAll()
-                .Where(
-                    e => (e.IsActive || e.BuyerId == user.Id || user.Role == Data.Enums.Role.Admin)
-                )
-                .AsQueryable();
-            List<ReviewDTO> result = new List<ReviewDTO>();
-            try
-            {
-                result = _mapper.ProjectTo<ReviewDTO>(list).ToList();
-            }
-            catch
-            {
-                throw new MappingException(this.GetType().ToString());
-            }
+            var result = await _reviewService.GetAll(UserId);
             return Ok(result);
         }
 
         [HttpPost]
         [Authorize(Roles = "Buyer,Admin")]
-        public async Task<IActionResult> CreateReview([FromBody] ReviewModel model)
+        public async Task<IActionResult> CreateReview([FromBody] CreateReviewDTO model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            Review review = new Review();
-            try
-            {
-                review = _mapper.Map<Review>(model);
-            }
-            catch
-            {
-                throw new MappingException(this.GetType().ToString());
-            }
-            var userid = new Guid(User.Claims.ToArray()[2].Value);
-
-            _repository.Reviews.Create(review);
-            _repository.Save();
-            return Ok(review.Id);
+            var result = await _reviewService.Create(UserId,model);
+            return Ok(result);
         }
 
         [HttpPut]
         [Authorize(Roles = "Buyer,Admin")]
-        public async Task<IActionResult> UpdateReview([FromBody] ReviewModel model)
+        public async Task<IActionResult> UpdateReview([FromBody] UpdateReviewDTO model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            Review review = new Review();
-            try
-            {
-                review = _mapper.Map<Review>(model);
-            }
-            catch
-            {
-                throw new MappingException(this.GetType().ToString());
-            }
-            var userid = new Guid(User.Claims.ToArray()[2].Value);
-
-            _repository.Reviews.Update(review);
-            _repository.Save();
-            return Ok();
+            var result = await _reviewService.Update(UserId, model);
+            return Ok(result);
         }
 
         [HttpDelete]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteReview([FromQuery] Guid Id)
         {
-            Review review = _repository.Reviews.GetById(Id).Result;
-            if (review == null)
-            {
-                throw new NotFoundException("Email не найден", "User email not found");
-            }
-            var userid = new Guid(User.Claims.ToArray()[2].Value);
-
-            _repository.Reviews.Delete(Id, userid);
-            _repository.Save();
+            await _reviewService.Delete(UserId, Id);
             return Ok();
         }
         [HttpPut]

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Logic.Interfaces
 {
-    public interface IBaseService<TEntity,TDTO,TCreateDTO,TUpdateDTO>
+    public interface IBaseService<TEntity,TDTO,TCreateDTO,TUpdateDTO,TRepository>
     {
         public  Task<Guid> Create(Guid userId, TCreateDTO createDTO, CancellationToken cancellationToken = default);
      
@@ -21,7 +21,7 @@ namespace Logic.Interfaces
         public Task<TUpdateDTO> Update(Guid userId, TUpdateDTO DTO, CancellationToken cancellationToken = default);
 
 
-        public Task Delete(Guid userId, Guid entityId);
+        public Task Delete(Guid userId,Guid entityId, CancellationToken cancellationToken = default);
        
     }
 }

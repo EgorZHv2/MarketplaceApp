@@ -54,10 +54,11 @@ namespace Data.Repositories
         {
             entity.Id = Guid.NewGuid();
             await _context.Set<TEntity>().AddAsync(entity,cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
             return entity.Id;
         }
 
-        public async Task CreateMany(Guid userid,params TEntity[] entities)
+        public async Task CreateMany(Guid userid,CancellationToken cancellationToken = default,params TEntity[] entities)
         {
             foreach (TEntity entity in entities)
             {
@@ -68,19 +69,21 @@ namespace Data.Repositories
                 entity.IsDeleted = false;
                 entity.CreatorId = userid;
                 entity.UpdatorId = userid;
-                await _context.Set<TEntity>().FindAsync(entity);
+                await _context.Set<TEntity>().AddAsync(entity,cancellationToken);
+                
             }
-            
+            await _context.SaveChangesAsync(cancellationToken);         
         }
 
-        public void Update(TEntity entity)
+        public async Task Update(TEntity entity,CancellationToken cancellationToken = default)
         {
          
             _context.Set<TEntity>().Update(entity);
+            await _context.SaveChangesAsync(cancellationToken);
             
         }
 
-        public void UpdateMany(Guid userid,params TEntity[] entities)
+        public async Task UpdateMany(Guid userid,CancellationToken cancellationToken = default,params TEntity[] entities)
         {
             foreach (TEntity entity in entities)
             {
@@ -88,20 +91,21 @@ namespace Data.Repositories
                 entity.UpdatorId = userid;
                 _context.Set<TEntity>().Update(entity);
             }
+            await _context.SaveChangesAsync(cancellationToken);
             
         }
 
-        public async Task Delete(Guid Id,Guid userid)
+        public async Task Delete(Guid userid,Guid entityid,CancellationToken cancellationToken = default)
         {
-            var data = _context.Set<TEntity>().Find(Id);
+            var data = _context.Set<TEntity>().Find(entityid);
             data.DeletorId = userid;
             data.DeleteDateTime = DateTime.UtcNow;
             data.IsDeleted = true;
             _context.Set<TEntity>().Update(data);
-             await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public void DeleteMany(Guid userid,params Guid[] ids)
+        public async Task DeleteMany(Guid userid,CancellationToken cancellationToken = default,params Guid[] ids)
         {
             var data =  _context.Set<TEntity>().Where(e => ids.Contains(e.Id));
             foreach (var entity in data)
@@ -110,8 +114,8 @@ namespace Data.Repositories
                 entity.DeleteDateTime = DateTime.UtcNow;
                 entity.IsDeleted = true;
             }
-          _context.Set<TEntity>().UpdateRange(data);
-            
+            _context.Set<TEntity>().UpdateRange(data);
+            await  _context.SaveChangesAsync(cancellationToken);
         }
 
       

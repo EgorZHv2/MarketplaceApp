@@ -12,6 +12,7 @@ using Logic.Exceptions;
 using System.Security.Claims;
 using Data.DTO;
 using Logic.Interfaces;
+using Data.DTO.Shop;
 
 namespace WebAPi.Controllers
 {
@@ -65,7 +66,7 @@ namespace WebAPi.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Seller, Admin")]
-        public async Task<IActionResult> CreateShop([FromBody] ShopModel model)
+        public async Task<IActionResult> CreateShop([FromBody] CreateShopDTO model)
         {
             if(!ModelState.IsValid)
             {
@@ -78,7 +79,7 @@ namespace WebAPi.Controllers
 
         [HttpPut]
         [Authorize(Roles = "Seller, Admin")]
-        public async Task<IActionResult> UpdateShop([FromBody] UpdateShopModel model)
+        public async Task<IActionResult> UpdateShop([FromBody] UpdateShopDTO model)
         {
             if(!ModelState.IsValid)
             {

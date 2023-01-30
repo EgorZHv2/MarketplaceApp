@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Data.DTO;
 using Data.Entities;
 using Data.IRepositories;
 using Data.Models;
@@ -16,12 +17,15 @@ using System.Threading.Tasks;
 
 namespace Logic.Services
 {
-    public class BaseService<TEntity,TDTO,TCreateDTO,TUpdateDTO>:IBaseService<TEntity,TDTO,TCreateDTO,TUpdateDTO> where TEntity:BaseEntity
+    public class BaseService<TEntity,TDTO,TCreateDTO,TUpdateDTO,TRepository>:IBaseService<TEntity,TDTO,TCreateDTO,TUpdateDTO,TRepository>
+        where TEntity:BaseEntity
+        where TUpdateDTO:UpdateDTO
+        where TRepository: IBaseRepository<TEntity>
     {
-        protected IBaseRepository<TEntity> _repository;
+        protected TRepository _repository;
         protected IMapper _mapper;
         protected ILogger _logger;
-        public BaseService(IBaseRepository<TEntity> repository,
+        public BaseService(TRepository repository,
             IMapper mapper,
             ILogger logger)
         {
@@ -101,10 +105,10 @@ namespace Logic.Services
         }
         public virtual async Task<TUpdateDTO> Update(Guid userId,TUpdateDTO DTO,CancellationToken cancellationToken = default)
         {
-            TEntity entity;
+            TEntity entity = await _repository.GetById(DTO.Id);
             try
             {
-                entity = _mapper.Map<TEntity>(DTO);
+                 _mapper.Map(DTO,entity);
             }
             catch
             {
@@ -113,12 +117,12 @@ namespace Logic.Services
             
             entity.UpdateDateTime = DateTime.UtcNow;
             entity.UpdatorId = userId;
-            _repository.Update(entity);
+            await  _repository.Update(entity);
             return DTO;
         }
-        public virtual async Task Delete(Guid userId,Guid entityId)
+        public virtual async Task Delete(Guid userId,Guid entityId,CancellationToken cancellationToken = default)
         {
-            _repository.Delete(entityId,userId);
+            await _repository.Delete(userId,entityId,cancellationToken);
         }
     }
 }

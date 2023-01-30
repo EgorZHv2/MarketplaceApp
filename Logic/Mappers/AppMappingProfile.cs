@@ -7,6 +7,8 @@ using AutoMapper;
 using Data.Entities;
 using Data.Models;
 using Data.DTO;
+using Data.DTO.Shop;
+using Data.DTO.Review;
 
 namespace WebAPi.Mappers
 {
@@ -15,19 +17,28 @@ namespace WebAPi.Mappers
         public AppMappingProfile()
         {
             CreateMap<RegistrationModel, User>();
-            CreateMap<ReviewModel, Review>().ReverseMap();
-            CreateMap<ShopModel, Shop>().ReverseMap();
+
+            CreateMap<Shop, ShopDTO>();
+            CreateMap<CreateShopDTO, Shop>();
+            CreateMap<UpdateShopDTO, Shop>();
+
+            CreateMap<Review,ReviewDTO>();
+            CreateMap<CreateReviewDTO,Review>();
+            CreateMap<UpdateReviewDTO,Review>(); 
+
+            
+
             CreateMap<ChangePasswordModel, User>().ReverseMap();
             CreateMap<CreateAdminModel, User>().ReverseMap();
             CreateMap<User, UserDTO>().ReverseMap();
             CreateMap<Shop, ShopDTO>().ForMember(x => x.ImagePath, opt => opt.Ignore());
-            CreateMap<Review, ReviewDTO>().ReverseMap();
+           
             CreateMap<Category, CreateCategoryDTO>().ReverseMap();
             CreateMap<Category, CategoryDTO>();
             CreateMap<Data.Entities.Type, TypeDTO>().ReverseMap();
             CreateMap<DeliveryType, CreateDeliveryTypeDTO>().ReverseMap();
             CreateMap<PaymentMethod, PaymentMethodDTO>().ReverseMap();
-            CreateMap<UpdateShopModel, Shop>();
+            
         }
 
        

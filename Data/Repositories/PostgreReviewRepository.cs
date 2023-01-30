@@ -1,5 +1,6 @@
 ﻿using Data.Entities;
 using Data.IRepositories;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,9 @@ namespace Data.Repositories
         {
           
         }
+        public IEnumerable<Review> GetReviewsByShopId(Guid ShopId)
+        {
+            return _context.Reviews.Where(e=>e.ShopId == ShopId);
+        } 
     }
 }

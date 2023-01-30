@@ -12,6 +12,7 @@ using Logic.Interfaces;
 using Data.DTO;
 using Data.Entities;
 using Data;
+using Data.DTO.Shop;
 using Microsoft.EntityFrameworkCore;
 
 namespace WebAPi.Controllers

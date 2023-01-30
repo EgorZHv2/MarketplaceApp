@@ -1,21 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Data.Models
+namespace Data.DTO.Review
 {
-    public class ReviewModel
+    public class ReviewDTO
     {
         public Guid Id { get; set; }
-
-        [Required]
         public string ReviewText { get; set; }
-
-        [Required]
         public int Score { get; set; }
-
-        [Required]
         public Guid BuyerId { get; set; }
-
-        [Required]
         public Guid ShopId { get; set; }
     }
 }
