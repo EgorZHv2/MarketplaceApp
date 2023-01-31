@@ -22,7 +22,7 @@ namespace Data
             var user = await repositoryWrapper.Users.GetUserByEmail(AdminMail);
             if (user == null)
             {
-              await repositoryWrapper.Users.Create(new Entities.User
+              await repositoryWrapper.Users.Create(Guid.Empty,new Entities.User
                 {
                     FirstName = "Админ",
                     Email = AdminMail,

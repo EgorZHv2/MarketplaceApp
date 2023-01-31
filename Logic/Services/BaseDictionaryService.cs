@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Logic.Services
@@ -26,7 +27,7 @@ namespace Logic.Services
             _repository= baseDictionaryRepository;
             _mapper = mapper;
         }
-        public async Task Create(Guid userid, TCreateDTO model)
+        public async Task Create(Guid userid, TCreateDTO model,CancellationToken cancellationToken = default)
         {
             TEntity entity;
             try
@@ -35,29 +36,29 @@ namespace Logic.Services
             }
             catch
             {
-                throw new MappingException(this.GetType().ToString());
+                throw new MappingException(this);
             }
-            _repository.Create(entity, userid);
-            _repositoryWrapper.Save();
+            await _repository.Create(userid,entity,cancellationToken);
+        
             
         }
-        public async Task Update(Guid userid, TCreateDTO model)
+        public async Task Update(Guid userid, TCreateDTO model, CancellationToken cancellationToken = default)
         {
-             TEntity entity = _repository.GetById(model.Id).Result;
+            TEntity entity = await _repository.GetById(model.Id,cancellationToken);
             try
             {
-                entity = _mapper.Map<TEntity>(model);
+                entity = _mapper.Map(model,entity);
             }
             catch
             {
-                throw new MappingException(this.GetType().ToString());
+                throw new MappingException(this);
             }
-            _repository.Update(entity, userid);
-            _repositoryWrapper.Save();
+            await _repository.Update(userid,entity,cancellationToken);
+           
         }
         public async Task<PageModel<TDTO>> GetPage(FilterPagingModel model)
         {
-            PageModel<TEntity> pagemodel = _repository.GetPage(_repository.GetAll().AsQueryable(), model.PageNumber, model.PageSize);
+            PageModel<TEntity> pagemodel = await _repository.GetPage(_repository.GetAll().AsQueryable(), model.PageNumber, model.PageSize);
             PageModel<TDTO> result = new PageModel<TDTO>
             {
                 CurrentPage = pagemodel.CurrentPage,
@@ -69,9 +70,9 @@ namespace Logic.Services
             return result;
 
         }
-        public async Task Delete(Guid userid,Guid Id)
+        public async Task Delete(Guid userid,Guid Id,CancellationToken cancellationToken = default)
         {
-            _repository.Delete(Id, userid);
+            await _repository.Delete(userid, Id,cancellationToken);
         }
     }
 }

@@ -52,7 +52,7 @@ namespace Logic.Services
                 Name = filename,
                 ParentEntityId = entityid
             };
-            _repositoryWrapper.StaticFileInfos.Create(entity,cancellationToken);
+            _repositoryWrapper.StaticFileInfos.Create(Guid.Empty,entity,cancellationToken);
             _repositoryWrapper.Save();
         }
     }

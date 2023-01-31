@@ -13,9 +13,9 @@ namespace Data.IRepositories
        Task<TEntity> GetById(Guid Id,CancellationToken cancellationToken = default);
        IEnumerable<TEntity> GetManyByIds(params Guid[] ids);
         Task<PageModel<TEntity>> GetPage(IQueryable<TEntity> queryable, int pagenumber, int pagesize);
-        Task<Guid> Create(TEntity entity, CancellationToken cancellationToken = default);
+        Task<Guid> Create(Guid userId,TEntity entity, CancellationToken cancellationToken = default);
         Task CreateMany(Guid userid,CancellationToken cancellationToken = default,params TEntity[] entities);
-        Task Update(TEntity entity,CancellationToken cancellationToken = default);
+        Task Update(Guid userId, TEntity entity,CancellationToken cancellationToken = default);
         Task UpdateMany(Guid userid,CancellationToken cancellationToken = default,params TEntity[] entities);
         Task Delete(Guid userId,Guid entityId, CancellationToken cancellationToken = default);
         Task DeleteMany(Guid userid,CancellationToken cancellationToken = default,params Guid[] ids);

@@ -136,7 +136,7 @@ namespace WebAPi.Controllers
                 throw new NotFoundException("Магазин не найден","Shop not found");
             }
             entity.IsActive = model.IsActive;
-            _repository.Shops.Update(entity);
+            _repository.Shops.Update(user.Id,entity);
             _repository.Save();
             return Ok();
         }

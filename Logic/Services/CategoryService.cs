@@ -47,10 +47,7 @@ namespace Logic.Services
             else
             {
                 return Check(childrenCategories,parentid);  
-            }
-
-            
-            
+            }         
         }
   
         public async Task<List<CategoryDTO>> GetCategoryTree()

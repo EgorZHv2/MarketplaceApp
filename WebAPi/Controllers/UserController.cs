@@ -62,7 +62,7 @@ namespace WebAPi.Controllers
                 throw new NotFoundException("Пользователь не найден", "User not found");
             }
             entity.IsActive = model.IsActive;
-            _repositoryWrapper.Users.Update(entity);
+            _repositoryWrapper.Users.Update(user.Id,entity);
             _repositoryWrapper.Save();
             return Ok();
         }

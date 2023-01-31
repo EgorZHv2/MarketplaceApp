@@ -41,13 +41,8 @@ namespace Logic.Services
             {
                 throw new MappingException(this);
             }
-            entity.CreateDateTime = DateTime.UtcNow;
-            entity.CreatorId = userId;
-            entity.UpdateDateTime = DateTime.UtcNow;
-            entity.UpdatorId = userId;
-            entity.IsActive = true;
-            entity.IsDeleted = false;
-            Guid result =  await _repository.Create(entity,cancellationToken);
+          
+            Guid result =  await _repository.Create(userId,entity,cancellationToken);
             return result;
             
         }
@@ -111,10 +106,7 @@ namespace Logic.Services
             {
                 throw new MappingException(this);
             }
-            
-            entity.UpdateDateTime = DateTime.UtcNow;
-            entity.UpdatorId = userId;
-            await  _repository.Update(entity);
+            await  _repository.Update(userId,entity);
             return DTO;
         }
         public virtual async Task Delete(Guid userId,Guid entityId,CancellationToken cancellationToken = default)

@@ -37,10 +37,13 @@ namespace WebAPi.Controllers
         [HttpPut]
         public override async Task<IActionResult> Update(CreateCategoryDTO model)
         {
-          var result = await  _categoryService.CheckParentCategory(model.Id, (Guid)model.ParentCategoryId);
-            if (!result)
+            if (model.ParentCategoryId != null)
             {
-                throw new CategoryParentException("Ошибка при выборе родительско категории", "Parent category error");
+                var result = await _categoryService.CheckParentCategory(model.Id, (Guid)model.ParentCategoryId);
+                if (!result)
+                {
+                    throw new CategoryParentException("Ошибка при выборе родительско категории", "Parent category error");
+                }
             }
             await _dictionaryService.Update(UserId, model);
             return Ok();

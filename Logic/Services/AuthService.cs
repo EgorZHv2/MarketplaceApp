@@ -61,7 +61,7 @@ namespace Logic.Services
                 );
             }
             user.IsEmailConfirmed = true;
-            await _userRepository.Update(user, cancellationToken);
+            await _userRepository.Update(user.Id,user, cancellationToken);
         }
 
         public async Task<string> Login(
@@ -129,7 +129,7 @@ namespace Logic.Services
                 $"Your verification code = {code}",
                 cancellationToken
             );
-            await _userRepository.Create(user, cancellationToken);
+            await _userRepository.Create(Guid.Empty,user, cancellationToken);
         }
 
          public async Task ChangePassword(Guid userId,ChangePasswordDTO model,
@@ -152,7 +152,7 @@ namespace Logic.Services
                 );
             }
             user.Password = _hashService.HashPassword(model.Password);
-            await _userRepository.Update(user,cancellationToken);
+            await _userRepository.Update(userId, user,cancellationToken);
         }
     }
 }

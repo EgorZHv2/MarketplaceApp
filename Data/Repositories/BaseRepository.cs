@@ -51,10 +51,15 @@ namespace Data.Repositories
             return pageModel;
         }
 
-        public async Task<Guid> Create(TEntity entity,CancellationToken cancellationToken = default)
+        public async Task<Guid> Create(Guid userId,TEntity entity,CancellationToken cancellationToken = default)
         {
-            entity.Id = Guid.NewGuid();
+            entity.CreateDateTime = DateTime.UtcNow;
+            entity.CreatorId = userId;
+            entity.UpdateDateTime = DateTime.UtcNow;
+            entity.UpdatorId = userId;
             entity.IsActive = true;
+            entity.IsDeleted = false;
+            entity.Id = Guid.NewGuid();
             await _context.Set<TEntity>().AddAsync(entity,cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
             return entity.Id;
@@ -77,9 +82,10 @@ namespace Data.Repositories
             await _context.SaveChangesAsync(cancellationToken);         
         }
 
-        public async Task Update(TEntity entity,CancellationToken cancellationToken = default)
+        public async Task Update(Guid userId, TEntity entity,CancellationToken cancellationToken = default)
         {
-         
+            entity.UpdateDateTime = DateTime.UtcNow;
+            entity.UpdatorId = userId;
             _context.Set<TEntity>().Update(entity);
             await _context.SaveChangesAsync(cancellationToken);
             

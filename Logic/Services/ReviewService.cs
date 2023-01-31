@@ -75,14 +75,8 @@ namespace Logic.Services
             {
                 throw new MappingException(this);
             }
-            entity.CreateDateTime = DateTime.UtcNow;
-            entity.CreatorId = userId;
-            entity.UpdateDateTime = DateTime.UtcNow;
-            entity.UpdatorId = userId;
-            entity.IsActive = true;
-            entity.IsDeleted = false;
             entity.BuyerId = userId;
-            var result =  await _repository.Create(entity,cancellationToken);
+            var result =  await _repository.Create(userId,entity,cancellationToken);
             return result;
         }
        

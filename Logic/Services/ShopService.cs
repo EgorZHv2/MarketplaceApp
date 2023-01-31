@@ -103,13 +103,8 @@ namespace Logic.Services
             {
                 throw new MappingException(this);
             }
-            shop.CreatorId = userId;
-            shop.UpdatorId = userId;
-            shop.CreateDateTime = DateTime.UtcNow;
-            shop.UpdateDateTime = DateTime.UtcNow;
-            shop.SellerId = userId;
-            shop.Blocked = false;
-            var result = await _repository.Create(shop, cancellationToken);
+          
+            var result = await _repository.Create(userId,shop, cancellationToken);
             return result;
         }
 
@@ -124,17 +119,19 @@ namespace Logic.Services
                 throw new NotFoundException("INN не найден", "INN not valid");
             }
             Shop shop = await _repository.GetById(UpdateDTO.Id, cancellationToken);
-            shop.Title = UpdateDTO.Title;
-            shop.Description = UpdateDTO.Description;
-            shop.INN = UpdateDTO.INN;
+            try
+            {
+                _mapper.Map(UpdateDTO,shop);
+            }
+            catch
+            {
+                throw new MappingException(this);
+            }
             if (UpdateDTO.Image != null)
             {
                 await _imageService.CreateImage(UpdateDTO.Image, UpdateDTO.Id, cancellationToken);
             }
-            shop.UpdatorId = userId;
-            shop.UpdateDateTime = DateTime.UtcNow;
-            await _repository.Update(shop, cancellationToken);
-
+            await _repository.Update(userId, shop, cancellationToken);
 
             shop.ShopDeliveryTypes = UpdateDTO.ShopDeliveryTypes.Select(entity => new ShopDeliveryType
             {
@@ -160,7 +157,7 @@ namespace Logic.Services
             {
                 shop.Types.Add(_repositoryWrapper.Types.GetById(item).Result);
             }
-            await _repository.Update(shop, cancellationToken);
+            await _repository.Update(userId, shop, cancellationToken);
             return UpdateDTO;
         }
 
@@ -178,7 +175,7 @@ namespace Logic.Services
             }
             var shop = await _repository.GetById(shopId, cancellationToken);
             user.FavoriteShops.Add(shop);
-            await _userRepository.Update(user, cancellationToken);
+            await _userRepository.Update(userId, user, cancellationToken);
 
         }
         public async Task<List<ShopDTO>> ShowUserFavoriteShops(Guid userId,CancellationToken cancellationToken = default)

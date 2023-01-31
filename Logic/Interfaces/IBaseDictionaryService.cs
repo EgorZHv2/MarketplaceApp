@@ -12,13 +12,13 @@ namespace Logic.Interfaces
 {
     public interface IBaseDictionaryService<TEntity,TCreateDTO,TDTO> where TEntity: BaseDictionaryEntity where TDTO: DictionaryDTO
     {
-        public  Task Create(Guid userid, TCreateDTO model);
+        public  Task Create(Guid userid, TCreateDTO model, CancellationToken cancellationToken = default);
 
-        public  Task Update(Guid userid, TCreateDTO model);
+        public  Task Update(Guid userid, TCreateDTO model, CancellationToken cancellationToken = default);
 
         public  Task<PageModel<TDTO>> GetPage(FilterPagingModel model);
 
-        public  Task Delete(Guid userid, Guid Id);
+        public  Task Delete(Guid userid, Guid Id, CancellationToken cancellationToken = default);
        
     }
 }
