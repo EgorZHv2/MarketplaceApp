@@ -11,14 +11,12 @@ namespace Logic.Exceptions
     {
         public string UserMessage { get; set; }
         public string LogMessage { get; set; }
-        public DateTime DateTime { get; set; }
         public HttpStatusCode StatusCode { get; set; }
 
         public ApiException(string userMessage, string logMessage,HttpStatusCode statusCode)
         {
             UserMessage = userMessage;
             LogMessage = logMessage;
-            DateTime = DateTime.Now;
             StatusCode = statusCode;
         }
     }

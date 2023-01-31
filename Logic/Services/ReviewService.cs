@@ -22,8 +22,8 @@ namespace Logic.Services
     public class ReviewService:BaseService<Review,ReviewDTO,CreateReviewDTO,UpdateReviewDTO,IReviewRepository>,IReviewService
     {
         private IRepositoryWrapper _repositoryWrapper;
-        public ReviewService(IReviewRepository repository,IMapper mapper, ILogger<ReviewService> logger,
-            IRepositoryWrapper repositoryWrapper):base(repository, mapper, logger)
+        public ReviewService(IReviewRepository repository,IMapper mapper,
+            IRepositoryWrapper repositoryWrapper):base(repository, mapper)
         {
             _repositoryWrapper = repositoryWrapper;
         }

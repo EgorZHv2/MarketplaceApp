@@ -32,7 +32,7 @@ namespace WebAPi.Middleware
             }
             catch(ApiException ex)
             {
-                string logmessage = $"Date: {ex.DateTime} | Exception: {ex.GetType().Name} | Code: {ex.StatusCode} | Message: {ex.LogMessage} | ";
+                string logmessage = $"Date: {DateTime.UtcNow} | Exception: {ex.GetType().Name} | Code: {ex.StatusCode} | Message: {ex.LogMessage} | ";
                 if(ex is AuthException authException)
                 {
                     logmessage += "User login: " + (string.IsNullOrEmpty(authException.UserLogin)?"none":authException.UserLogin);
@@ -42,14 +42,14 @@ namespace WebAPi.Middleware
                     logmessage += $"ExceptionClassName: {mappingException.ExceptionClass}";
                 }
                 _logger.LogError(logmessage, ex);
-                ResponseError(context, ex.UserMessage, ex.StatusCode);
+                await ResponseError(context, ex.UserMessage, ex.StatusCode);
             }
            
         }
         public async Task ResponseError(HttpContext context,string message, HttpStatusCode code)
         {
             context.Response.StatusCode = (int)code;
-                context.Response.WriteAsJsonAsync(new ErrorModel()
+              await  context.Response.WriteAsJsonAsync(new ErrorModel()
                 {
                     Message = message,
                     StatusCode = context.Response.StatusCode

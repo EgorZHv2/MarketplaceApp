@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Data.IRepositories
 {
-    public interface IPostgreCategoryRepository:IBaseDictionaryRepository<Category>
+    public interface ICategoryRepository:IBaseDictionaryRepository<Category>
     {
         public Task<IQueryable<Category>> GetCategoriesWithChilds();
     }

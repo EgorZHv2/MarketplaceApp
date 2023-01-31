@@ -12,7 +12,7 @@ namespace Data.Repositories
 {
     public class BaseDictionaryRepository<TEntity>:IBaseDictionaryRepository<TEntity> where TEntity : BaseDictionaryEntity
     {
-            protected readonly ApplicationDbContext _context;
+        protected readonly ApplicationDbContext _context;
         public BaseDictionaryRepository(ApplicationDbContext context)
         {
             _context = context;

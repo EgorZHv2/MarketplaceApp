@@ -97,6 +97,34 @@ namespace WebAPi.Controllers
             await _shopService.Delete(UserId,Id);
             return Ok();
         }
+
+        [Authorize] 
+        [HttpPut]
+
+        public async Task<IActionResult> AddShopToFavorites([FromBody] Guid shopId)
+        {
+           await _shopService.AddShopToFavorites(UserId,shopId);
+           return Ok();
+        }
+        [Authorize]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteFavoriteShop([FromBody] Guid shopId)
+        {
+            await _shopService.DeleteShopFromFavorites(UserId, shopId);
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> ShowUserFavoriteShops([FromQuery] Guid userId)
+        {
+            var result = await _shopService.ShowUserFavoriteShops(userId);
+            return Ok(result);
+        }
+
+
+
+
         [HttpPut]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ChangeShopActivity([FromBody] EntityActivityModel model)

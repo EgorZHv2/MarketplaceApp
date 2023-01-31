@@ -7,6 +7,7 @@ using Data.Models;
 using Data.Repositories;
 using Logic.Exceptions;
 using Logic.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -18,27 +19,31 @@ using WebAPi.Interfaces;
 
 namespace Logic.Services
 {
-    public class ShopService : BaseService<Shop, ShopDTO, CreateShopDTO, UpdateShopDTO,IShopRepository>, IShopService
+    public class ShopService : BaseService<Shop, ShopDTO, CreateShopDTO, UpdateShopDTO, IShopRepository>, IShopService
     {
         private IINNService _iNNService;
         private IRepositoryWrapper _repositoryWrapper;
         private IImageService _imageService;
         private IConfiguration _configuration;
-
+        private IUserRepository _userRepository;
+        private IUsersFavoriteShopsRepository _usersFavoriteShops;
         public ShopService(
             IShopRepository repository,
             IMapper mapper,
-            ILogger<ShopService> logger,
             IINNService iNNService,
             IRepositoryWrapper repositoryWrapper,
             IImageService imageService,
-            IConfiguration configuration
-        ) : base(repository, mapper, logger)
+            IConfiguration configuration,
+            IUserRepository userRepository,
+            IUsersFavoriteShopsRepository usersFavoriteShops
+        ) : base(repository, mapper)
         {
             _iNNService = iNNService;
             _repositoryWrapper = repositoryWrapper;
             _imageService = imageService;
             _configuration = configuration;
+            _userRepository = userRepository;
+            _usersFavoriteShops = usersFavoriteShops;
         }
 
         public async Task<List<ShopDTO>> GetAll(
@@ -104,7 +109,7 @@ namespace Logic.Services
             shop.UpdateDateTime = DateTime.UtcNow;
             shop.SellerId = userId;
             shop.Blocked = false;
-            var result = await _repository.Create(shop,cancellationToken);   
+            var result = await _repository.Create(shop, cancellationToken);
             return result;
         }
 
@@ -128,7 +133,7 @@ namespace Logic.Services
             }
             shop.UpdatorId = userId;
             shop.UpdateDateTime = DateTime.UtcNow;
-            await  _repository.Update(shop,cancellationToken);
+            await _repository.Update(shop, cancellationToken);
 
 
             shop.ShopDeliveryTypes = UpdateDTO.ShopDeliveryTypes.Select(entity => new ShopDeliveryType
@@ -142,21 +147,70 @@ namespace Logic.Services
             shop.ShopPaymentMethods = UpdateDTO.ShopPaymentMethods.Select(entity => new ShopPaymentMethod
             {
                 ShopId = shop.Id,
-                 Shop = shop,
-                 PaymentMethod = _repositoryWrapper.PaymentMethods.GetById(entity.Id).Result,
+                Shop = shop,
+                PaymentMethod = _repositoryWrapper.PaymentMethods.GetById(entity.Id).Result,
                 PaymentMethodId = entity.Id,
                 Сommission = _repositoryWrapper.PaymentMethods.GetById(entity.Id).Result.HasCommission ? entity.Сommission : null
             }).ToList();
             foreach (var item in UpdateDTO.CategoriesId)
             {
                 shop.Categories.Add(_repositoryWrapper.Categories.GetById(item).Result);
-            }         
+            }
             foreach (var item in UpdateDTO.TypesId)
             {
                 shop.Types.Add(_repositoryWrapper.Types.GetById(item).Result);
             }
-            await _repository.Update(shop,cancellationToken);
+            await _repository.Update(shop, cancellationToken);
             return UpdateDTO;
         }
+
+        public async Task AddShopToFavorites(Guid userId, Guid shopId, CancellationToken cancellationToken = default)
+        {
+            var user = await _userRepository.GetById(userId, cancellationToken);
+            var existing = await _usersFavoriteShops.GetFavByShopAndUserId(userId, shopId, cancellationToken);
+            if(existing != null)
+            {
+                throw new AlreadyExistsException("Магазин уже в избранном", "Shop already in favorites table");
+            }
+            if (user == null)
+            {
+                throw new NotFoundException("Пользователь не найден", "User not found");
+            }
+            var shop = await _repository.GetById(shopId, cancellationToken);
+            user.FavoriteShops.Add(shop);
+            await _userRepository.Update(user, cancellationToken);
+
+        }
+        public async Task<List<ShopDTO>> ShowUserFavoriteShops(Guid userId,CancellationToken cancellationToken = default)
+        {
+            var user = await _userRepository.GetById(userId,cancellationToken);
+            if(user == null)
+            {
+               throw new NotFoundException("Пользователь не найден", "User not found"); 
+            }
+            List<ShopDTO> result = new List<ShopDTO>();
+            var list =  await _usersFavoriteShops.GetFavoriteShopsByUserId(userId);
+            try
+            {
+                result = _mapper.Map<List<ShopDTO>>(list);
+            }
+            catch
+            {
+                throw new MappingException(this);
+            }
+            return result;
+        }
+        public async Task DeleteShopFromFavorites(Guid userId, Guid shopId, CancellationToken cancellationToken = default)
+        {
+
+            var existing = await _usersFavoriteShops.GetFavByShopAndUserId(userId, shopId, cancellationToken);
+            if(existing == null)
+            {
+                throw new NotFoundException("Избранный магазин не найден", "Wrong shop or user id");
+            }
+            await _usersFavoriteShops.Delete(userId, existing.Id, cancellationToken);
+    
+        }
+           
     }
 }

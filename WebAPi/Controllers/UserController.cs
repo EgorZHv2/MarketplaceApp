@@ -67,40 +67,6 @@ namespace WebAPi.Controllers
             _repositoryWrapper.Save();
             return Ok();
         }
-        [Authorize] 
-        [HttpPut]
-
-        public async Task<IActionResult> AddFavoriteShop([FromBody] FavoriteShopsModel model)
-        {
-           var userid = new Guid(User.Claims.ToArray()[2].Value);
-           var user = _repositoryWrapper.Users.GetById(userid).Result;
-           foreach(var Id in model.ShopIds)
-           {
-              user.FavoriteShops.Add(_repositoryWrapper.Shops.GetById(Id).Result);
-           }
-           _repositoryWrapper.Users.Update(user);
-           _repositoryWrapper.Save();
-           return Ok();
-        }
-
-        [Authorize]
-        [HttpGet]
-        public async Task<IActionResult> ShowUserFavoriteShops()
-        {
-            List<ShopDTO> result = new List<ShopDTO>();
-            var userid = new Guid(User.Claims.ToArray()[2].Value);
-            var shops = _repositoryWrapper.Users.GetFavoriteShopsByUserId(userid).Result;
-            try
-            {
-                result = _mapper.ProjectTo<ShopDTO>(shops).ToList();
-            }
-            catch
-            {
-                throw new MappingException(this.GetType().ToString());
-            }
-            return Ok(result);
-        }
-
         [Authorize]
         [HttpPut]
         public async Task<IActionResult> ChangeUserPassword(ChangePasswordModel model)

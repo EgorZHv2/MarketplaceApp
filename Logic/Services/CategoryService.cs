@@ -15,7 +15,7 @@ namespace Logic.Services
 {
     public class CategoryService:BaseDictionaryService<Category,CreateCategoryDTO,CategoryDTO>,ICategoryService
     {
-        public CategoryService(IRepositoryWrapper repositoryWrapper,IPostgreCategoryRepository repository,IMapper mapper)
+        public CategoryService(IRepositoryWrapper repositoryWrapper,ICategoryRepository repository,IMapper mapper)
             :base(repositoryWrapper, repository, mapper) { }
               /// <summary>
         /// Проверяет валидность айди родителя, не является ли он айди потомка.

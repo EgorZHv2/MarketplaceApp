@@ -14,6 +14,7 @@ namespace Data.Repositories
     {
 
         protected readonly ApplicationDbContext _context;
+        protected DbSet<TEntity> _dbset => _context.Set<TEntity>();
         public BaseRepository(ApplicationDbContext context)
         {
             _context= context;
@@ -21,14 +22,14 @@ namespace Data.Repositories
 
         public IEnumerable<TEntity> GetAll()
         {
-           
-            return  _context.Set<TEntity>().AsNoTracking();
+
+            return _dbset;
         }
 
         public async Task<TEntity> GetById(Guid Id,CancellationToken cancellationToken =default)
         {
             
-            return await _context.Set<TEntity>().FirstOrDefaultAsync(e=>e.Id == Id,cancellationToken);
+            return await _dbset.FirstOrDefaultAsync(e=>e.Id == Id,cancellationToken);
         }
 
         public IEnumerable<TEntity> GetManyByIds(params Guid[] ids)

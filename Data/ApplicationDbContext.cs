@@ -35,7 +35,13 @@ namespace Data
                 .Entity<User>()
                 .HasMany(e => e.FavoriteShops)
                 .WithMany(e => e.Users)
-                .UsingEntity("UsersFavoriteShops");
+                .UsingEntity<UserFavoriteShop>(e =>
+                {
+                    e.HasOne(e => e.Shop).WithMany(e => e.UserFavoriteShops).HasForeignKey(e => e.ShopId);
+                    e.HasOne(e => e.User).WithMany(e => e.UsersFavoriteShops).HasForeignKey(e => e.UserId);
+                    e.ToTable("UsersFavoriteShops");
+                    e.HasQueryFilter(e => e.IsDeleted == false);
+                });
 
             modelBuilder.Entity<Shop>().HasKey(x => x.Id);
             modelBuilder
@@ -80,7 +86,7 @@ namespace Data
                     e.HasOne(e => e.Shop)
                         .WithMany(e => e.ShopPaymentMethods)
                         .HasForeignKey(e => e.ShopId);
-                    e.HasOne(e => e.Shop)
+                    e.HasOne(e => e.PaymentMethod)
                         .WithMany(e => e.ShopPaymentMethods)
                         .HasForeignKey(e => e.PaymentMethodId);
                     e.ToTable("ShopPaymentMethods");

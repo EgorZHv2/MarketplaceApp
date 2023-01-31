@@ -19,19 +19,16 @@ namespace Logic.Services
 {
     public class BaseService<TEntity,TDTO,TCreateDTO,TUpdateDTO,TRepository>:IBaseService<TEntity,TDTO,TCreateDTO,TUpdateDTO,TRepository>
         where TEntity:BaseEntity
-        where TUpdateDTO:UpdateDTO
+        where TUpdateDTO:BaseUpdateDTO
         where TRepository: IBaseRepository<TEntity>
     {
         protected TRepository _repository;
         protected IMapper _mapper;
-        protected ILogger _logger;
         public BaseService(TRepository repository,
-            IMapper mapper,
-            ILogger logger)
+            IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
-            _logger = logger;
         }
         public virtual async Task<Guid> Create(Guid userId,TCreateDTO createDTO,CancellationToken cancellationToken = default)
         {

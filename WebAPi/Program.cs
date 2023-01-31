@@ -45,8 +45,7 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Configuration.AddJsonFile("appsettings.json");
-
+var appsettings = builder.Configuration;
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
@@ -60,11 +59,12 @@ builder.Services.AddAutoMapper(typeof(AppMappingProfile));
 builder.Services.AddScoped<IShopRepository, PostgreShopRepository>();
 builder.Services.AddScoped<IReviewRepository, PostgreReviewRepository>();
 builder.Services.AddScoped<IUserRepository,PostgreUserRepository>();
+builder.Services.AddScoped<IUsersFavoriteShopsRepository, PostgreUsersFavoriteShopsRepository>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ITypeService,TypeService>();
 builder.Services.AddScoped<IDeliveryTypeService, DeliveryTypeService>();
 builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
-builder.Services.AddScoped<IPostgreCategoryRepository, PostgreCategoryRepository>();
+builder.Services.AddScoped<ICategoryRepository, PostgreCategoryRepository>();
 builder.Services.AddScoped<IRepositoryWrapper, PostgreRepositoryWrapper>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IRandomStringGeneratorService, RandomStringGeneratorService>();

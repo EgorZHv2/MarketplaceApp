@@ -17,6 +17,7 @@ namespace Data.Entities
         public User Seller { get; set; }
         public List<Review> Reviews { get; set; }
         public List<User> Users { get; set; } = new List<User>();
+        public List<UserFavoriteShop> UserFavoriteShops { get; set; } = new List<UserFavoriteShop>();
         public List<Category> Categories { get; set; } = new List<Category>();
         public List<DeliveryType> DeliveryTypes { get; set; } = new List<DeliveryType>();
         public List<Type> Types { get; set; } = new List<Type>();

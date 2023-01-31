@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Data.Repositories
 {
-    public class PostgreCategoryRepository:BaseDictionaryRepository<Category>,IPostgreCategoryRepository
+    public class PostgreCategoryRepository:BaseDictionaryRepository<Category>,ICategoryRepository
     {
         public PostgreCategoryRepository(ApplicationDbContext context):base(context) { }
         

@@ -1,5 +1,6 @@
 ﻿using Data.Entities;
 using Data.IRepositories;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,6 @@ namespace Data.Repositories
     public class PostgreShopRepository : BaseRepository<Shop>,IShopRepository
     {       
        public  PostgreShopRepository(ApplicationDbContext context):base(context) { }
+      
     }
 }

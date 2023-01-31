@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Data.DTO.Shop
 {
-    public class UpdateShopDTO:UpdateDTO
+    public class UpdateShopDTO:BaseUpdateDTO
     {
       
         public string? Title { get; set; }

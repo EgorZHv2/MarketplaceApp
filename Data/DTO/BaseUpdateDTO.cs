@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Data.DTO
 {
-    public class UpdateDTO
+    public class BaseUpdateDTO
     {
         [Required]
         public Guid Id { get; set; }      

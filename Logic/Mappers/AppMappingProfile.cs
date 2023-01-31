@@ -9,6 +9,7 @@ using Data.Models;
 using Data.DTO;
 using Data.DTO.Shop;
 using Data.DTO.Review;
+using Data.DTO.User;
 
 namespace WebAPi.Mappers
 {

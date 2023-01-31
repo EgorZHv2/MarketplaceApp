@@ -9,5 +9,6 @@ namespace Data.IRepositories
 {
     public interface IShopRepository:IBaseRepository<Shop>
     {
+      
     }
 }

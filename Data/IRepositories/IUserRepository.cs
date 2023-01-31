@@ -11,6 +11,6 @@ namespace Data.IRepositories
     {
         public Task<User> GetUserByEmail(string email);
 
-        public Task<IQueryable<Shop>> GetFavoriteShopsByUserId(Guid userId);
+        
     }
 }
