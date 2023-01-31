@@ -5,6 +5,7 @@ using Logic.Exceptions;
 using System.Net;
 using Microsoft.Extensions.Logging;
 using WebAPi.Interfaces;
+using System.Security.Claims;
 
 namespace WebAPi.Middleware
 {
@@ -26,7 +27,8 @@ namespace WebAPi.Middleware
             string token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
             if (!string.IsNullOrEmpty(token))
             {
-                var user = repositoryWrapper.Users.GetAll().FirstOrDefault(e=>e.Email == tokenService.DecryptToken(token).Result[0].Value);
+                string useremail = tokenService.DecryptToken(token).FirstOrDefault(e=>e.Type == ClaimTypes.Name).Value;
+                var user = repositoryWrapper.Users.GetAll().FirstOrDefault(e=>e.Email == useremail);
                 if(user == null) 
                 {
                     throw new AuthException("Некорректный токен авторизации","Uncorrect jwttoken", HttpStatusCode.Forbidden);

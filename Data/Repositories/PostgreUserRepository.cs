@@ -16,10 +16,10 @@ namespace Data.Repositories
         public PostgreUserRepository(ApplicationDbContext context) : base(context) { }
        
      
-        public async Task<User> GetUserByEmail(string email)
+        public async Task<User> GetUserByEmail(string email,CancellationToken cancellationToken = default)
         {
-            var user = await _context.Set<User>().FirstOrDefaultAsync(e => e.Email == email);
-            return user;
+            
+            return await _dbset.FirstOrDefaultAsync(e => e.Email == email,cancellationToken);
         }
        
 

@@ -13,7 +13,7 @@ namespace WebAPi.Services
 {
     public class TokenService:ITokenService
     {
-        public async Task<string> GetTokenAsync(User user)
+        public string GetToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = JwtAuthOptions.GetKey();
@@ -28,12 +28,9 @@ namespace WebAPi.Services
                 expires: DateTime.UtcNow.AddHours(1),
                 signingCredentials: JwtAuthOptions.GetCredentials()
             );
-           
-
-           
             return tokenHandler.WriteToken(token);
         }
-        public async Task<List<Claim>> DecryptToken(string token)
+        public  List<Claim> DecryptToken(string token)
         {
             List<Claim> result = new List<Claim>();
             var tokenHandler = new JwtSecurityTokenHandler();

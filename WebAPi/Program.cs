@@ -61,6 +61,7 @@ builder.Services.AddScoped<IReviewRepository, PostgreReviewRepository>();
 builder.Services.AddScoped<IUserRepository,PostgreUserRepository>();
 builder.Services.AddScoped<IUsersFavoriteShopsRepository, PostgreUsersFavoriteShopsRepository>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITypeService,TypeService>();
 builder.Services.AddScoped<IDeliveryTypeService, DeliveryTypeService>();
 builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();

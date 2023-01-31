@@ -54,6 +54,7 @@ namespace Data.Repositories
         public async Task<Guid> Create(TEntity entity,CancellationToken cancellationToken = default)
         {
             entity.Id = Guid.NewGuid();
+            entity.IsActive = true;
             await _context.Set<TEntity>().AddAsync(entity,cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
             return entity.Id;

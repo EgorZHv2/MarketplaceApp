@@ -42,7 +42,7 @@ namespace WebAPi.Controllers
             {
                 throw new CategoryParentException("Ошибка при выборе родительско категории", "Parent category error");
             }
-             _dictionaryService.Update(UserId, model);
+            await _dictionaryService.Update(UserId, model);
             return Ok();
         }
         

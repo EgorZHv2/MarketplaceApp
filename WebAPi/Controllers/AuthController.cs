@@ -13,107 +13,61 @@ using System.Text;
 using Logic.Exceptions;
 using Logic.Interfaces;
 using Data.Repositories;
+using Data.DTO.Auth;
+using Microsoft.AspNetCore.Authorization;
+using System.Net;
 
 namespace WebAPi.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class AuthController : ControllerBase
+    public class AuthController : BaseController
     {
-        private IRepositoryWrapper _repositoryWrapper;
-        private IMapper _mapper;
-        private IRandomStringGeneratorService _stringGeneratorService;
-        private IEmailService _emailService;
-        private ILogger<AuthController> _logger;
-        private ITokenService _tokenService;
-        private IHashService _hashService;
         private IAuthService _authService;
-        private IBaseDictionaryRepository<Category> _baseDictionaryRepository;
-        public AuthController(
-            IRepositoryWrapper repositoryWrapper,
-            IMapper mapper,
-            IRandomStringGeneratorService stringGeneratorService,
-            IEmailService emailService,
-            ILogger<AuthController> logger,
-            ITokenService tokenService,
-            IHashService hashService,
-            IAuthService authService
-           
-        )
+
+        public AuthController(IAuthService authService)
         {
-            _repositoryWrapper = repositoryWrapper;
-            _mapper = mapper;
-            _stringGeneratorService = stringGeneratorService;
-            _emailService = emailService;
-            _logger = logger;
-            _tokenService = tokenService;
-            _hashService = hashService;
             _authService = authService;
-
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login([FromBody] LoginModel model)
+        public async Task<IActionResult> Login([FromBody] LoginDTO model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var user = _repositoryWrapper.Users.GetUserByEmail(model.Email).Result;
-
-            if (user == null)
-            {
-                 throw new NotFoundException("Email не найден","User email not found");
-            }
-            if (!user.IsEmailConfirmed)
-            {
-                throw new AuthException("Почта не подтверждёна","Email not verified",System.Net.HttpStatusCode.Forbidden,model.Email);
-            }
-            if (!_hashService.ComparePasswordWithHash(model.Password, user.Password).Result)
-            {
-                throw new AuthException("Неверный пароль","Wrong password",System.Net.HttpStatusCode.Unauthorized,model.Email);
-            }
-            var results = _tokenService.GetTokenAsync(user);
-            return Ok(results.Result);
+            var result = await _authService.Login(model);
+            return Ok(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register([FromBody] RegistrationModel model)
+        public async Task<IActionResult> Register([FromBody] RegistrationDTO model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var dbuser = _repositoryWrapper.Users.GetUserByEmail(model.Email).Result;
-            if(dbuser != null)
-            {
-                throw new AuthException("Email занят","Email already in use", System.Net.HttpStatusCode.Unauthorized,string.Empty);
-            }
-            User user = new User();
-            try
-            {
-                user = _mapper.Map<User>(model);
-            }
-            catch
-            {
-                throw new MappingException(this.GetType().ToString());
-            }
-            string code = _stringGeneratorService.Generate(6); 
-            user.Password = _hashService.HashPassword(model.Password).Result;
-            user.EmailConfirmationCode = _hashService.HashPassword(code).Result;
-            _emailService.SendEmail(
-                user.Email,
-                "MarketPlaceApp",
-                $"Your verification code = {code}"
-            );
-            _repositoryWrapper.Users.Create(user);
-            _repositoryWrapper.Save();
+            await _authService.Register(model);
             return Ok();
         }
+
         [HttpPut]
-        public async Task<IActionResult> Verify([FromBody] LoginModel model)
+        public async Task<IActionResult> Verify([FromBody] LoginDTO model)
         {
-            _authService.VerifyEmail(model.Email,model.Password);
+            await _authService.VerifyEmail(model.Email, model.Password);
+            return Ok();
+        }
+
+        [HttpPut]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword(ChangePasswordDTO model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            await _authService.ChangePassword(UserId, model);
             return Ok();
         }
     }

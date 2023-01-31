@@ -102,7 +102,7 @@ namespace WebAPi.Controllers
                 throw new NotFoundException("Отзыв не найден", "Review not found");
             }
             entity.IsActive = model.IsActive;
-            _repository.Reviews.Update(entity);
+            await _repository.Reviews.Update(entity);
             _repository.Save();
             return Ok();
         }

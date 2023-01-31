@@ -10,6 +10,7 @@ using Data.DTO;
 using Data.DTO.Shop;
 using Data.DTO.Review;
 using Data.DTO.User;
+using Data.DTO.Auth;
 
 namespace WebAPi.Mappers
 {
@@ -17,7 +18,7 @@ namespace WebAPi.Mappers
     {
         public AppMappingProfile()
         {
-            CreateMap<RegistrationModel, User>();
+            CreateMap<RegistrationDTO, User>();
 
             CreateMap<Shop, ShopDTO>();
             CreateMap<CreateShopDTO, Shop>();
@@ -25,13 +26,15 @@ namespace WebAPi.Mappers
 
             CreateMap<Review,ReviewDTO>();
             CreateMap<CreateReviewDTO,Review>();
-            CreateMap<UpdateReviewDTO,Review>(); 
+            CreateMap<UpdateReviewDTO,Review>();
 
-            
+            CreateMap<User, UserDTO>();
+            CreateMap<CreateUserDTO, User>();
+            CreateMap<UpdateUserDTO, User>();
 
-            CreateMap<ChangePasswordModel, User>().ReverseMap();
+            CreateMap<ChangePasswordDTO, User>().ReverseMap();
             CreateMap<CreateAdminModel, User>().ReverseMap();
-            CreateMap<User, UserDTO>().ReverseMap();
+           
             CreateMap<Shop, ShopDTO>().ForMember(x => x.ImagePath, opt => opt.Ignore());
            
             CreateMap<Category, CreateCategoryDTO>().ReverseMap();

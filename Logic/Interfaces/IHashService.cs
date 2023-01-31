@@ -8,7 +8,7 @@ namespace Logic.Interfaces
 {
     public interface IHashService
     {
-        public Task<string> HashPassword(string str);
-        public Task<bool> ComparePasswordWithHash(string password, string hash);
+        public string HashPassword(string str);
+        public bool ComparePasswordWithHash(string password, string hash);
     }
 }

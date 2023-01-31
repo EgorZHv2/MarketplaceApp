@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data.Models
+namespace Data.DTO.Auth
 {
-    public class ChangePasswordModel
+    public class ChangePasswordDTO
     {
         [Required]
         public string OldPassword { get; set; }

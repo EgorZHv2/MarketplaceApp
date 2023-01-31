@@ -15,7 +15,7 @@ namespace WebAPi.Interfaces
 {
     public interface ITokenService
     {
-        public  Task<string> GetTokenAsync(User user);
-        public Task<List<Claim>> DecryptToken(string token);
+        public string GetToken(User user);
+        public List<Claim> DecryptToken(string token);
      }
 }

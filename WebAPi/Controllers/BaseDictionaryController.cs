@@ -26,7 +26,7 @@ namespace WebAPi.Controllers
         public async Task<IActionResult> Create(TCreateDTO model)
         {
            
-            _dictionaryService.Create(UserId, model);
+            await  _dictionaryService.Create(UserId, model);
             return Ok();
         }
         [HttpPut]
@@ -34,11 +34,11 @@ namespace WebAPi.Controllers
         public virtual async Task<IActionResult> Update(TCreateDTO model)
         {
             
-            _dictionaryService.Update(UserId, model);
+            await _dictionaryService.Update(UserId, model);
             return Ok();
         }
-        [HttpGet] 
-        //[Authorize]
+        [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetPage([FromQuery] FilterPagingModel pagingModel)
         {
            
@@ -49,7 +49,7 @@ namespace WebAPi.Controllers
         [Authorize(Roles ="Admin")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            _dictionaryService.Delete(UserId, id);
+            await _dictionaryService.Delete(UserId, id);
             return Ok();
         }
 

@@ -12,89 +12,44 @@ using Logic.Interfaces;
 using Data.DTO;
 using Data.Entities;
 using Data;
-using Data.DTO.Shop;
+using Data.DTO.User;
 using Microsoft.EntityFrameworkCore;
 
 namespace WebAPi.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController:BaseController
     {
-        private ILogger<UserController> _logger;
         private IRepositoryWrapper _repositoryWrapper;
-        private IMapper _mapper;
         private IImageService _imageService;
-        private ApplicationDbContext _context;
+        private IUserService _userService;
+      
         public UserController(
-            ILogger<UserController> logger,
             IRepositoryWrapper repositoryWrapper,
-            IMapper mapper,
             IImageService imageService,
-            ApplicationDbContext context
+            IUserService userService
+            
+            
         )
         {
-            _logger = logger;
             _repositoryWrapper = repositoryWrapper;
             _imageService = imageService;
-            _mapper = mapper;
-            _context = context;
+            _userService = userService;
         }
 
         [Authorize]
         [HttpPut]
-        public async Task<IActionResult> UpdateUser([FromForm] UpdateUserModel model)
+        public async Task<IActionResult> UpdateUser([FromForm] UpdateUserDTO model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            var user = _repositoryWrapper.Users.GetUserByEmail(User.Identity.Name).Result;
-            if (user == null)
-            {
-                throw new NotFoundException("Пользователь не найден", "User not found");
-            }
-            if (!string.IsNullOrEmpty(model.FirstName))
-            {
-                user.FirstName = model.FirstName;
-            }
-            if (model.Photo != null)
-            {
-                await _imageService.CreateImage(model.Photo, user.Id);
-            }
-            _repositoryWrapper.Users.Update(user);
-            _repositoryWrapper.Save();
-            return Ok();
+            var result = await _userService.Update(UserId, model);
+            return Ok(result);  
         }
-        [Authorize]
-        [HttpPut]
-        public async Task<IActionResult> ChangeUserPassword(ChangePasswordModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var user = _repositoryWrapper.Users.GetUserByEmail(User.Identity.Name).Result;
-            if (user == null)
-            {
-                throw new NotFoundException("Пользователь не найден", "User not found");
-            }
-            if (model.OldPassword != user.Password)
-            {
-                throw new AuthException(
-                    "Старый пароль неверный",
-                    "Wrong old password",
-                    HttpStatusCode.Unauthorized,
-                    user.Email
-                );
-            }
-
-            user.Password = model.Password;
-            _repositoryWrapper.Users.Update(user);
-            _repositoryWrapper.Save();
-            return Ok();
-        }
+        
 
         [HttpPut]
         [Authorize(Roles = "Admin")]

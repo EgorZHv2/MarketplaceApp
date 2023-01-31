@@ -1,11 +1,16 @@
 ﻿using Data.Enums;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Data.Models
+namespace Data.DTO.Auth
 {
-    public class RegistrationModel
+    public class RegistrationDTO
     {
-        [Required]
+       [Required]
         public string Email { get; set; }
 
         [Required]

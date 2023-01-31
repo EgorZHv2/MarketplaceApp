@@ -11,7 +11,7 @@ namespace WebAPi.Services
 {
     public class EmailService : IEmailService
     {
-        public async void SendEmail(string recipientAdress, string subject, string text)
+        public async void SendEmail(string recipientAdress, string subject, string text,CancellationToken cancellationToken = default)
         {
             var emailmessage = new MimeMessage();
             emailmessage.From.Add(new MailboxAddress("MarketplaceApp", "appsemail@bk.ru"));
@@ -24,10 +24,10 @@ namespace WebAPi.Services
 
             using (var client = new SmtpClient())
             {
-                await client.ConnectAsync("smtp.mail.ru", 465, true);
-                await client.AuthenticateAsync("appsemail@bk.ru", "UTLay0QC0x0rkJBbzbua");
-                await client.SendAsync(emailmessage);
-                await client.DisconnectAsync(true);
+                await client.ConnectAsync("smtp.mail.ru", 465, true,cancellationToken);
+                await client.AuthenticateAsync("appsemail@bk.ru", "UTLay0QC0x0rkJBbzbua",cancellationToken);
+                await client.SendAsync(emailmessage,cancellationToken);
+                await client.DisconnectAsync(true, cancellationToken);
             }
         }
     }

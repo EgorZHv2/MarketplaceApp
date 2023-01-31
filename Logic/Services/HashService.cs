@@ -14,14 +14,14 @@ namespace Logic.Services
     public class HashService:IHashService
     {
         
-        public async Task<string> HashPassword(string str)
+        public string HashPassword(string str)
         {
            
            return BCrypt.Net.BCrypt.HashPassword(str);;
            
         }
 
-        public async Task<bool> ComparePasswordWithHash(string password, string hash)
+        public bool ComparePasswordWithHash(string password, string hash)
         {
             return BCrypt.Net.BCrypt.Verify(password,hash);
         }
