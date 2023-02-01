@@ -6,6 +6,7 @@ using Data.Models;
 using Data.Repositories;
 using Logic.Exceptions;
 using Logic.Interfaces;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Npgsql.Replication.TestDecoding;
@@ -112,6 +113,17 @@ namespace Logic.Services
         public virtual async Task Delete(Guid userId,Guid entityId,CancellationToken cancellationToken = default)
         {
             await _repository.Delete(userId,entityId,cancellationToken);
+        }
+        public async Task<EntityActivityDTO> ChangeActivity(Guid userId,EntityActivityDTO model,CancellationToken cancellationToken = default)
+        {
+            var entity = await _repository.GetById(model.Id,cancellationToken);
+            if(entity== null)
+            {
+                throw new NotFoundException("Объект не найден", "Object not found");
+            }
+            entity.IsActive = model.IsActive;
+            await _repository.Update(userId,entity,cancellationToken);
+            return model;
         }
     }
 }

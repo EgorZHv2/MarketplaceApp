@@ -5,19 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data.DTO.Shop
+namespace Data.DTO
 {
-    public class CreateShopDTO:BaseDTO
+    public class EntityActivityDTO
     {
-
         [Required]
-        public string Title { get; set; }
-
+        public bool IsActive { get; set; }
         [Required]
-        public string Description { get; set; }
-
-        [Required]
-        public string INN { get; set; }
-
+        public Guid Id { get; set; }
     }
 }

@@ -16,31 +16,15 @@ namespace WebAPi.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class ReviewController : BaseController
+    public class ReviewController : BaseGenericController<Review,ReviewDTO,CreateReviewDTO,UpdateReviewDTO,IReviewRepository,IReviewService>
     {
-        private IRepositoryWrapper _repository;
-        private IMapper _mapper;
-        private ILogger<ReviewController> _logger;
-        private IReviewService _reviewService;
-
-        public ReviewController(
-            IRepositoryWrapper repository,
-            IMapper mapper,
-            ILogger<ReviewController> logger,
-            IReviewService reviewService
-        )
-        {
-            _repository = repository;
-            _mapper = mapper;
-            _logger = logger;
-            _reviewService = reviewService;
-        }
+        public ReviewController(IReviewService reviewService) : base(reviewService) { }
 
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetReviewById([FromQuery] Guid Id)
         {
-            var result = await _reviewService.GetById(Id);
+            var result = await _service.GetById(Id);
             return Ok(result);
         }
 
@@ -48,7 +32,7 @@ namespace WebAPi.Controllers
         [Authorize]
         public async Task<IActionResult> GetReviewsByShopId([FromQuery] Guid shopId)
         {
-            var result = await _reviewService.GetReviewsByShopId(UserId,shopId);
+            var result = await _service.GetReviewsByShopId(UserId, shopId);
             return Ok(result);
         }
 
@@ -56,7 +40,7 @@ namespace WebAPi.Controllers
         [Authorize]
         public async Task<IActionResult> GetAllReviews()
         {
-            var result = await _reviewService.GetAll(UserId);
+            var result = await _service.GetAll(UserId);
             return Ok(result);
         }
 
@@ -68,7 +52,7 @@ namespace WebAPi.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var result = await _reviewService.Create(UserId,model);
+            var result = await _service.Create(UserId, model);
             return Ok(result);
         }
 
@@ -80,7 +64,7 @@ namespace WebAPi.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var result = await _reviewService.Update(UserId, model);
+            var result = await _service.Update(UserId, model);
             return Ok(result);
         }
 
@@ -88,22 +72,7 @@ namespace WebAPi.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteReview([FromQuery] Guid Id)
         {
-            await _reviewService.Delete(UserId, Id);
-            return Ok();
-        }
-        [HttpPut]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> ChangeReviewActivity([FromBody] EntityActivityModel model)
-        {
-            var user = _repository.Users.GetUserByEmail(User.Identity.Name).Result;
-            var entity = _repository.Reviews.GetById(model.Id).Result;
-            if(entity == null)
-            {
-                throw new NotFoundException("Отзыв не найден", "Review not found");
-            }
-            entity.IsActive = model.IsActive;
-            await  _repository.Reviews.Update(user.Id, entity);
-            _repository.Save();
+            await _service.Delete(UserId, Id);
             return Ok();
         }
     }

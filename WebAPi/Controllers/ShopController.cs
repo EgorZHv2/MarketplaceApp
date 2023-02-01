@@ -13,80 +13,55 @@ using System.Security.Claims;
 using Data.DTO;
 using Logic.Interfaces;
 using Data.DTO.Shop;
+using Data.DTO.Review;
 
 namespace WebAPi.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class ShopController:BaseController
+    public class ShopController : BaseGenericController<Shop,ShopDTO,CreateShopDTO,UpdateShopDTO,IShopRepository,IShopService>
     {
-        private IRepositoryWrapper _repository;
-        private IMapper _mapper;
-        private ILogger<ShopController> _logger;
-        private IINNService _iNNService;
-        private IImageService _imageService;
-        private IConfiguration _configuration;
-        private IShopService _shopService;
-        public ShopController(
-            IRepositoryWrapper repository,
-            IMapper mapper,
-            ILogger<ShopController> logger,
-            IINNService iNNService,
-            IImageService imageService,
-            IConfiguration configuration,
-            IShopService shopService
-            
-        )
-        {
-            _repository = repository;
-            _mapper = mapper;
-            _logger = logger;
-            _iNNService = iNNService;
-            _imageService = imageService;
-            _configuration = configuration;
-            _shopService = shopService;
-        }
+
+        public ShopController(IShopService shopService) : base(shopService) { }
 
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetAllShops()
         {
-            var result = await _shopService.GetAll(UserId);
-            return Ok(result);        
+            var result = await _service.GetAll(UserId);
+            return Ok(result);
         }
 
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetShopById([FromQuery] Guid Id)
         {
-            var result = await _shopService.GetById(Id);
+            var result = await _service.GetById(Id);
             return Ok(result);
-           
         }
 
         [HttpPost]
         [Authorize(Roles = "Seller, Admin")]
         public async Task<IActionResult> CreateShop([FromBody] CreateShopDTO model)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var result = await _shopService.Create(UserId,model);  
+            var result = await _service.Create(UserId, model);
             return Ok(result);
-            
         }
 
         [HttpPut]
         [Authorize(Roles = "Seller, Admin")]
         public async Task<IActionResult> UpdateShop([FromBody] UpdateShopDTO model)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var result = await _shopService.Update(UserId, model);
-        
+            var result = await _service.Update(UserId, model);
+
             return Ok(result);
         }
 
@@ -94,23 +69,23 @@ namespace WebAPi.Controllers
         [Authorize(Roles = "Seller, Admin")]
         public async Task<IActionResult> DeleteShop([FromQuery] Guid Id)
         {
-            await _shopService.Delete(UserId,Id);
+            await _service.Delete(UserId, Id);
             return Ok();
         }
 
-        [Authorize] 
+        [Authorize]
         [HttpPut]
-
         public async Task<IActionResult> AddShopToFavorites([FromBody] Guid shopId)
         {
-           await _shopService.AddShopToFavorites(UserId,shopId);
-           return Ok();
+            await _service.AddShopToFavorites(UserId, shopId);
+            return Ok();
         }
+
         [Authorize]
         [HttpDelete]
         public async Task<IActionResult> DeleteFavoriteShop([FromBody] Guid shopId)
         {
-            await _shopService.DeleteShopFromFavorites(UserId, shopId);
+            await _service.DeleteShopFromFavorites(UserId, shopId);
             return Ok();
         }
 
@@ -118,27 +93,8 @@ namespace WebAPi.Controllers
         [HttpGet]
         public async Task<IActionResult> ShowUserFavoriteShops([FromQuery] Guid userId)
         {
-            var result = await _shopService.ShowUserFavoriteShops(userId);
+            var result = await _service.ShowUserFavoriteShops(userId);
             return Ok(result);
-        }
-
-
-
-
-        [HttpPut]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> ChangeShopActivity([FromBody] EntityActivityModel model)
-        {
-            var user = _repository.Users.GetUserByEmail(User.Identity.Name).Result;
-            var entity = _repository.Shops.GetById(model.Id).Result;
-            if(entity == null)
-            {
-                throw new NotFoundException("Магазин не найден","Shop not found");
-            }
-            entity.IsActive = model.IsActive;
-            _repository.Shops.Update(user.Id,entity);
-            _repository.Save();
-            return Ok();
         }
     }
 }

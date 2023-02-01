@@ -1,4 +1,5 @@
-﻿using Data.Models;
+﻿using Data.DTO;
+using Data.Models;
 using Logic.Exceptions;
 using System;
 using System.Collections.Generic;
@@ -19,9 +20,7 @@ namespace Logic.Interfaces
         public Task<PageModel<TDTO>> GetPage(FilterPagingModel pagingModel, CancellationToken cancellationToken = default);
         
         public Task<TUpdateDTO> Update(Guid userId, TUpdateDTO DTO, CancellationToken cancellationToken = default);
-
-
         public Task Delete(Guid userId,Guid entityId, CancellationToken cancellationToken = default);
-       
+        public Task<EntityActivityDTO> ChangeActivity(Guid userId, EntityActivityDTO model, CancellationToken cancellationToken = default);
     }
 }

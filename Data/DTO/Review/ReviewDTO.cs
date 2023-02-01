@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Data.DTO.Review
 {
-    public class ReviewDTO
+    public class ReviewDTO:BaseDTO
     {
         public Guid Id { get; set; }
         public string ReviewText { get; set; }

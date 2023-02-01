@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Data.DTO.User
 {
-    public class CreateUserDTO
+    public class CreateUserDTO:BaseDTO
     {
         public string FirstName { get; set; }
         public string Email { get; set; }

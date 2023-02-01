@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Data.DTO.Auth
 {
-    public class ChangePasswordDTO
+    public class ChangePasswordDTO:BaseDTO
     {
         [Required]
         public string OldPassword { get; set; }

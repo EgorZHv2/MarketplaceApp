@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Data.DTO.Auth
 {
-    public class RegistrationDTO
+    public class RegistrationDTO:BaseDTO
     {
        [Required]
         public string Email { get; set; }

@@ -11,3 +11,4 @@ namespace WebAPi.Controllers
         internal Guid UserId => !User.Identity.IsAuthenticated ? Guid.Empty : new Guid(User.FindFirst(ClaimTypes.NameIdentifier).Value);
     }
 }
+ 

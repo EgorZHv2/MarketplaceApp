@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Data.DTO.Review
 {
-    public class CreateReviewDTO
+    public class CreateReviewDTO:BaseDTO
     {
 
         [Required]
