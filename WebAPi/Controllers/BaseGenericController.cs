@@ -15,6 +15,9 @@ namespace WebAPi.Controllers
     [ApiController]
     public class BaseGenericController<TEntity,TDTO,TCreateDTO,TUpdateDTO,TRepository,TService>:BaseController
         where TService:IBaseService<TEntity,TDTO,TCreateDTO,TUpdateDTO,TRepository>
+        where TEntity:BaseEntity
+        where TUpdateDTO:BaseUpdateDTO
+        where TRepository:IBaseRepository<TEntity>
     {
         protected TService _service { get; set; }
         public BaseGenericController(TService service) 
