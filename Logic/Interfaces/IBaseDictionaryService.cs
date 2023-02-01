@@ -18,7 +18,7 @@ namespace Logic.Interfaces
 
         public  Task<PageModel<TDTO>> GetPage(FilterPagingModel model);
 
-        public  Task Delete(Guid userid, Guid Id, CancellationToken cancellationToken = default);
+        public  Task Delete(Guid userid, Guid entityId, CancellationToken cancellationToken = default);
        
     }
 }

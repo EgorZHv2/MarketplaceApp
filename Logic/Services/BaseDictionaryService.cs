@@ -70,9 +70,14 @@ namespace Logic.Services
             return result;
 
         }
-        public async Task Delete(Guid userid,Guid Id,CancellationToken cancellationToken = default)
+        public async Task Delete(Guid userid,Guid entityId,CancellationToken cancellationToken = default)
         {
-            await _repository.Delete(userid, Id,cancellationToken);
+            var entity = await _repository.GetById(entityId,cancellationToken);
+            if(entity== null)
+            {
+                throw new NotFoundException("Объект не найден", "Object not found");
+            }
+            await _repository.Delete(userid, entity,cancellationToken);
         }
     }
 }

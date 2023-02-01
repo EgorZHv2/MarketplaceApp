@@ -54,7 +54,7 @@ namespace WebAPi.Controllers
 
         [HttpPut]
         [Authorize(Roles = "Seller, Admin")]
-        public async Task<IActionResult> UpdateShop([FromBody] UpdateShopDTO model)
+        public async Task<IActionResult> UpdateShop([FromForm] UpdateShopDTO model)
         {
             if (!ModelState.IsValid)
             {
@@ -91,9 +91,9 @@ namespace WebAPi.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> ShowUserFavoriteShops([FromQuery] Guid userId)
+        public async Task<IActionResult> ShowUserFavoriteShops()
         {
-            var result = await _service.ShowUserFavoriteShops(userId);
+            var result = await _service.ShowUserFavoriteShops(UserId);
             return Ok(result);
         }
     }

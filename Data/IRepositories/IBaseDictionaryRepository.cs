@@ -18,7 +18,7 @@ namespace Data.IRepositories
         Task CreateMany(Guid userid,CancellationToken cancellationToken = default,params TEntity[] entities);
         Task Update(Guid userId, TEntity entity,CancellationToken cancellationToken = default);
         Task UpdateMany(Guid userid,CancellationToken cancellationToken = default,params TEntity[] entities);
-        Task Delete(Guid userId,Guid entityId, CancellationToken cancellationToken = default);
-        Task DeleteMany(Guid userid,CancellationToken cancellationToken = default,params Guid[] ids);
+         Task Delete(Guid userId,TEntity entity, CancellationToken cancellationToken = default);
+        Task DeleteMany(Guid userid,CancellationToken cancellationToken = default,params TEntity[] entities);
     }
 }

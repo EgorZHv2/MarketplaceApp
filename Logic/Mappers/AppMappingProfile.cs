@@ -21,14 +21,17 @@ namespace WebAPi.Mappers
             CreateMap<RegistrationDTO, User>();
 
             CreateMap<Shop, ShopDTO>();
+            CreateMap<PageModel<Shop>, PageModel<ShopDTO>>();
             CreateMap<CreateShopDTO, Shop>();
             CreateMap<UpdateShopDTO, Shop>();
 
             CreateMap<Review,ReviewDTO>();
+            CreateMap<PageModel<Review>, PageModel<ReviewDTO>>();
             CreateMap<CreateReviewDTO,Review>();
             CreateMap<UpdateReviewDTO,Review>();
 
             CreateMap<User, UserDTO>();
+            CreateMap<PageModel<User>, PageModel<UserDTO>>();
             CreateMap<CreateUserDTO, User>();
             CreateMap<UpdateUserDTO, User>();
 
@@ -39,9 +42,13 @@ namespace WebAPi.Mappers
            
             CreateMap<Category, CreateCategoryDTO>().ReverseMap();
             CreateMap<Category, CategoryDTO>();
+            CreateMap<PageModel<Category>, PageModel<CategoryDTO>>();
             CreateMap<Data.Entities.Type, TypeDTO>().ReverseMap();
+            CreateMap<PageModel<Data.Entities.Type>, PageModel<TypeDTO>>();
             CreateMap<DeliveryType, CreateDeliveryTypeDTO>().ReverseMap();
+            CreateMap<PageModel<DeliveryType>, PageModel<CreateDeliveryTypeDTO>>();
             CreateMap<PaymentMethod, PaymentMethodDTO>().ReverseMap();
+            CreateMap<PageModel<PaymentMethod>, PageModel<PaymentMethodDTO>>();
             
         }
 

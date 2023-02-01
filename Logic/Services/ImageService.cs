@@ -17,14 +17,14 @@ namespace Logic.Services
     {
         private readonly IConfiguration _configuration;
         private readonly ILogger<ImageService> _logger;
-        private readonly IRepositoryWrapper _repositoryWrapper;
+        private readonly IStaticFileInfoRepository _staticFileInfo;
         public ImageService(IConfiguration configuration,
             ILogger<ImageService> logger,
-            IRepositoryWrapper repositoryWrapper) 
+            IStaticFileInfoRepository staticFileInfo) 
         {
             _configuration = configuration;
-            _logger = logger;
-            _repositoryWrapper = repositoryWrapper;
+            _logger = logger;       
+            _staticFileInfo = staticFileInfo;
         }
         public async Task CreateImage(IFormFile file, Guid entityid,CancellationToken cancellationToken = default)
         {
@@ -52,8 +52,7 @@ namespace Logic.Services
                 Name = filename,
                 ParentEntityId = entityid
             };
-            _repositoryWrapper.StaticFileInfos.Create(Guid.Empty,entity,cancellationToken);
-            _repositoryWrapper.Save();
+            await _staticFileInfo.Create(Guid.Empty,entity,cancellationToken);
         }
     }
 }

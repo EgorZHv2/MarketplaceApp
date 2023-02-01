@@ -13,22 +13,24 @@ namespace WebAPi.Middleware
     {
         private RequestDelegate _next;
         private ILogger<UserCheckMiddleware> _logger;
+       
      
-        public UserCheckMiddleware(RequestDelegate next,ILogger<UserCheckMiddleware> logger)
+        public UserCheckMiddleware(RequestDelegate next,ILogger<UserCheckMiddleware> logger )
         {
             _next = next;
             _logger = logger;
+          
 
         
         }
-        public async Task InvokeAsync(HttpContext context,IRepositoryWrapper repositoryWrapper, ITokenService tokenService)
+        public async Task InvokeAsync(HttpContext context,IUserRepository userRepository, ITokenService tokenService)
         {
 
             string token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
             if (!string.IsNullOrEmpty(token))
             {
                 string useremail = tokenService.DecryptToken(token).FirstOrDefault(e=>e.Type == ClaimTypes.Name).Value;
-                var user = repositoryWrapper.Users.GetAll().FirstOrDefault(e=>e.Email == useremail);
+                var user = await userRepository.GetUserByEmail(useremail);
                 if(user == null) 
                 {
                     throw new AuthException("Некорректный токен авторизации","Uncorrect jwttoken", HttpStatusCode.Forbidden);

@@ -51,7 +51,7 @@ namespace Data.Repositories
             return pageModel;
         }
 
-        public async Task<Guid> Create(Guid userId,TEntity entity,CancellationToken cancellationToken = default)
+        public virtual async Task<Guid> Create(Guid userId,TEntity entity,CancellationToken cancellationToken = default)
         {
             entity.CreateDateTime = DateTime.UtcNow;
             entity.CreatorId = userId;
@@ -103,26 +103,26 @@ namespace Data.Repositories
             
         }
 
-        public async Task Delete(Guid userid,Guid entityid,CancellationToken cancellationToken = default)
+        public async Task Delete(Guid userid,TEntity entity,CancellationToken cancellationToken = default)
         {
-            var data = _context.Set<TEntity>().Find(entityid);
-            data.DeletorId = userid;
-            data.DeleteDateTime = DateTime.UtcNow;
-            data.IsDeleted = true;
-            _context.Set<TEntity>().Update(data);
+            
+            entity.DeletorId = userid;
+            entity.DeleteDateTime = DateTime.UtcNow;
+            entity.IsDeleted = true;
+            _context.Set<TEntity>().Update(entity);
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task DeleteMany(Guid userid,CancellationToken cancellationToken = default,params Guid[] ids)
+        public async Task DeleteMany(Guid userid,CancellationToken cancellationToken = default,params TEntity[] entityes)
         {
-            var data =  _context.Set<TEntity>().Where(e => ids.Contains(e.Id));
-            foreach (var entity in data)
+            
+            foreach (var entity in entityes)
             {
                 entity.DeletorId = userid;
                 entity.DeleteDateTime = DateTime.UtcNow;
                 entity.IsDeleted = true;
             }
-            _context.Set<TEntity>().UpdateRange(data);
+            _context.Set<TEntity>().UpdateRange(entityes);
             await  _context.SaveChangesAsync(cancellationToken);
         }
 

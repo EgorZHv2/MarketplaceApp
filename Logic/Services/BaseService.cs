@@ -50,12 +50,12 @@ namespace Logic.Services
         public virtual async Task<List<TDTO>> GetAll(CancellationToken cancellationToken = default)
         {
             List<TDTO> result = new List<TDTO>();
-            var list = _repository.GetAll().Where(e => e.IsActive).AsQueryable();
+            var list = _repository.GetAll().Where(e => e.IsActive);
           
          
             try
             {
-                result = await _mapper.ProjectTo<TDTO>(list).ToListAsync(cancellationToken);
+                result =  _mapper.Map<List<TDTO>>(list);
             }
             catch
             {
@@ -112,7 +112,12 @@ namespace Logic.Services
         }
         public virtual async Task Delete(Guid userId,Guid entityId,CancellationToken cancellationToken = default)
         {
-            await _repository.Delete(userId,entityId,cancellationToken);
+            var entity = await _repository.GetById(entityId,cancellationToken);
+            if(entity== null)
+            {
+                throw new NotFoundException("Объект не найден", "Object not found");
+            }
+            await _repository.Delete(userId,entity,cancellationToken);
         }
         public async Task<EntityActivityDTO> ChangeActivity(Guid userId,EntityActivityDTO model,CancellationToken cancellationToken = default)
         {

@@ -56,6 +56,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddAutoMapper(typeof(AppMappingProfile));
 
 builder.Services.AddScoped<IShopRepository, PostgreShopRepository>();
+builder.Services.AddScoped<IStaticFileInfoRepository,PostgreStaticFileInfoRepository>();
 builder.Services.AddScoped<IReviewRepository, PostgreReviewRepository>();
 builder.Services.AddScoped<IUserRepository,PostgreUserRepository>();
 builder.Services.AddScoped<IUsersFavoriteShopsRepository, PostgreUsersFavoriteShopsRepository>();
