@@ -1,5 +1,5 @@
 ﻿using Data.Entities;
-using WebAPi.Configuration;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;

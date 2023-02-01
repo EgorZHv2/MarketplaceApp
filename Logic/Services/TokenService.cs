@@ -1,5 +1,4 @@
 ﻿using Data.Entities;
-using WebAPi.Configuration;
 using WebAPi.Interfaces;
 using System;
 using System.Collections.Generic;

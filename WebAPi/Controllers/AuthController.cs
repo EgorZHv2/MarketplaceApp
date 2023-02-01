@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Data.Entities;
 using Data.IRepositories;
-using WebAPi.Configuration;
+
 using WebAPi.Interfaces;
 using Data.Models;
 using Microsoft.AspNetCore.Http;

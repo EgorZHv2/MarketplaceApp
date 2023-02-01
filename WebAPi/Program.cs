@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
 using System.Text;
-using WebAPi.Configuration;
 using Microsoft.OpenApi.Models;
 using Data.Entities;
 using WebAPi.Middleware;
@@ -127,7 +126,7 @@ builder.Services.AddAuthentication(options =>
     {
         jwtbeareroptions.TokenValidationParameters = new TokenValidationParameters()
         {
-            IssuerSigningKey =  new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("JwtAuthKey").Value);
+            IssuerSigningKey =  new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("JwtAuthKey").Value)),
             ValidateIssuer = false,
             ValidateAudience = false,
             ValidateIssuerSigningKey = true,
