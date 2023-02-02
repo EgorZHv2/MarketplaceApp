@@ -9,7 +9,9 @@ using WebAPi.Interfaces;
 
 namespace Logic.Services
 {
-    public class ShopService : BaseService<Shop, ShopDTO, CreateShopDTO, UpdateShopDTO, IShopRepository>, IShopService
+    public class ShopService
+        : BaseService<Shop, ShopDTO, CreateShopDTO, UpdateShopDTO, IShopRepository>,
+            IShopService
     {
         private IINNService _iNNService;
         private IRepositoryWrapper _repositoryWrapper;
@@ -17,6 +19,10 @@ namespace Logic.Services
         private IConfiguration _configuration;
         private IUserRepository _userRepository;
         private IUsersFavoriteShopsRepository _usersFavoriteShops;
+        private IShopCategoryRepository _shopCategoryRepository;
+        private IShopDeliveryTypeRepository _shopDeliveryTypeRepository;
+        private IShopPaymentMethodRepository _shopPaymentMethodRepository;
+        private IShopTypeRepository _shopTypeRepository;
 
         public ShopService(
             IShopRepository repository,
@@ -26,7 +32,11 @@ namespace Logic.Services
             IImageService imageService,
             IConfiguration configuration,
             IUserRepository userRepository,
-            IUsersFavoriteShopsRepository usersFavoriteShops
+            IUsersFavoriteShopsRepository usersFavoriteShops,
+            IShopCategoryRepository shopCategoryRepository,
+            IShopDeliveryTypeRepository shopDeliveryTypeRepository,
+            IShopPaymentMethodRepository shopPaymentMethodRepository,
+            IShopTypeRepository shopTypeRepository
         ) : base(repository, mapper)
         {
             _iNNService = iNNService;
@@ -35,6 +45,10 @@ namespace Logic.Services
             _configuration = configuration;
             _userRepository = userRepository;
             _usersFavoriteShops = usersFavoriteShops;
+            _shopCategoryRepository = shopCategoryRepository;
+            _shopDeliveryTypeRepository = shopDeliveryTypeRepository;
+            _shopPaymentMethodRepository = shopPaymentMethodRepository;
+            _shopTypeRepository = shopTypeRepository;
         }
 
         public async Task<List<ShopDTO>> GetAll(
@@ -45,7 +59,10 @@ namespace Logic.Services
             var user = await _repositoryWrapper.Users.GetById(userid, cancellationToken);
             var list = _repository
                 .GetAll()
-                .Where(e => (e.IsActive || user.Id == e.SellerId || user.Role == Data.Enums.Role.Admin)).ToList();
+                .Where(
+                    e => (e.IsActive || user.Id == e.SellerId || user.Role == Data.Enums.Role.Admin)
+                )
+                .ToList();
             List<ShopDTO> result = new List<ShopDTO>();
             string basepath = _configuration.GetSection("BaseImagePath").Value;
             try
@@ -124,41 +141,68 @@ namespace Logic.Services
             }
             await _repository.Update(userId, shop, cancellationToken);
 
-            shop.ShopDeliveryTypes = UpdateDTO.ShopDeliveryTypes.Select(entity => new ShopDeliveryType
+            await _shopCategoryRepository.DeleteAllByShop(shop);
+            await _shopDeliveryTypeRepository.DeleteAllByShop(shop);
+            await _shopPaymentMethodRepository.DeleteAllByShop(shop);
+            await _shopTypeRepository.DeleteAllByShop(shop);
+            if (UpdateDTO.CategoriesId.Count > 0)
             {
-                ShopId = shop.Id,
-                Shop = shop,
-                DeliveryType = _repositoryWrapper.DeliveryTypes.GetById(entity.Id).Result,
-                DeliveryTypeId = entity.Id,
-                FreeDeliveryThreshold = _repositoryWrapper.DeliveryTypes.GetById(entity.Id).Result.CanBeFree ? entity.FreeDeliveryThreshold : null
-            }).ToList();
-            shop.ShopPaymentMethods = UpdateDTO.ShopPaymentMethods.Select(entity => new ShopPaymentMethod
-            {
-                ShopId = shop.Id,
-                Shop = shop,
-                PaymentMethod = _repositoryWrapper.PaymentMethods.GetById(entity.Id).Result,
-                PaymentMethodId = entity.Id,
-                Сommission = _repositoryWrapper.PaymentMethods.GetById(entity.Id).Result.HasCommission ? entity.Сommission : null
-            }).ToList();
-            foreach (var item in UpdateDTO.CategoriesId)
-            {
-                shop.Categories.Add(_repositoryWrapper.Categories.GetById(item).Result);
+                var categories = UpdateDTO.CategoriesId.Select(
+                    e => new ShopCategory { CategoryId = e, ShopId = shop.Id }
+                ).ToArray();
+                await _shopCategoryRepository.CreateRange(cancellationToken, categories);
             }
-            foreach (var item in UpdateDTO.TypesId)
+            if (UpdateDTO.TypesId.Count > 0)
             {
-                shop.Types.Add(_repositoryWrapper.Types.GetById(item).Result);
+                var types = UpdateDTO.CategoriesId.Select(
+                    e => new ShopType { TypeId = e, ShopId = shop.Id }
+                ).ToArray();
+                await _shopTypeRepository.CreateRange(cancellationToken, types);
             }
-            await _repository.Update(userId, shop, cancellationToken);
+            if (UpdateDTO.ShopDeliveryTypes.Count > 0)
+            {
+                var deliveryTypes = UpdateDTO.ShopDeliveryTypes.Select(
+                    e =>
+                        new ShopDeliveryType
+                        {
+                            DeliveryTypeId = e.Id,
+                            ShopId = shop.Id,
+                            FreeDeliveryThreshold = e.FreeDeliveryThreshold
+                        }
+                ).ToArray();
+                await _shopDeliveryTypeRepository.CreateRange(cancellationToken, deliveryTypes);
+            }
+            if (UpdateDTO.ShopPaymentMethods.Count > 0)
+            {
+                var paymentMethods = UpdateDTO.ShopPaymentMethods.Select(e => new ShopPaymentMethod
+                {
+                    PaymentMethodId = e.Id,
+                    ShopId = shop.Id,
+                    Сommission = e.Сommission
+                }).ToArray();
+                await _shopPaymentMethodRepository.CreateRange(cancellationToken, paymentMethods);
+            }
             return UpdateDTO;
         }
 
-        public async Task AddShopToFavorites(Guid userId, Guid shopId, CancellationToken cancellationToken = default)
+        public async Task AddShopToFavorites(
+            Guid userId,
+            Guid shopId,
+            CancellationToken cancellationToken = default
+        )
         {
             var user = await _userRepository.GetById(userId, cancellationToken);
-            var existing = await _usersFavoriteShops.GetFavByShopAndUserId(userId, shopId, cancellationToken);
+            var existing = await _usersFavoriteShops.GetFavByShopAndUserId(
+                userId,
+                shopId,
+                cancellationToken
+            );
             if (existing != null)
             {
-                throw new AlreadyExistsException("Магазин уже в избранном", "Shop already in favorites table");
+                throw new AlreadyExistsException(
+                    "Магазин уже в избранном",
+                    "Shop already in favorites table"
+                );
             }
             if (user == null)
             {
@@ -169,7 +213,10 @@ namespace Logic.Services
             await _userRepository.Update(userId, user, cancellationToken);
         }
 
-        public async Task<List<ShopDTO>> ShowUserFavoriteShops(Guid userId, CancellationToken cancellationToken = default)
+        public async Task<List<ShopDTO>> ShowUserFavoriteShops(
+            Guid userId,
+            CancellationToken cancellationToken = default
+        )
         {
             var user = await _userRepository.GetById(userId, cancellationToken);
             if (user == null)
@@ -189,9 +236,17 @@ namespace Logic.Services
             return result;
         }
 
-        public async Task DeleteShopFromFavorites(Guid userId, Guid shopId, CancellationToken cancellationToken = default)
+        public async Task DeleteShopFromFavorites(
+            Guid userId,
+            Guid shopId,
+            CancellationToken cancellationToken = default
+        )
         {
-            var existing = await _usersFavoriteShops.GetFavByShopAndUserId(userId, shopId, cancellationToken);
+            var existing = await _usersFavoriteShops.GetFavByShopAndUserId(
+                userId,
+                shopId,
+                cancellationToken
+            );
             if (existing == null)
             {
                 throw new NotFoundException("Избранный магазин не найден", "Wrong shop or user id");
