@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Data.Repositories
 {
-    public class PostgreStaticFileInfoRepository:BaseRepository<StaticFileInfo>, IStaticFileInfoRepository
+    public class StaticFileInfoRepository:BaseRepository<StaticFileInfo>, IStaticFileInfoRepository
     {
-        public PostgreStaticFileInfoRepository(ApplicationDbContext context):base(context) { }
+        public StaticFileInfoRepository(ApplicationDbContext context):base(context) { }
         public async Task<StaticFileInfo> GetByParentId(Guid Id)
         {
             var file = await _context.Set<StaticFileInfo>().FirstOrDefaultAsync(e => e.ParentEntityId == Id);

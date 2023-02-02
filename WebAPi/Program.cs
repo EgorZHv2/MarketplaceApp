@@ -55,18 +55,18 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddAutoMapper(typeof(AppMappingProfile));
 
-builder.Services.AddScoped<IShopRepository, PostgreShopRepository>();
-builder.Services.AddScoped<IStaticFileInfoRepository,PostgreStaticFileInfoRepository>();
-builder.Services.AddScoped<IReviewRepository, PostgreReviewRepository>();
-builder.Services.AddScoped<IUserRepository,PostgreUserRepository>();
-builder.Services.AddScoped<IUsersFavoriteShopsRepository, PostgreUsersFavoriteShopsRepository>();
+builder.Services.AddScoped<IShopRepository, ShopRepository>();
+builder.Services.AddScoped<IStaticFileInfoRepository,StaticFileInfoRepository>();
+builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+builder.Services.AddScoped<IUserRepository,UserRepository>();
+builder.Services.AddScoped<IUsersFavoriteShopsRepository, UsersFavoriteShopsRepository>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITypeService,TypeService>();
 builder.Services.AddScoped<IDeliveryTypeService, DeliveryTypeService>();
 builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
-builder.Services.AddScoped<ICategoryRepository, PostgreCategoryRepository>();
-builder.Services.AddScoped<IRepositoryWrapper, PostgreRepositoryWrapper>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IRandomStringGeneratorService, RandomStringGeneratorService>();
 builder.Services.AddScoped<ITokenService, TokenService>();

@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Data.Repositories
 {
-    public class PostgreShopRepository : BaseRepository<Shop>,IShopRepository
+    public class ShopRepository : BaseRepository<Shop>,IShopRepository
     {       
-       public  PostgreShopRepository(ApplicationDbContext context):base(context) { }
+       public  ShopRepository(ApplicationDbContext context):base(context) { }
         public override async Task<Guid> Create(Guid userId,Shop entity,CancellationToken cancellationToken = default)
         {
             entity.CreateDateTime = DateTime.UtcNow;

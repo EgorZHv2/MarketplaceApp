@@ -205,7 +205,7 @@ namespace Logic.Services
             {
                 throw new NotFoundException("Избранный магазин не найден", "Wrong shop or user id");
             }
-            await _usersFavoriteShops.Delete(userId, existing, cancellationToken);
+            await _usersFavoriteShops.Delete(existing, cancellationToken);
     
         }
            

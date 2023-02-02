@@ -24,5 +24,7 @@ namespace Data.Entities
         public List<PaymentMethod> PaymentMethods { get; set; } = new List<PaymentMethod>();
         public List<ShopDeliveryType> ShopDeliveryTypes { get; set; } = new List<ShopDeliveryType>();
         public List<ShopPaymentMethod> ShopPaymentMethods { get; set; } = new List<ShopPaymentMethod>();
+        public List<ShopCategory> ShopCategories { get; set; } = new List<ShopCategory>();
+        public List<ShopType> ShopTypes { get; set; } = new List<ShopType>();
     }
 }

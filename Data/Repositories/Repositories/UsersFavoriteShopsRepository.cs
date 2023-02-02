@@ -9,9 +9,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Data.Repositories
 {
-    public class PostgreUsersFavoriteShopsRepository:BaseRepository<UserFavoriteShop>,IUsersFavoriteShopsRepository
+    public class UsersFavoriteShopsRepository:IUsersFavoriteShopsRepository
     {
-        public PostgreUsersFavoriteShopsRepository(ApplicationDbContext context):base(context) { }
+        private ApplicationDbContext _context;
+        private DbSet<UserFavoriteShop> _dbset => _context.Set<UserFavoriteShop>();
+        public UsersFavoriteShopsRepository(ApplicationDbContext context)
+        {
+            _context = context;
+        }
 
         public async Task<UserFavoriteShop> GetFavByShopAndUserId(Guid userId, Guid shopId,CancellationToken cancellationToken = default)
         {
@@ -25,6 +30,11 @@ namespace Data.Repositories
                 .Select(p => p.Shop)
                 .ToListAsync(cancellationToken);
 
+        }
+        public async Task Delete(UserFavoriteShop entity, CancellationToken cancellationToken = default)
+        {
+            _dbset.Remove(entity);
+            await _context.SaveChangesAsync(cancellationToken);
         }
                 
     }

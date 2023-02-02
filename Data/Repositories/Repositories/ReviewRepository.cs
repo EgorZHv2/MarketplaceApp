@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Data.Repositories
 {
-    public class PostgreReviewRepository:BaseRepository<Review>,IReviewRepository
+    public class ReviewRepository:BaseRepository<Review>,IReviewRepository
     {
-        public PostgreReviewRepository(ApplicationDbContext context):base(context) 
+        public ReviewRepository(ApplicationDbContext context):base(context) 
         {
           
         }

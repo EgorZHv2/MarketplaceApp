@@ -17,11 +17,6 @@ namespace Logic.Services
     {
         public CategoryService(IRepositoryWrapper repositoryWrapper,ICategoryRepository repository,IMapper mapper)
             :base(repositoryWrapper, repository, mapper) { }
-              /// <summary>
-        /// Проверяет валидность айди родителя, не является ли он айди потомка.
-        /// </summary>
-        /// <returns> true если валидно, иначе false</returns>
-        /// <exception cref="MappingException"></exception>
         public async Task<bool> CheckParentCategory(Guid categoryid,Guid parentid)
         {
             if(categoryid == parentid)

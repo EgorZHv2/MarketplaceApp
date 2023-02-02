@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Data.Repositories
 {
-    public class PostgreCategoryRepository:BaseDictionaryRepository<Category>,ICategoryRepository
+    public class CategoryRepository:BaseDictionaryRepository<Category>,ICategoryRepository
     {
-        public PostgreCategoryRepository(ApplicationDbContext context):base(context) { }
+        public CategoryRepository(ApplicationDbContext context):base(context) { }
         
         public async Task<IQueryable<Category>> GetCategoriesWithChilds()
         {

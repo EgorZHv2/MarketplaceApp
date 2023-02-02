@@ -32,7 +32,6 @@ namespace Data.EntitiesConfigurations
                         .WithMany(e => e.UsersFavoriteShops)
                         .HasForeignKey(e => e.UserId);
                     e.ToTable("UsersFavoriteShops");
-                    e.HasQueryFilter(e => e.IsDeleted == false);
                 });
         }
     }

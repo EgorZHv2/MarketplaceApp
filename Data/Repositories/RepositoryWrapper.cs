@@ -10,7 +10,7 @@ using System.Threading.Tasks.Dataflow;
 
 namespace Data.Repositories
 {
-    public class PostgreRepositoryWrapper:IRepositoryWrapper
+    public class RepositoryWrapper:IRepositoryWrapper
     {
         private ApplicationDbContext _context;
 
@@ -22,7 +22,7 @@ namespace Data.Repositories
         private BaseDictionaryRepository<Data.Entities.Type> _types;
         private BaseDictionaryRepository<DeliveryType> _deliveryTypes;
         private BaseDictionaryRepository<PaymentMethod> _paymentMethods;
-        public PostgreRepositoryWrapper(ApplicationDbContext context)
+        public RepositoryWrapper(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -32,7 +32,7 @@ namespace Data.Repositories
             {
                 if(_users == null)
                 {
-                    _users = new PostgreUserRepository(_context);
+                    _users = new UserRepository(_context);
                 }
                 return _users;
             }
@@ -43,7 +43,7 @@ namespace Data.Repositories
             {
                 if(_shops == null)
                 {
-                    _shops = new PostgreShopRepository(_context);
+                    _shops = new ShopRepository(_context);
                 }
                 return _shops;
             }
@@ -55,7 +55,7 @@ namespace Data.Repositories
             {
                 if(_reviews == null)
                 {
-                    _reviews = new PostgreReviewRepository(_context);
+                    _reviews = new ReviewRepository(_context);
                 }
                 return _reviews;
             }
@@ -67,7 +67,7 @@ namespace Data.Repositories
             {
                 if (_staticFileInfos == null)
                 {
-                    _staticFileInfos = new PostgreStaticFileInfoRepository(_context);
+                    _staticFileInfos = new StaticFileInfoRepository(_context);
                 }
                 return _staticFileInfos;
             }

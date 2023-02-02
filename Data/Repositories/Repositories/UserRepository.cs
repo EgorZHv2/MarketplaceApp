@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Data.Repositories
 {
-    public class PostgreUserRepository:BaseRepository<User>,IUserRepository
+    public class UserRepository:BaseRepository<User>,IUserRepository
     {
 
 
-        public PostgreUserRepository(ApplicationDbContext context) : base(context) { }
+        public UserRepository(ApplicationDbContext context) : base(context) { }
        
      
         public async Task<User> GetUserByEmail(string email,CancellationToken cancellationToken = default)
