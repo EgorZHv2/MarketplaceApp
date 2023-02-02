@@ -1,13 +1,10 @@
 ﻿using AutoMapper;
 using Data.Entities;
 using Data.IRepositories;
-using Logic.Exceptions;
 using Data.Models;
+using Logic.Exceptions;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel;
-using System.Security.Claims;
 
 namespace WebAPi.Controllers
 {
@@ -30,8 +27,6 @@ namespace WebAPi.Controllers
             _mapper = mapper;
         }
 
-      
-
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateAdmin(CreateAdminModel model)
@@ -51,7 +46,7 @@ namespace WebAPi.Controllers
                 throw new MappingException(this.GetType().ToString());
             }
             user.Role = Data.Enums.Role.Admin;
-            _repositoryWrapper.Users.Create(userid,user);
+            _repositoryWrapper.Users.Create(userid, user);
             _repositoryWrapper.Save();
             return Ok(user.Id);
         }

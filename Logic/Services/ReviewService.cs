@@ -1,33 +1,23 @@
 ﻿using AutoMapper;
-using Data.DTO;
+using Data.DTO.Review;
 using Data.Entities;
 using Data.IRepositories;
-using Data.Models;
-using Data.Repositories;
-using Logic.Interfaces;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Data.DTO.Review;
-using System.Threading;
 using Logic.Exceptions;
-using Data.DTO.Shop;
-using Microsoft.Extensions.Configuration;
+using Logic.Interfaces;
 
 namespace Logic.Services
 {
-    public class ReviewService:BaseService<Review,ReviewDTO,CreateReviewDTO,UpdateReviewDTO,IReviewRepository>,IReviewService
+    public class ReviewService : BaseService<Review, ReviewDTO, CreateReviewDTO, UpdateReviewDTO, IReviewRepository>, IReviewService
     {
         private IRepositoryWrapper _repositoryWrapper;
-        public ReviewService(IReviewRepository repository,IMapper mapper,
-            IRepositoryWrapper repositoryWrapper):base(repository, mapper)
+
+        public ReviewService(IReviewRepository repository, IMapper mapper,
+            IRepositoryWrapper repositoryWrapper) : base(repository, mapper)
         {
             _repositoryWrapper = repositoryWrapper;
         }
-        public async Task<List<ReviewDTO>>  GetReviewsByShopId(Guid userId,Guid shopId,CancellationToken cancellationToken = default)
+
+        public async Task<List<ReviewDTO>> GetReviewsByShopId(Guid userId, Guid shopId, CancellationToken cancellationToken = default)
         {
             var user = await _repositoryWrapper.Users.GetById(userId, cancellationToken);
             var list = _repository
@@ -44,6 +34,7 @@ namespace Logic.Services
             }
             return result;
         }
+
         public async Task<List<ReviewDTO>> GetAll(
             Guid userid,
             CancellationToken cancellationToken = default
@@ -53,7 +44,7 @@ namespace Logic.Services
             var list = _repository
                 .GetAll()
                 .Where(e => (e.IsActive || user.Id == e.BuyerId || user.Role == Data.Enums.Role.Admin)).ToList();
-            List<ReviewDTO> result = new List<ReviewDTO>();         
+            List<ReviewDTO> result = new List<ReviewDTO>();
             try
             {
                 result = _mapper.Map<List<ReviewDTO>>(list);
@@ -64,7 +55,8 @@ namespace Logic.Services
             }
             return result;
         }
-        public override async Task<Guid> Create(Guid userId,CreateReviewDTO createDTO,CancellationToken cancellationToken = default)
+
+        public override async Task<Guid> Create(Guid userId, CreateReviewDTO createDTO, CancellationToken cancellationToken = default)
         {
             Review entity = new Review();
             try
@@ -76,9 +68,8 @@ namespace Logic.Services
                 throw new MappingException(this);
             }
             entity.BuyerId = userId;
-            var result =  await _repository.Create(userId,entity,cancellationToken);
+            var result = await _repository.Create(userId, entity, cancellationToken);
             return result;
         }
-       
     }
 }

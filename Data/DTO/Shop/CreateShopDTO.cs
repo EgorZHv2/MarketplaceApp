@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Data.DTO.Shop
 {
-    public class CreateShopDTO:BaseDTO
+    public class CreateShopDTO : BaseDTO
     {
-
         [Required]
         public string Title { get; set; }
 
@@ -18,6 +12,5 @@ namespace Data.DTO.Shop
 
         [Required]
         public string INN { get; set; }
-
     }
 }

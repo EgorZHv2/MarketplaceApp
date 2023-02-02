@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Data.Entities;
+﻿using Data.Entities;
 using Data.EntitiesConfigurations;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,7 +15,9 @@ namespace Data
         public DbSet<PaymentMethod> PaymentMethods { get; set; } = null!;
         public DbSet<DeliveryType> DeliveryTypes { get; set; } = null!;
 
-        public ApplicationDbContext(DbContextOptions options) : base(options) { }
+        public ApplicationDbContext(DbContextOptions options) : base(options)
+        {
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

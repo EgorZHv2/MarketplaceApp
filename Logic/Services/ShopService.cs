@@ -1,20 +1,10 @@
 ﻿using AutoMapper;
-using Data.DTO;
 using Data.DTO.Shop;
 using Data.Entities;
 using Data.IRepositories;
-using Data.Models;
-using Data.Repositories;
 using Logic.Exceptions;
 using Logic.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WebAPi.Interfaces;
 
 namespace Logic.Services
@@ -27,6 +17,7 @@ namespace Logic.Services
         private IConfiguration _configuration;
         private IUserRepository _userRepository;
         private IUsersFavoriteShopsRepository _usersFavoriteShops;
+
         public ShopService(
             IShopRepository repository,
             IMapper mapper,
@@ -103,8 +94,8 @@ namespace Logic.Services
             {
                 throw new MappingException(this);
             }
-          
-            var result = await _repository.Create(userId,shop, cancellationToken);
+
+            var result = await _repository.Create(userId, shop, cancellationToken);
             return result;
         }
 
@@ -121,7 +112,7 @@ namespace Logic.Services
             Shop shop = await _repository.GetById(UpdateDTO.Id, cancellationToken);
             try
             {
-                _mapper.Map(UpdateDTO,shop);
+                _mapper.Map(UpdateDTO, shop);
             }
             catch
             {
@@ -165,7 +156,7 @@ namespace Logic.Services
         {
             var user = await _userRepository.GetById(userId, cancellationToken);
             var existing = await _usersFavoriteShops.GetFavByShopAndUserId(userId, shopId, cancellationToken);
-            if(existing != null)
+            if (existing != null)
             {
                 throw new AlreadyExistsException("Магазин уже в избранном", "Shop already in favorites table");
             }
@@ -176,17 +167,17 @@ namespace Logic.Services
             var shop = await _repository.GetById(shopId, cancellationToken);
             user.FavoriteShops.Add(shop);
             await _userRepository.Update(userId, user, cancellationToken);
-
         }
-        public async Task<List<ShopDTO>> ShowUserFavoriteShops(Guid userId,CancellationToken cancellationToken = default)
+
+        public async Task<List<ShopDTO>> ShowUserFavoriteShops(Guid userId, CancellationToken cancellationToken = default)
         {
-            var user = await _userRepository.GetById(userId,cancellationToken);
-            if(user == null)
+            var user = await _userRepository.GetById(userId, cancellationToken);
+            if (user == null)
             {
-               throw new NotFoundException("Пользователь не найден", "User not found"); 
+                throw new NotFoundException("Пользователь не найден", "User not found");
             }
             List<ShopDTO> result = new List<ShopDTO>();
-            var list =  await _usersFavoriteShops.GetFavoriteShopsByUserId(userId);
+            var list = await _usersFavoriteShops.GetFavoriteShopsByUserId(userId);
             try
             {
                 result = _mapper.Map<List<ShopDTO>>(list);
@@ -197,17 +188,15 @@ namespace Logic.Services
             }
             return result;
         }
+
         public async Task DeleteShopFromFavorites(Guid userId, Guid shopId, CancellationToken cancellationToken = default)
         {
-
             var existing = await _usersFavoriteShops.GetFavByShopAndUserId(userId, shopId, cancellationToken);
-            if(existing == null)
+            if (existing == null)
             {
                 throw new NotFoundException("Избранный магазин не найден", "Wrong shop or user id");
             }
             await _usersFavoriteShops.Delete(existing, cancellationToken);
-    
         }
-           
     }
 }

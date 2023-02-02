@@ -1,9 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Data.Models
+﻿namespace Data.Models
 {
     public class FavoriteShopsModel
     {
-       public Guid[] ShopIds { get; set; }
+        public Guid[] ShopIds { get; set; }
     }
 }

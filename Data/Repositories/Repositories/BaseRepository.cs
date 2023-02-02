@@ -2,43 +2,35 @@
 using Data.IRepositories;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Data.Repositories
+namespace Data.Repositories.Repositories
 {
     public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : BaseEntity
     {
-
         protected readonly ApplicationDbContext _context;
         protected DbSet<TEntity> _dbset => _context.Set<TEntity>();
+
         public BaseRepository(ApplicationDbContext context)
         {
-            _context= context;
+            _context = context;
         }
 
         public IEnumerable<TEntity> GetAll()
         {
-
             return _dbset;
         }
 
-        public async Task<TEntity> GetById(Guid Id,CancellationToken cancellationToken =default)
+        public async Task<TEntity> GetById(Guid Id, CancellationToken cancellationToken = default)
         {
-            
-            return await _dbset.FirstOrDefaultAsync(e=>e.Id == Id,cancellationToken);
+            return await _dbset.FirstOrDefaultAsync(e => e.Id == Id, cancellationToken);
         }
 
         public IEnumerable<TEntity> GetManyByIds(params Guid[] ids)
         {
-            
             return _context.Set<TEntity>().Where(e => ids.Contains(e.Id));
         }
 
-        public virtual async Task<PageModel<TEntity>> GetPage(IQueryable<TEntity> queryable,int pagenumber,int pagesize)
+        public virtual async Task<PageModel<TEntity>> GetPage(IQueryable<TEntity> queryable, int pagenumber, int pagesize)
         {
             PageModel<TEntity> pageModel = new PageModel<TEntity>
             {
@@ -46,12 +38,12 @@ namespace Data.Repositories
                 ItemsOnPage = pagesize,
                 CurrentPage = pagenumber,
                 TotalItems = queryable.Count(),
-                TotalPages = (int)Math.Ceiling(queryable.Count() /(double)pagesize)
+                TotalPages = (int)Math.Ceiling(queryable.Count() / (double)pagesize)
             };
             return pageModel;
         }
 
-        public virtual async Task<Guid> Create(Guid userId,TEntity entity,CancellationToken cancellationToken = default)
+        public virtual async Task<Guid> Create(Guid userId, TEntity entity, CancellationToken cancellationToken = default)
         {
             entity.CreateDateTime = DateTime.UtcNow;
             entity.CreatorId = userId;
@@ -60,12 +52,12 @@ namespace Data.Repositories
             entity.IsActive = true;
             entity.IsDeleted = false;
             entity.Id = Guid.NewGuid();
-            await _context.Set<TEntity>().AddAsync(entity,cancellationToken);
+            await _context.Set<TEntity>().AddAsync(entity, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
             return entity.Id;
         }
 
-        public async Task CreateMany(Guid userid,CancellationToken cancellationToken = default,params TEntity[] entities)
+        public async Task CreateMany(Guid userid, CancellationToken cancellationToken = default, params TEntity[] entities)
         {
             foreach (TEntity entity in entities)
             {
@@ -76,22 +68,20 @@ namespace Data.Repositories
                 entity.IsDeleted = false;
                 entity.CreatorId = userid;
                 entity.UpdatorId = userid;
-                await _context.Set<TEntity>().AddAsync(entity,cancellationToken);
-                
+                await _context.Set<TEntity>().AddAsync(entity, cancellationToken);
             }
-            await _context.SaveChangesAsync(cancellationToken);         
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task Update(Guid userId, TEntity entity,CancellationToken cancellationToken = default)
+        public async Task Update(Guid userId, TEntity entity, CancellationToken cancellationToken = default)
         {
             entity.UpdateDateTime = DateTime.UtcNow;
             entity.UpdatorId = userId;
             _context.Set<TEntity>().Update(entity);
             await _context.SaveChangesAsync(cancellationToken);
-            
         }
 
-        public async Task UpdateMany(Guid userid,CancellationToken cancellationToken = default,params TEntity[] entities)
+        public async Task UpdateMany(Guid userid, CancellationToken cancellationToken = default, params TEntity[] entities)
         {
             foreach (TEntity entity in entities)
             {
@@ -100,12 +90,10 @@ namespace Data.Repositories
                 _context.Set<TEntity>().Update(entity);
             }
             await _context.SaveChangesAsync(cancellationToken);
-            
         }
 
-        public async Task Delete(Guid userid,TEntity entity,CancellationToken cancellationToken = default)
+        public async Task Delete(Guid userid, TEntity entity, CancellationToken cancellationToken = default)
         {
-            
             entity.DeletorId = userid;
             entity.DeleteDateTime = DateTime.UtcNow;
             entity.IsDeleted = true;
@@ -113,9 +101,8 @@ namespace Data.Repositories
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task DeleteMany(Guid userid,CancellationToken cancellationToken = default,params TEntity[] entityes)
+        public async Task DeleteMany(Guid userid, CancellationToken cancellationToken = default, params TEntity[] entityes)
         {
-            
             foreach (var entity in entityes)
             {
                 entity.DeletorId = userid;
@@ -123,9 +110,7 @@ namespace Data.Repositories
                 entity.IsDeleted = true;
             }
             _context.Set<TEntity>().UpdateRange(entityes);
-            await  _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
         }
-
-      
     }
 }

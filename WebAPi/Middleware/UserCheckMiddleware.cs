@@ -1,11 +1,8 @@
-﻿
-using Data.Entities;
-using Data.IRepositories;
+﻿using Data.IRepositories;
 using Logic.Exceptions;
 using System.Net;
-using Microsoft.Extensions.Logging;
-using WebAPi.Interfaces;
 using System.Security.Claims;
+using WebAPi.Interfaces;
 
 namespace WebAPi.Middleware
 {
@@ -13,37 +10,30 @@ namespace WebAPi.Middleware
     {
         private RequestDelegate _next;
         private ILogger<UserCheckMiddleware> _logger;
-       
-     
-        public UserCheckMiddleware(RequestDelegate next,ILogger<UserCheckMiddleware> logger )
+
+        public UserCheckMiddleware(RequestDelegate next, ILogger<UserCheckMiddleware> logger)
         {
             _next = next;
             _logger = logger;
-          
-
-        
         }
-        public async Task InvokeAsync(HttpContext context,IUserRepository userRepository, ITokenService tokenService)
-        {
 
+        public async Task InvokeAsync(HttpContext context, IUserRepository userRepository, ITokenService tokenService)
+        {
             string token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
             if (!string.IsNullOrEmpty(token))
             {
-                string useremail = tokenService.DecryptToken(token).FirstOrDefault(e=>e.Type == ClaimTypes.Name).Value;
+                string useremail = tokenService.DecryptToken(token).FirstOrDefault(e => e.Type == ClaimTypes.Name).Value;
                 var user = await userRepository.GetUserByEmail(useremail);
-                if(user == null) 
+                if (user == null)
                 {
-                    throw new AuthException("Некорректный токен авторизации","Uncorrect jwttoken", HttpStatusCode.Forbidden);
+                    throw new AuthException("Некорректный токен авторизации", "Uncorrect jwttoken", HttpStatusCode.Forbidden);
                 }
-                if(!user.IsActive)
+                if (!user.IsActive)
                 {
-                    throw new AuthException("Пользователь заблокирован","User not active", HttpStatusCode.Forbidden,user.Email);
-                    
+                    throw new AuthException("Пользователь заблокирован", "User not active", HttpStatusCode.Forbidden, user.Email);
                 }
-     
-            
-           }
-           await _next.Invoke(context);
+            }
+            await _next.Invoke(context);
         }
     }
 }

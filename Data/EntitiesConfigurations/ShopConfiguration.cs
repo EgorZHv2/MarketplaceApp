@@ -1,12 +1,6 @@
 ﻿using Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Data.EntitiesConfigurations
 {
@@ -21,7 +15,7 @@ namespace Data.EntitiesConfigurations
                 .HasForeignKey(e => e.SellerId)
                 .OnDelete(DeleteBehavior.Cascade);
             entityTypeBuilder.HasQueryFilter(e => e.IsDeleted == false);
-                  
+
             entityTypeBuilder
                 .HasMany<DeliveryType>(e => e.DeliveryTypes)
                 .WithMany(e => e.Shops)
@@ -50,19 +44,19 @@ namespace Data.EntitiesConfigurations
                     e.ToTable("ShopPaymentMethods");
                     e.Property(p => p.Сommission).IsRequired(false);
                 });
-             entityTypeBuilder
-                .HasMany<Category>(e => e.Categories)
-                .WithMany(e => e.Shops)
-                .UsingEntity<ShopCategory>(e =>
-                {
-                    e.HasOne(e => e.Shop)
-                        .WithMany(e => e.ShopCategories)
-                        .HasForeignKey(e => e.ShopId);
-                    e.HasOne(e => e.Category)
-                        .WithMany(e => e.ShopCategories)
-                        .HasForeignKey(e => e.CategoryId);
-                    e.ToTable("ShopCategories");
-                });
+            entityTypeBuilder
+               .HasMany<Category>(e => e.Categories)
+               .WithMany(e => e.Shops)
+               .UsingEntity<ShopCategory>(e =>
+               {
+                   e.HasOne(e => e.Shop)
+                       .WithMany(e => e.ShopCategories)
+                       .HasForeignKey(e => e.ShopId);
+                   e.HasOne(e => e.Category)
+                       .WithMany(e => e.ShopCategories)
+                       .HasForeignKey(e => e.CategoryId);
+                   e.ToTable("ShopCategories");
+               });
             entityTypeBuilder
                 .HasMany<Data.Entities.Type>(e => e.Types)
                 .WithMany(e => e.Shops)

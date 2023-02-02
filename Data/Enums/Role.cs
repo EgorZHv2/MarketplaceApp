@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Data.Enums
+﻿namespace Data.Enums
 {
-   public enum Role
+    public enum Role
     {
         Seller,
         Buyer,

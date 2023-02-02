@@ -1,11 +1,5 @@
-﻿using WebAPi.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dadata;
-using Dadata.Model;
+﻿using Dadata;
+using WebAPi.Interfaces;
 
 namespace WebAPi.Services
 {
@@ -18,7 +12,7 @@ namespace WebAPi.Services
             var result = api.FindParty(inn);
             if (result.Result.suggestions.Count == 0)
             {
-               return true;
+                return true;
                 //return false;
             }
             else

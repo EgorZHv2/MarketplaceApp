@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Data.DTO.Auth
 {
-    public class LoginDTO:BaseDTO
+    public class LoginDTO : BaseDTO
     {
-         [Required]
+        [Required]
         public string Email { get; set; }
 
         [Required]

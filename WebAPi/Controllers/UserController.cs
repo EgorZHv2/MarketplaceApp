@@ -1,27 +1,19 @@
-﻿using AutoMapper;
-using Data.IRepositories;
-using Data.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Logic.Exceptions;
-using System.Web;
-using System.Net;
-using System.Security.Claims;
-using Logic.Interfaces;
-using Data.DTO;
+﻿using Data.DTO.User;
 using Data.Entities;
-using Data;
-using Data.DTO.User;
-using Microsoft.EntityFrameworkCore;
+using Data.IRepositories;
+using Logic.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPi.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class UserController : BaseGenericController<User,UserDTO,CreateUserDTO,UpdateUserDTO,IUserRepository,IUserService>
+    public class UserController : BaseGenericController<User, UserDTO, CreateUserDTO, UpdateUserDTO, IUserRepository, IUserService>
     {
-        public UserController(IUserService userService) : base(userService) { }
+        public UserController(IUserService userService) : base(userService)
+        {
+        }
 
         [Authorize]
         [HttpPut]

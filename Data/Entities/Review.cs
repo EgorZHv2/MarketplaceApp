@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Data.Entities
+﻿namespace Data.Entities
 {
-    public class Review:BaseEntity
+    public class Review : BaseEntity
     {
-      
         public string ReviewText { get; set; }
         public int Score { get; set; }
         public Guid BuyerId { get; set; }

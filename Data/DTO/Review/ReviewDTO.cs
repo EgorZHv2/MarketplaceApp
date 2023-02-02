@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Data.DTO.Review
+﻿namespace Data.DTO.Review
 {
-    public class ReviewDTO:BaseDTO
+    public class ReviewDTO : BaseDTO
     {
         public Guid Id { get; set; }
         public string ReviewText { get; set; }

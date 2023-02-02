@@ -1,28 +1,19 @@
-﻿using AutoMapper;
+﻿using Data.DTO.Shop;
 using Data.Entities;
 using Data.IRepositories;
-using Data.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Dadata;
-using Dadata.Model;
-using WebAPi.Interfaces;
-using Logic.Exceptions;
-using System.Security.Claims;
-using Data.DTO;
 using Logic.Interfaces;
-using Data.DTO.Shop;
-using Data.DTO.Review;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPi.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class ShopController : BaseGenericController<Shop,ShopDTO,CreateShopDTO,UpdateShopDTO,IShopRepository,IShopService>
+    public class ShopController : BaseGenericController<Shop, ShopDTO, CreateShopDTO, UpdateShopDTO, IShopRepository, IShopService>
     {
-
-        public ShopController(IShopService shopService) : base(shopService) { }
+        public ShopController(IShopService shopService) : base(shopService)
+        {
+        }
 
         [HttpGet]
         [Authorize]

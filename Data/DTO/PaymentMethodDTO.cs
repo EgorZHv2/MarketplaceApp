@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Data.DTO
+﻿namespace Data.DTO
 {
-    public class PaymentMethodDTO:DictionaryDTO
+    public class PaymentMethodDTO : DictionaryDTO
     {
-          public bool HasCommission { get; set; }
+        public bool HasCommission { get; set; }
     }
 }

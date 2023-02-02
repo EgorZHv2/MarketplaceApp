@@ -1,15 +1,10 @@
 ﻿using WebAPi.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WebAPi.Services
 {
     public class RandomStringGeneratorService : IRandomStringGeneratorService
     {
-        Random rnd = new Random();
+        private Random rnd = new Random();
 
         public string Generate(int count)
         {
@@ -21,9 +16,11 @@ namespace WebAPi.Services
                     case 1:
                         password += (char)rnd.Next(65, 91);
                         break;
+
                     case 2:
                         password += (char)rnd.Next(97, 123);
                         break;
+
                     case 3:
                         password += Convert.ToString(rnd.Next(0, 10));
                         break;
@@ -32,6 +29,5 @@ namespace WebAPi.Services
 
             return password;
         }
-        
     }
 }

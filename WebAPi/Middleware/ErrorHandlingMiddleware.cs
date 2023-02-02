@@ -1,14 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-using Data.Models;
+﻿using Data.Models;
 using Logic.Exceptions;
 using System.Net;
 
@@ -24,36 +14,37 @@ namespace WebAPi.Middleware
             _next = next;
             _logger = logger;
         }
+
         public async Task InvokeAsync(HttpContext context)
         {
             try
             {
                 await _next.Invoke(context);
             }
-            catch(ApiException ex)
+            catch (ApiException ex)
             {
                 string logmessage = $"Date: {DateTime.UtcNow} | Exception: {ex.GetType().Name} | Code: {ex.StatusCode} | Message: {ex.LogMessage} | ";
-                if(ex is AuthException authException)
+                if (ex is AuthException authException)
                 {
-                    logmessage += "User login: " + (string.IsNullOrEmpty(authException.UserLogin)?"none":authException.UserLogin);
+                    logmessage += "User login: " + (string.IsNullOrEmpty(authException.UserLogin) ? "none" : authException.UserLogin);
                 }
-                if(ex is MappingException mappingException)
+                if (ex is MappingException mappingException)
                 {
                     logmessage += $"ExceptionClassName: {mappingException.ExceptionClass}";
                 }
                 _logger.LogError(logmessage, ex);
                 await ResponseError(context, ex.UserMessage, ex.StatusCode);
             }
-           
         }
-        public async Task ResponseError(HttpContext context,string message, HttpStatusCode code)
+
+        public async Task ResponseError(HttpContext context, string message, HttpStatusCode code)
         {
             context.Response.StatusCode = (int)code;
-              await  context.Response.WriteAsJsonAsync(new ErrorModel()
-                {
-                    Message = message,
-                    StatusCode = context.Response.StatusCode
-                }.ToJson());
+            await context.Response.WriteAsJsonAsync(new ErrorModel()
+            {
+                Message = message,
+                StatusCode = context.Response.StatusCode
+            }.ToJson());
         }
     }
 }

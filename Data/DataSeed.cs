@@ -1,10 +1,4 @@
 ﻿using Data.IRepositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 
 namespace Data
 {
@@ -12,17 +6,18 @@ namespace Data
     {
         private const string AdminMail = "admin@mail.ru";
         private const string AdminPassword = "12345678";
+
         public static void SeedData(IRepositoryWrapper repositoryWrapper)
         {
             SeedAdmin(repositoryWrapper).Wait();
-            
         }
-        public  static async Task SeedAdmin(IRepositoryWrapper repositoryWrapper)
+
+        public static async Task SeedAdmin(IRepositoryWrapper repositoryWrapper)
         {
             var user = await repositoryWrapper.Users.GetUserByEmail(AdminMail);
             if (user == null)
             {
-              await repositoryWrapper.Users.Create(Guid.Empty,new Entities.User
+                await repositoryWrapper.Users.Create(Guid.Empty, new Entities.User
                 {
                     FirstName = "Админ",
                     Email = AdminMail,
@@ -32,11 +27,9 @@ namespace Data
                     Id = Guid.NewGuid(),
                     IsActive = true,
                     IsDeleted = false
-                    
                 });
                 repositoryWrapper.Save();
             }
         }
-
     }
 }

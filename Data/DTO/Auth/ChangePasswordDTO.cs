@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Data.DTO.Auth
 {
-    public class ChangePasswordDTO:BaseDTO
+    public class ChangePasswordDTO : BaseDTO
     {
         [Required]
         public string OldPassword { get; set; }

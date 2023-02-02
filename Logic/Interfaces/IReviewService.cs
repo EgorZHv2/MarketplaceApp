@@ -1,12 +1,5 @@
-﻿using Data.DTO;
+﻿using Data.DTO.Review;
 using Data.Entities;
-using Data.DTO.Review;
-using Data.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Data.IRepositories;
 
 namespace Logic.Interfaces
@@ -19,6 +12,7 @@ namespace Logic.Interfaces
             Guid shopId,
             CancellationToken cancellationToken = default
         );
+
         public Task<List<ReviewDTO>> GetAll(
             Guid userid,
             CancellationToken cancellationToken = default

@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Data.DTO.Review
 {
-    public class UpdateReviewDTO:BaseUpdateDTO
+    public class UpdateReviewDTO : BaseUpdateDTO
     {
-
         [Required]
         public string ReviewText { get; set; }
 

@@ -1,24 +1,19 @@
-﻿using AutoMapper;
+﻿using Data.DTO.Review;
 using Data.Entities;
 using Data.IRepositories;
-using Data.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Logic.Exceptions;
-using System.Security.Claims;
-using Data.DTO;
-using Data.DTO.Review;
 using Logic.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPi.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class ReviewController : BaseGenericController<Review,ReviewDTO,CreateReviewDTO,UpdateReviewDTO,IReviewRepository,IReviewService>
+    public class ReviewController : BaseGenericController<Review, ReviewDTO, CreateReviewDTO, UpdateReviewDTO, IReviewRepository, IReviewService>
     {
-        public ReviewController(IReviewService reviewService) : base(reviewService) { }
+        public ReviewController(IReviewService reviewService) : base(reviewService)
+        {
+        }
 
         [HttpGet]
         [Authorize]

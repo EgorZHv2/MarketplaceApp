@@ -1,16 +1,11 @@
-﻿using Data.IRepositories;
-using Logic.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Logic.Exceptions;
-using Data.Entities;
+﻿using AutoMapper;
 using Data.DTO.Auth;
-using WebAPi.Interfaces;
-using AutoMapper;
+using Data.Entities;
+using Data.IRepositories;
+using Logic.Exceptions;
+using Logic.Interfaces;
 using System.Net;
+using WebAPi.Interfaces;
 
 namespace Logic.Services
 {
@@ -46,7 +41,7 @@ namespace Logic.Services
             CancellationToken cancellationToken = default
         )
         {
-            var user = await _userRepository.GetUserByEmail(email,cancellationToken);
+            var user = await _userRepository.GetUserByEmail(email, cancellationToken);
             if (user == null)
             {
                 throw new NotFoundException("Email не найден", "User email not found");
@@ -61,7 +56,7 @@ namespace Logic.Services
                 );
             }
             user.IsEmailConfirmed = true;
-            await _userRepository.Update(user.Id,user, cancellationToken);
+            await _userRepository.Update(user.Id, user, cancellationToken);
         }
 
         public async Task<string> Login(
@@ -121,28 +116,28 @@ namespace Logic.Services
                 throw new MappingException(this);
             }
             string code = _stringGeneratorService.Generate(6);
-            user.Password =  _hashService.HashPassword(model.Password);
-            user.EmailConfirmationCode =  _hashService.HashPassword(code);
+            user.Password = _hashService.HashPassword(model.Password);
+            user.EmailConfirmationCode = _hashService.HashPassword(code);
             _emailService.SendEmail(
                 user.Email,
                 "MarketPlaceApp",
                 $"Your verification code = {code}",
                 cancellationToken
             );
-            await _userRepository.Create(Guid.Empty,user, cancellationToken);
+            await _userRepository.Create(Guid.Empty, user, cancellationToken);
         }
 
-         public async Task ChangePassword(Guid userId,ChangePasswordDTO model,
-            CancellationToken cancellationToken = default
-        )
+        public async Task ChangePassword(Guid userId, ChangePasswordDTO model,
+           CancellationToken cancellationToken = default
+       )
         {
-            var user = await _userRepository.GetById(userId,cancellationToken);
+            var user = await _userRepository.GetById(userId, cancellationToken);
             if (user == null)
             {
                 throw new NotFoundException("Пользователь не найден", "User not found");
             }
-           
-            if (!_hashService.ComparePasswordWithHash(model.OldPassword,user.Password))
+
+            if (!_hashService.ComparePasswordWithHash(model.OldPassword, user.Password))
             {
                 throw new AuthException(
                     "Старый пароль неверный",
@@ -152,7 +147,7 @@ namespace Logic.Services
                 );
             }
             user.Password = _hashService.HashPassword(model.Password);
-            await _userRepository.Update(userId, user,cancellationToken);
+            await _userRepository.Update(userId, user, cancellationToken);
         }
     }
 }

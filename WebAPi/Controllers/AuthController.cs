@@ -1,21 +1,7 @@
-﻿using AutoMapper;
-using Data.Entities;
-using Data.IRepositories;
-
-using WebAPi.Interfaces;
-using Data.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Logic.Exceptions;
+﻿using Data.DTO.Auth;
 using Logic.Interfaces;
-using Data.Repositories;
-using Data.DTO.Auth;
 using Microsoft.AspNetCore.Authorization;
-using System.Net;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPi.Controllers
 {

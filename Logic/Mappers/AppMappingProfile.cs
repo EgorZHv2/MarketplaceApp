@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
+using Data.DTO;
+using Data.DTO.Auth;
+using Data.DTO.Review;
+using Data.DTO.Shop;
+using Data.DTO.User;
 using Data.Entities;
 using Data.Models;
-using Data.DTO;
-using Data.DTO.Shop;
-using Data.DTO.Review;
-using Data.DTO.User;
-using Data.DTO.Auth;
 
 namespace WebAPi.Mappers
 {
@@ -25,10 +20,10 @@ namespace WebAPi.Mappers
             CreateMap<CreateShopDTO, Shop>();
             CreateMap<UpdateShopDTO, Shop>();
 
-            CreateMap<Review,ReviewDTO>();
+            CreateMap<Review, ReviewDTO>();
             CreateMap<PageModel<Review>, PageModel<ReviewDTO>>();
-            CreateMap<CreateReviewDTO,Review>();
-            CreateMap<UpdateReviewDTO,Review>();
+            CreateMap<CreateReviewDTO, Review>();
+            CreateMap<UpdateReviewDTO, Review>();
 
             CreateMap<User, UserDTO>();
             CreateMap<PageModel<User>, PageModel<UserDTO>>();
@@ -37,9 +32,9 @@ namespace WebAPi.Mappers
 
             CreateMap<ChangePasswordDTO, User>().ReverseMap();
             CreateMap<CreateAdminModel, User>().ReverseMap();
-           
+
             CreateMap<Shop, ShopDTO>().ForMember(x => x.ImagePath, opt => opt.Ignore());
-           
+
             CreateMap<Category, CreateCategoryDTO>().ReverseMap();
             CreateMap<Category, CategoryDTO>();
             CreateMap<PageModel<Category>, PageModel<CategoryDTO>>();
@@ -49,9 +44,6 @@ namespace WebAPi.Mappers
             CreateMap<PageModel<DeliveryType>, PageModel<CreateDeliveryTypeDTO>>();
             CreateMap<PaymentMethod, PaymentMethodDTO>().ReverseMap();
             CreateMap<PageModel<PaymentMethod>, PageModel<PaymentMethodDTO>>();
-            
         }
-
-       
     }
 }

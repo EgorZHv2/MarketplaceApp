@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Data.IRepositories
+﻿namespace Data.IRepositories
 {
-    public interface ITypeRepository:IBaseDictionaryRepository<Data.Entities.Type>
+    public interface ITypeRepository : IBaseDictionaryRepository<Data.Entities.Type>
     {
     }
 }

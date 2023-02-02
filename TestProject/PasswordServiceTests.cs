@@ -1,15 +1,10 @@
 ﻿using WebAPi.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TestProject
 {
     public class PasswordServiceTests
     {
-        RandomStringGeneratorService passwordservice = new RandomStringGeneratorService();
+        private RandomStringGeneratorService passwordservice = new RandomStringGeneratorService();
 
         [Fact]
         public void PasswordServiceTest()
@@ -18,7 +13,6 @@ namespace TestProject
 
             Assert.NotNull(result);
             Assert.NotEmpty(result);
-
         }
     }
 }
