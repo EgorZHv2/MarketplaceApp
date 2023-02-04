@@ -1,5 +1,9 @@
 ﻿using Data.Entities;
 using Data.IRepositories;
+using Data.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace Data.Repositories.Repositories
 {
@@ -13,5 +17,6 @@ namespace Data.Repositories.Repositories
         {
             return _context.Reviews.Where(e => e.ShopId == ShopId);
         }
+        
     }
 }

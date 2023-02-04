@@ -1,6 +1,7 @@
 ﻿using Data.DTO.User;
 using Data.Entities;
 using Data.IRepositories;
+using Data.Models;
 using Logic.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,5 +27,7 @@ namespace WebAPi.Controllers
             var result = await _service.Update(UserId, model);
             return Ok(result);
         }
+
+      
     }
 }

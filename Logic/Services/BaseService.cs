@@ -39,22 +39,7 @@ namespace Logic.Services
             return result;
         }
 
-        public virtual async Task<List<TDTO>> GetAll(CancellationToken cancellationToken = default)
-        {
-            List<TDTO> result = new List<TDTO>();
-            var list = _repository.GetAll().Where(e => e.IsActive);
-
-            try
-            {
-                result = _mapper.Map<List<TDTO>>(list);
-            }
-            catch
-            {
-                throw new MappingException(this);
-            }
-            return result;
-        }
-
+     
         public virtual async Task<TDTO> GetById(Guid Id, CancellationToken cancellationToken = default)
         {
             TDTO result;
@@ -73,7 +58,7 @@ namespace Logic.Services
         public virtual async Task<PageModel<TDTO>> GetPage(FilterPagingModel pagingModel, CancellationToken cancellationToken = default)
         {
             PageModel<TDTO> result = new PageModel<TDTO>();
-            var PageModel = _repository.GetPage(_repository.GetAll().AsQueryable(), pagingModel.PageNumber, pagingModel.PageSize).Result;
+            var PageModel = _repository.GetPage(e=>e.IsActive, pagingModel.PageNumber, pagingModel.PageSize,cancellationToken).Result;
             result.CurrentPage = PageModel.CurrentPage;
             result.TotalPages = PageModel.TotalPages;
             result.ItemsOnPage = PageModel.ItemsOnPage;

@@ -1,6 +1,7 @@
 ﻿using Data.DTO.Review;
 using Data.Entities;
 using Data.IRepositories;
+using Data.Models;
 using Logic.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -69,6 +70,14 @@ namespace WebAPi.Controllers
         {
             await _service.Delete(UserId, Id);
             return Ok();
+        }
+
+         [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> GetPage([FromQuery] FilterPagingModel model)
+        {
+            var result = await _service.GetPage(UserId,model);
+            return Ok(result);
         }
     }
 }

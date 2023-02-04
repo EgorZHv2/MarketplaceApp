@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Data.DTO.Shop;
 using Data.DTO.User;
 using Data.Entities;
 using Data.IRepositories;
+using Data.Models;
 using Logic.Exceptions;
 using Logic.Interfaces;
 
@@ -30,6 +32,22 @@ namespace Logic.Services
                 await _imageService.CreateImage(model.Photo, user.Id);
             }
             var result = await base.Update(userId, model, cancellationToken);
+            return result;
+        }
+
+        public  async Task<PageModel<UserDTO>> GetPage(Guid userId, FilterPagingModel pagingModel, CancellationToken cancellationToken = default)
+        {
+            var result = new PageModel<UserDTO>();
+            var user = await _userRepository.GetById(userId);
+            var pages = await _repository.GetPage(e => (e.IsActive || user.Role == Data.Enums.Role.Admin), pagingModel.PageNumber, pagingModel.PageSize, cancellationToken);
+            try
+            {
+                result = _mapper.Map<PageModel<UserDTO>>(pages);
+            }
+            catch
+            {
+                throw new MappingException(this);
+            }
             return result;
         }
     }

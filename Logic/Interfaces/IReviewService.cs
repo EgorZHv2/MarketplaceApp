@@ -1,6 +1,7 @@
 ﻿using Data.DTO.Review;
 using Data.Entities;
 using Data.IRepositories;
+using Data.Models;
 
 namespace Logic.Interfaces
 {
@@ -17,5 +18,7 @@ namespace Logic.Interfaces
             Guid userid,
             CancellationToken cancellationToken = default
         );
+
+        public Task<PageModel<ReviewDTO>> GetPage(Guid userId, FilterPagingModel pagingModel, CancellationToken cancellationToken = default);
     }
 }

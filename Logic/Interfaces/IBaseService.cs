@@ -7,8 +7,6 @@ namespace Logic.Interfaces
     {
         public Task<Guid> Create(Guid userId, TCreateDTO createDTO, CancellationToken cancellationToken = default);
 
-        public Task<List<TDTO>> GetAll(CancellationToken cancellationToken = default);
-
         public Task<TDTO> GetById(Guid Id, CancellationToken cancellationToken = default);
 
         public Task<PageModel<TDTO>> GetPage(FilterPagingModel pagingModel, CancellationToken cancellationToken = default);

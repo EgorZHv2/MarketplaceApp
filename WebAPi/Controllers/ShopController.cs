@@ -1,6 +1,7 @@
 ﻿using Data.DTO.Shop;
 using Data.Entities;
 using Data.IRepositories;
+using Data.Models;
 using Logic.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -85,6 +86,14 @@ namespace WebAPi.Controllers
         public async Task<IActionResult> ShowUserFavoriteShops()
         {
             var result = await _service.ShowUserFavoriteShops(UserId);
+            return Ok(result);
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> GetPage([FromQuery] FilterPagingModel model)
+        {
+            var result = await _service.GetPage(UserId,model);
             return Ok(result);
         }
     }

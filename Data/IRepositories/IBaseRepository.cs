@@ -1,4 +1,5 @@
 ﻿using Data.Models;
+using System.Linq.Expressions;
 
 namespace Data.IRepositories
 {
@@ -10,7 +11,7 @@ namespace Data.IRepositories
 
         IEnumerable<TEntity> GetManyByIds(params Guid[] ids);
 
-        Task<PageModel<TEntity>> GetPage(IQueryable<TEntity> queryable, int pagenumber, int pagesize);
+        Task<PageModel<TEntity>> GetPage(Expression<Func<TEntity, bool>> predicate, int pagenumber, int pagesize, CancellationToken cancellationToken = default);
 
         Task<Guid> Create(Guid userId, TEntity entity, CancellationToken cancellationToken = default);
 

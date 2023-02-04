@@ -2,6 +2,7 @@
 using Data.DTO.Shop;
 using Data.Entities;
 using Data.IRepositories;
+using Data.Models;
 using Logic.Exceptions;
 using Logic.Interfaces;
 using Microsoft.Extensions.Configuration;
@@ -252,6 +253,22 @@ namespace Logic.Services
                 throw new NotFoundException("Избранный магазин не найден", "Wrong shop or user id");
             }
             await _usersFavoriteShops.Delete(existing, cancellationToken);
+        }
+
+        public  async Task<PageModel<ShopDTO>> GetPage(Guid userId, FilterPagingModel pagingModel, CancellationToken cancellationToken = default)
+        {
+            var result = new PageModel<ShopDTO>();
+            var user = await _userRepository.GetById(userId);
+            var pages = await _repository.GetPage(e => (e.IsActive || e.SellerId == userId || user.Role == Data.Enums.Role.Admin), pagingModel.PageNumber, pagingModel.PageSize, cancellationToken);
+            try
+            {
+                result = _mapper.Map<PageModel<ShopDTO>>(pages);
+            }
+            catch
+            {
+                throw new MappingException(this);
+            }
+            return result;
         }
     }
 }
