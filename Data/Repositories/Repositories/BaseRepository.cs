@@ -16,11 +16,7 @@ namespace Data.Repositories.Repositories
             _context = context;
         }
 
-        public IEnumerable<TEntity> GetAll()
-        {
-            return _dbset;
-        }
-
+       
         public async Task<TEntity> GetById(Guid Id, CancellationToken cancellationToken = default)
         {
             return await _dbset.FirstOrDefaultAsync(e => e.Id == Id, cancellationToken);
@@ -31,18 +27,7 @@ namespace Data.Repositories.Repositories
             return _context.Set<TEntity>().Where(e => ids.Contains(e.Id));
         }
 
-        //public virtual async Task<PageModel<TEntity>> GetPage(IQueryable<TEntity> queryable, int pagenumber, int pagesize)
-        //{
-        //    PageModel<TEntity> pageModel = new PageModel<TEntity>
-        //    {
-        //        Values = await queryable.Skip(pagenumber - 1).Take(pagesize).ToListAsync(),
-        //        ItemsOnPage = pagesize,
-        //        CurrentPage = pagenumber,
-        //        TotalItems = queryable.Count(),
-        //        TotalPages = (int)Math.Ceiling(queryable.Count() / (double)pagesize)
-        //    };
-        //    return pageModel;
-        //}
+      
 
         public async Task<PageModel<TEntity>> GetPage(Expression<Func<TEntity, bool>> predicate, int pagenumber, int pagesize,CancellationToken cancellationToken = default)
         {

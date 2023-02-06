@@ -1,8 +1,12 @@
 ﻿using AutoMapper;
 using Data.DTO;
 using Data.DTO.Auth;
+using Data.DTO.Category;
+using Data.DTO.DeliveryType;
+using Data.DTO.PaymentMethod;
 using Data.DTO.Review;
 using Data.DTO.Shop;
+using Data.DTO.Type;
 using Data.DTO.User;
 using Data.Entities;
 using Data.Models;
@@ -35,15 +39,25 @@ namespace WebAPi.Mappers
 
             CreateMap<Shop, ShopDTO>().ForMember(x => x.ImagePath, opt => opt.Ignore());
 
-            CreateMap<Category, CreateCategoryDTO>().ReverseMap();
             CreateMap<Category, CategoryDTO>();
             CreateMap<PageModel<Category>, PageModel<CategoryDTO>>();
-            CreateMap<Data.Entities.Type, TypeDTO>().ReverseMap();
-            CreateMap<PageModel<Data.Entities.Type>, PageModel<TypeDTO>>();
-            CreateMap<DeliveryType, CreateDeliveryTypeDTO>().ReverseMap();
-            CreateMap<PageModel<DeliveryType>, PageModel<CreateDeliveryTypeDTO>>();
-            CreateMap<PaymentMethod, PaymentMethodDTO>().ReverseMap();
+            CreateMap<CreateCategoryDTO, Category>();
+            CreateMap<UpdateCategoryDTO, Category>();
+
+            CreateMap<DeliveryType, DeliveryTypeDTO>();
+            CreateMap<PageModel<DeliveryType>, PageModel<DeliveryTypeDTO>>();
+            CreateMap<CreateDeliveryTypeDTO, DeliveryType>();
+            CreateMap<UpdateDeliveryTypeDTO, DeliveryType>();
+
+            CreateMap<PaymentMethod, PaymentMethodDTO>();
             CreateMap<PageModel<PaymentMethod>, PageModel<PaymentMethodDTO>>();
+            CreateMap<CreatePaymentMethodDTO, PaymentMethod>();
+            CreateMap<UpdatePaymentMethodDTO, PaymentMethod>();
+
+            CreateMap<Data.Entities.Type, TypeDTO>();
+            CreateMap<PageModel<Data.Entities.Type>, PageModel<TypeDTO>>();
+            CreateMap<CreateTypeDTO,Data.Entities.Type>();
+            CreateMap<UpdateTypeDTO, Data.Entities.Type>();
         }
     }
 }

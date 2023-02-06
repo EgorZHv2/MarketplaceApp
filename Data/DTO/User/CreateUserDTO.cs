@@ -1,8 +1,9 @@
-﻿using Data.Enums;
+﻿using Data.DTO.BaseDTOs;
+using Data.Enums;
 
 namespace Data.DTO.User
 {
-    public class CreateUserDTO : BaseDTO
+    public class CreateUserDTO :BaseCreateDTO
     {
         public string FirstName { get; set; }
         public string Email { get; set; }

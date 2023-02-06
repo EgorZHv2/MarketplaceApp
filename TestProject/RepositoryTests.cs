@@ -30,10 +30,10 @@ namespace TestProject
         [Fact]
         public void GetUsersTest()
         {
-            var result = repositoryWrapper.Users.GetAll();
+            var result = repositoryWrapper.Users.GetPage(e=>true,1,2).Result;
 
             Assert.NotNull(result);
-            Assert.True(result.Any());
+            Assert.True(result.Values.Any());
         }
 
         [Fact]

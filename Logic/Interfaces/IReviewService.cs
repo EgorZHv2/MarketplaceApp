@@ -14,11 +14,7 @@ namespace Logic.Interfaces
             CancellationToken cancellationToken = default
         );
 
-        public Task<List<ReviewDTO>> GetAll(
-            Guid userid,
-            CancellationToken cancellationToken = default
-        );
-
+      
         public Task<PageModel<ReviewDTO>> GetPage(Guid userId, FilterPagingModel pagingModel, CancellationToken cancellationToken = default);
     }
 }

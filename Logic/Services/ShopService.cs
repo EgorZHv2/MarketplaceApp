@@ -52,47 +52,7 @@ namespace Logic.Services
             _shopTypeRepository = shopTypeRepository;
         }
 
-        public async Task<List<ShopDTO>> GetAll(
-            Guid userid,
-            CancellationToken cancellationToken = default
-        )
-        {
-            var user = await _repositoryWrapper.Users.GetById(userid, cancellationToken);
-            var list = _repository
-                .GetAll()
-                .Where(
-                    e => (e.IsActive || user.Id == e.SellerId || user.Role == Data.Enums.Role.Admin)
-                )
-                .ToList();
-            List<ShopDTO> result = new List<ShopDTO>();
-            string basepath = _configuration.GetSection("BaseImagePath").Value;
-            try
-            {
-                foreach (var item in list)
-                {
-                    ShopDTO dto = new ShopDTO();
-                    dto = _mapper.Map<ShopDTO>(item);
-                    var fileinfo = _repositoryWrapper.StaticFileInfos.GetByParentId(item.Id).Result;
-                    if (fileinfo != null)
-                    {
-                        dto.ImagePath =
-                            basepath
-                            + fileinfo.ParentEntityId.ToString()
-                            + "/"
-                            + fileinfo.Name
-                            + "."
-                            + fileinfo.Extension;
-                    }
-                    result.Add(dto);
-                }
-            }
-            catch
-            {
-                throw new MappingException(this);
-            }
-            return result;
-        }
-
+      
         public override async Task<Guid> Create(
             Guid userId,
             CreateShopDTO createDTO,
@@ -260,6 +220,7 @@ namespace Logic.Services
             var result = new PageModel<ShopDTO>();
             var user = await _userRepository.GetById(userId);
             var pages = await _repository.GetPage(e => (e.IsActive || e.SellerId == userId || user.Role == Data.Enums.Role.Admin), pagingModel.PageNumber, pagingModel.PageSize, cancellationToken);
+            string basepath = _configuration.GetSection("BaseImagePath").Value;
             try
             {
                 result = _mapper.Map<PageModel<ShopDTO>>(pages);
@@ -268,7 +229,24 @@ namespace Logic.Services
             {
                 throw new MappingException(this);
             }
+            foreach(var shop in result.Values)
+            {
+              var fileinfo = await _repositoryWrapper.StaticFileInfos.GetByParentId(shop.Id);
+                    if (fileinfo != null)
+                    {
+                        shop.ImagePath =
+                            basepath
+                            + fileinfo.ParentEntityId.ToString()
+                            + "/"
+                            + fileinfo.Name
+                            + "."
+                            + fileinfo.Extension;
+                    }
+            }
             return result;
         }
+
+        
+
     }
 }

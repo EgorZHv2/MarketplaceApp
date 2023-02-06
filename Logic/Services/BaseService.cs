@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Data.DTO;
+using Data.DTO.BaseDTOs;
 using Data.Entities;
 using Data.IRepositories;
 using Data.Models;
@@ -11,6 +12,8 @@ namespace Logic.Services
     public class BaseService<TEntity, TDTO, TCreateDTO, TUpdateDTO, TRepository> : IBaseService<TEntity, TDTO, TCreateDTO, TUpdateDTO, TRepository>
         where TEntity : BaseEntity
         where TUpdateDTO : BaseUpdateDTO
+        where TDTO :BaseOutputDTO
+        where TCreateDTO : BaseCreateDTO
         where TRepository : IBaseRepository<TEntity>
     {
         protected TRepository _repository;

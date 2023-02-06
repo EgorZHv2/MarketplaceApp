@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Data.DTO.BaseDTOs;
+using System.ComponentModel.DataAnnotations;
 
 namespace Data.DTO.Review
 {
-    public class CreateReviewDTO : BaseDTO
+    public class CreateReviewDTO : BaseCreateDTO
     {
         [Required]
         public string ReviewText { get; set; }

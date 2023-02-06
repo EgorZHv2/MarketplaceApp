@@ -5,7 +5,7 @@ namespace Data.IRepositories
 {
     public interface IBaseRepository<TEntity> where TEntity : class
     {
-        IEnumerable<TEntity> GetAll();
+      
 
         Task<TEntity> GetById(Guid Id, CancellationToken cancellationToken = default);
 

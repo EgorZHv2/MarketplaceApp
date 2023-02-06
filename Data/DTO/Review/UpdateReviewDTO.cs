@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Data.DTO.BaseDTOs;
+using System.ComponentModel.DataAnnotations;
 
 namespace Data.DTO.Review
 {

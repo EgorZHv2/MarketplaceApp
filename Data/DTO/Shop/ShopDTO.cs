@@ -1,8 +1,10 @@
-﻿namespace Data.DTO.Shop
+﻿using Data.DTO.BaseDTOs;
+
+namespace Data.DTO.Shop
 {
-    public class ShopDTO : BaseDTO
+    public class ShopDTO : BaseOutputDTO
     {
-        public Guid Id { get; set; }
+       
         public string Title { get; set; }
         public string Description { get; set; }
         public string INN { get; set; }

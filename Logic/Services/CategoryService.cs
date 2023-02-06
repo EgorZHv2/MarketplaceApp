@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Data.DTO;
+using Data.DTO.Category;
 using Data.Entities;
 using Data.IRepositories;
 using Logic.Exceptions;
@@ -8,12 +9,12 @@ using System.Data;
 
 namespace Logic.Services
 {
-    public class CategoryService : BaseDictionaryService<Category, CreateCategoryDTO, CategoryDTO>, ICategoryService
+    public class CategoryService : BaseDictionaryService<Category, CategoryDTO,CreateCategoryDTO,UpdateCategoryDTO,ICategoryRepository>, ICategoryService
     {
-        public CategoryService(IRepositoryWrapper repositoryWrapper, ICategoryRepository repository, IMapper mapper)
-            : base(repositoryWrapper, repository, mapper) { }
+        public CategoryService(ICategoryRepository repository, IMapper mapper)
+            : base(repository, mapper) { }
 
-        public async Task<bool> CheckParentCategory(Guid categoryid, Guid parentid)
+        public async Task<bool> CheckParentCategory(Guid categoryid, Guid parentid, CancellationToken cancellationToken = default)
         {
             if (categoryid == parentid)
             {
@@ -29,22 +30,22 @@ namespace Logic.Services
             {
                 throw new NotFoundException("Родительская категория не найдена", "Parent category not found");
             }
-            List<Category> childrenCategories = new List<Category>();
-            childrenCategories = _repository.GetAll().Where(e => e.ParentCategoryId == categoryid).ToList();
-            if (childrenCategories == null)
+
+            var childrenCategories = await _repository.GetCategoriesByParentId(categoryid, cancellationToken);
+            if (childrenCategories == null || childrenCategories.Count() == 0)
             {
                 return true;
             }
             else
             {
-                return Check(childrenCategories, parentid);
+                return await Check(childrenCategories, parentid,cancellationToken);
             }
         }
 
-        public async Task<List<CategoryDTO>> GetCategoryTree()
+        public async Task<List<CategoryDTO>> GetCategoryTree(CancellationToken cancellationToken = default)
         {
             List<CategoryDTO> result = new List<CategoryDTO>();
-            var list = _repository.GetAll().Where(e => e.ParentCategoryId == null);
+            var list = await _repository.GetCategoriesWithoutParentId(cancellationToken);
             try
             {
                 result = _mapper.Map<List<CategoryDTO>>(list);
@@ -53,25 +54,25 @@ namespace Logic.Services
             {
                 throw new MappingException(this);
             }
-            result = Fill(result);
+            result = await Fill(result,cancellationToken);
             return result;
         }
 
-        private List<CategoryDTO> Fill(List<CategoryDTO> level)
+        private async Task<List<CategoryDTO>> Fill(List<CategoryDTO> level,CancellationToken cancellationToken = default)
         {
             foreach (var item in level)
             {
-                item.Categories.AddRange(_mapper.Map<List<CategoryDTO>>(_repository.GetAll().Where(e => e.ParentCategoryId == item.Id)));
-                Fill(item.Categories);
+                item.Categories.AddRange(_mapper.Map<List<CategoryDTO>>(await _repository.GetCategoriesByParentId(item.Id)));
+                await Fill(item.Categories,cancellationToken);
             }
             return level;
         }
 
-        private bool Check(List<Category> list, Guid id)
+        private async Task<bool> Check(IEnumerable<Category> list, Guid id,CancellationToken cancellationToken = default)
         {
             bool result = true;
-            CheckInner(list, id);
-            void CheckInner(List<Category> list, Guid id)
+            await CheckInner(list, id, cancellationToken);
+            async Task CheckInner(IEnumerable<Category> list, Guid id,CancellationToken cancellationToken = default)
             {
                 foreach (var item in list)
                 {
@@ -80,8 +81,8 @@ namespace Logic.Services
                         result = false;
                         break;
                     }
-                    item.Categories.AddRange(_repository.GetAll().Where(e => e.ParentCategoryId == item.Id));
-                    CheckInner(item.Categories, id);
+                    item.Categories.AddRange(await _repository.GetCategoriesByParentId(item.Id,cancellationToken));
+                    await CheckInner(item.Categories, id,cancellationToken);
                 }
             }
             return result;

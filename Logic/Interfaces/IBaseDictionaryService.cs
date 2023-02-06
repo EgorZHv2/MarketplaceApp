@@ -1,17 +1,18 @@
 ﻿using Data.DTO;
+using Data.DTO.BaseDTOs.BaseDictionaryDTOs;
 using Data.Entities;
+using Data.IRepositories;
 using Data.Models;
 
 namespace Logic.Interfaces
 {
-    public interface IBaseDictionaryService<TEntity, TCreateDTO, TDTO> where TEntity : BaseDictionaryEntity where TDTO : DictionaryDTO
+    public interface IBaseDictionaryService<TEntity, TDTO, TCreateDTO, TUpdateDTO, TRepository> :IBaseService<TEntity,TDTO,TCreateDTO,TUpdateDTO,TRepository>
+        where TEntity : BaseDictionaryEntity
+        where TRepository : IBaseDictionaryRepository<TEntity>
+        where TUpdateDTO : BaseDictionaryUpdateDTO
+        where TDTO: BaseDictinoaryOutputDTO
+        where TCreateDTO : BaseDictionaryCreateDTO
     {
-        public Task Create(Guid userid, TCreateDTO model, CancellationToken cancellationToken = default);
-
-        public Task Update(Guid userid, TCreateDTO model, CancellationToken cancellationToken = default);
-
-        public Task<PageModel<TDTO>> GetPage(FilterPagingModel model);
-
-        public Task Delete(Guid userid, Guid entityId, CancellationToken cancellationToken = default);
+      
     }
 }

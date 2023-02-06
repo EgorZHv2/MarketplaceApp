@@ -1,6 +1,9 @@
 ﻿using Data.DTO;
+using Data.DTO.BaseDTOs.BaseDictionaryDTOs;
 using Data.Entities;
+using Data.IRepositories;
 using Data.Models;
+using Data.Repositories.DictionaryRepositories;
 using Logic.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,11 +12,18 @@ namespace WebAPi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BaseDictionaryController<TEntity, TCreateDTO, TDTO> : BaseController where TEntity : BaseDictionaryEntity where TDTO : DictionaryDTO
-    {
-        protected IBaseDictionaryService<TEntity, TCreateDTO, TDTO> _dictionaryService;
+    public class BaseDictionaryController<TEntity, TDTO, TCreateDTO,TUpdateDTO,TRepository,TService> : BaseController 
+        where TEntity : BaseDictionaryEntity 
+        where TDTO : BaseDictinoaryOutputDTO
+        where TCreateDTO:BaseDictionaryCreateDTO
+        where TUpdateDTO : BaseDictionaryUpdateDTO
+        where TRepository:IBaseDictionaryRepository<TEntity>
+        where TService : IBaseService<TEntity, TDTO, TCreateDTO, TUpdateDTO, TRepository>
 
-        public BaseDictionaryController(IBaseDictionaryService<TEntity, TCreateDTO, TDTO> dictionaryService)
+    {
+        protected TService _dictionaryService;
+
+        public BaseDictionaryController(TService dictionaryService)
         {
             _dictionaryService = dictionaryService;
         }
@@ -28,7 +38,7 @@ namespace WebAPi.Controllers
 
         [HttpPut]
         [Authorize(Roles = "Admin")]
-        public virtual async Task<IActionResult> Update(TCreateDTO model)
+        public virtual async Task<IActionResult> Update(TUpdateDTO model)
         {
             await _dictionaryService.Update(UserId, model);
             return Ok();

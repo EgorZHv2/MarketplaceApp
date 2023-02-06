@@ -1,4 +1,5 @@
 ﻿using Data.DTO;
+using Data.DTO.BaseDTOs;
 using Data.Entities;
 using Data.IRepositories;
 using Data.Models;

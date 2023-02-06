@@ -1,14 +1,15 @@
 ﻿using AutoMapper;
 using Data.DTO;
+using Data.DTO.PaymentMethod;
 using Data.Entities;
 using Data.IRepositories;
 using Logic.Interfaces;
 
 namespace Logic.Services
 {
-    public class PaymentMethodService : BaseDictionaryService<PaymentMethod, PaymentMethodDTO, PaymentMethodDTO>, IPaymentMethodService
+    public class PaymentMethodService : BaseDictionaryService<PaymentMethod, PaymentMethodDTO, CreatePaymentMethodDTO, UpdatePaymentMethodDTO, IPaymentMethodRepository>, IPaymentMethodService
     {
-        public PaymentMethodService(IRepositoryWrapper repositoryWrapper, IBaseDictionaryRepository<PaymentMethod> repository, IMapper mapper)
-           : base(repositoryWrapper, repository, mapper) { }
+        public PaymentMethodService(IPaymentMethodRepository repository, IMapper mapper)
+           : base(repository, mapper) { }
     }
 }

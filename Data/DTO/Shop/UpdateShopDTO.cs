@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Data.DTO.BaseDTOs;
+using Microsoft.AspNetCore.Http;
 
 namespace Data.DTO.Shop
 {

@@ -40,26 +40,7 @@ namespace Logic.Services
             return result;
         }
 
-        public async Task<List<ReviewDTO>> GetAll(
-            Guid userid,
-            CancellationToken cancellationToken = default
-        )
-        {
-            var user = await _repositoryWrapper.Users.GetById(userid, cancellationToken);
-            var list = _repository
-                .GetAll()
-                .Where(e => (e.IsActive || user.Id == e.BuyerId || user.Role == Data.Enums.Role.Admin)).ToList();
-            List<ReviewDTO> result = new List<ReviewDTO>();
-            try
-            {
-                result = _mapper.Map<List<ReviewDTO>>(list);
-            }
-            catch
-            {
-                throw new MappingException(this);
-            }
-            return result;
-        }
+       
 
         public override async Task<Guid> Create(Guid userId, CreateReviewDTO createDTO, CancellationToken cancellationToken = default)
         {

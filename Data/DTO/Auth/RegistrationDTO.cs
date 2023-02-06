@@ -1,9 +1,10 @@
-﻿using Data.Enums;
+﻿using Data.DTO.BaseDTOs;
+using Data.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace Data.DTO.Auth
 {
-    public class RegistrationDTO : BaseDTO
+    public class RegistrationDTO 
     {
         [Required]
         public string Email { get; set; }

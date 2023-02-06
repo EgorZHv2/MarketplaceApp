@@ -16,13 +16,7 @@ namespace WebAPi.Controllers
         {
         }
 
-        [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> GetAllShops()
-        {
-            var result = await _service.GetAll(UserId);
-            return Ok(result);
-        }
+       
 
         [HttpGet]
         [Authorize]

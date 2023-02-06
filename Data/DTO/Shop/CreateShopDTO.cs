@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Data.DTO.BaseDTOs;
+using System.ComponentModel.DataAnnotations;
 
 namespace Data.DTO.Shop
 {
-    public class CreateShopDTO : BaseDTO
+    public class CreateShopDTO : BaseCreateDTO
     {
         [Required]
         public string Title { get; set; }

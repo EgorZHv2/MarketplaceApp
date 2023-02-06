@@ -32,13 +32,7 @@ namespace WebAPi.Controllers
             return Ok(result);
         }
 
-        [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> GetAllReviews()
-        {
-            var result = await _service.GetAll(UserId);
-            return Ok(result);
-        }
+       
 
         [HttpPost]
         [Authorize(Roles = "Buyer,Admin")]

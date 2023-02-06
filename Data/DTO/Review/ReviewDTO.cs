@@ -1,8 +1,10 @@
-﻿namespace Data.DTO.Review
+﻿using Data.DTO.BaseDTOs;
+
+namespace Data.DTO.Review
 {
-    public class ReviewDTO : BaseDTO
+    public class ReviewDTO : BaseOutputDTO
     {
-        public Guid Id { get; set; }
+      
         public string ReviewText { get; set; }
         public int Score { get; set; }
         public Guid BuyerId { get; set; }
