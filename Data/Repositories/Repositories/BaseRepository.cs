@@ -1,4 +1,5 @@
 ﻿using Data.Entities;
+using Data.Extensions;
 using Data.IRepositories;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;
@@ -32,14 +33,7 @@ namespace Data.Repositories.Repositories
         public async Task<PageModel<TEntity>> GetPage(Expression<Func<TEntity, bool>> predicate, int pagenumber, int pagesize,CancellationToken cancellationToken = default)
         {
             var queryable = _dbset.Where(predicate);
-            PageModel<TEntity> result = new PageModel<TEntity>()
-            {
-                Values = await queryable.Skip(pagenumber - 1).Take(pagesize).ToListAsync(cancellationToken),
-                ItemsOnPage = pagesize,
-                CurrentPage = pagenumber,
-                TotalItems = queryable.Count(),
-                TotalPages = (int)Math.Ceiling(queryable.Count() / (double)pagesize)
-            };
+            var result = await queryable.ToPageModelAsync(pagenumber,pagesize, cancellationToken);
             return result;
         }
 
