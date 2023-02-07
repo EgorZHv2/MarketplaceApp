@@ -1,13 +1,17 @@
 ﻿using Data.DTO.BaseDTOs;
 using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace Data.DTO.Shop
 {
     public class UpdateShopDTO : BaseUpdateDTO
     {
-        public string? Title { get; set; }
-        public string? Description { get; set; }
-        public string? INN { get; set; }
+        [Required]
+        public string Title { get; set; }
+        [Required]
+        public string Description { get; set; }
+        [Required]
+        public string INN { get; set; }
         public IFormFile? Image { get; set; }
         public List<Guid> CategoriesId { get; set; } = new List<Guid>();
         public List<Guid> TypesId { get; set; } = new List<Guid>();

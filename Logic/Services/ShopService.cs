@@ -74,6 +74,43 @@ namespace Logic.Services
             }
 
             var result = await _repository.Create(userId, shop, cancellationToken);
+            if (createDTO.CategoriesId.Count > 0)
+            {
+                var categories = createDTO.CategoriesId.Select(
+                    e => new ShopCategory { CategoryId = e, ShopId = shop.Id }
+                ).ToArray();
+                await _shopCategoryRepository.CreateRange(cancellationToken, categories);
+            }
+            if (createDTO.TypesId.Count > 0)
+            {
+                var types = createDTO.CategoriesId.Select(
+                    e => new ShopType { TypeId = e, ShopId = shop.Id }
+                ).ToArray();
+                await _shopTypeRepository.CreateRange(cancellationToken, types);
+            }
+            if (createDTO.ShopDeliveryTypes.Count > 0)
+            {
+                var deliveryTypes = createDTO.ShopDeliveryTypes.Select(
+                    e =>
+                        new ShopDeliveryType
+                        {
+                            DeliveryTypeId = e.Id,
+                            ShopId = shop.Id,
+                            FreeDeliveryThreshold = e.FreeDeliveryThreshold
+                        }
+                ).ToArray();
+                await _shopDeliveryTypeRepository.CreateRange(cancellationToken, deliveryTypes);
+            }
+            if (createDTO.ShopPaymentMethods.Count > 0)
+            {
+                var paymentMethods = createDTO.ShopPaymentMethods.Select(e => new ShopPaymentMethod
+                {
+                    PaymentMethodId = e.Id,
+                    ShopId = shop.Id,
+                    Сommission = e.Сommission
+                }).ToArray();
+                await _shopPaymentMethodRepository.CreateRange(cancellationToken, paymentMethods);
+            }
             return result;
         }
 
