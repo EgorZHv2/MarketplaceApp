@@ -3,7 +3,7 @@ using Data.Enums;
 
 namespace Data.DTO.User
 {
-    public class CreateUserDTO :BaseCreateDTO
+    public class CreateUserDTO : BaseCreateDTO
     {
         public string FirstName { get; set; }
         public string Email { get; set; }

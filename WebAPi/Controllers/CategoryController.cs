@@ -1,5 +1,4 @@
-﻿using Data.DTO;
-using Data.DTO.Category;
+﻿using Data.DTO.Category;
 using Data.Entities;
 using Data.IRepositories;
 using Logic.Exceptions;
@@ -10,13 +9,10 @@ namespace WebAPi.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class CategoryController : BaseDictionaryController<Category, CategoryDTO, CreateCategoryDTO,UpdateCategoryDTO,ICategoryRepository,ICategoryService>
+    public class CategoryController : BaseDictionaryController<Category, CategoryDTO, CreateCategoryDTO, UpdateCategoryDTO, ICategoryRepository, ICategoryService>
     {
-        
-
         public CategoryController(ICategoryService categoryService) : base(categoryService)
         {
-          
         }
 
         [HttpGet]

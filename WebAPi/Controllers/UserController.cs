@@ -2,7 +2,6 @@
 using Data.DTO.User;
 using Data.Entities;
 using Data.IRepositories;
-using Data.Models;
 using Logic.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -30,16 +29,15 @@ namespace WebAPi.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateAdmin([FromBody] CreateAdminDTO model)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             var result = await _service.CreateAdmin(UserId, model);
             return Ok(result);
         }
-      
     }
 }

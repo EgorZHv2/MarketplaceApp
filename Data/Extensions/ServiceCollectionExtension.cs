@@ -1,5 +1,4 @@
 ﻿using Data.IRepositories;
-using Data.Repositories;
 using Data.Repositories.DictionaryRepositories;
 using Data.Repositories.Repositories;
 using Data.Repositories.ShopDictionaryRepositories;
@@ -25,8 +24,6 @@ namespace Data.Extensions
 
         public static void AddRepositories(this IServiceCollection services)
         {
-            
-
             services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
             services.AddScoped<IReviewRepository, ReviewRepository>();
             services.AddScoped<IShopRepository, ShopRepository>();
@@ -44,7 +41,6 @@ namespace Data.Extensions
             services.AddScoped<IShopDeliveryTypeRepository, ShopDeliveryTypeRepository>();
             services.AddScoped<IShopPaymentMethodRepository, ShopPaymentMethodRepository>();
             services.AddScoped<IShopTypeRepository, ShopTypeRepository>();
-
         }
     }
 }

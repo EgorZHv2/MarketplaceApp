@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
 using Data.DTO;
-using Data.DTO.Shop;
 using Data.DTO.User;
 using Data.Entities;
 using Data.IRepositories;
-using Data.Models;
 using Logic.Exceptions;
 using Logic.Interfaces;
 
@@ -12,13 +10,11 @@ namespace Logic.Services
 {
     public class UserService : BaseService<User, UserDTO, CreateUserDTO, UpdateUserDTO, IUserRepository>, IUserService
     {
- 
         private IImageService _imageService;
         private IHashService _hashService;
 
         public UserService(IUserRepository repository, IMapper mapper, IUserRepository userRepository, IImageService imageService, IHashService hashService) : base(repository, mapper)
         {
-           
             _imageService = imageService;
             _hashService = hashService;
         }
@@ -32,20 +28,20 @@ namespace Logic.Services
             }
             if (model.Photo != null)
             {
-                await _imageService.CreateImage(userId,model.Photo, user.Id);
+                await _imageService.CreateImage(userId, model.Photo, user.Id);
             }
             var result = await base.Update(userId, model, cancellationToken);
             return result;
         }
 
-        public  async Task<PageModel<UserDTO>> GetPage(Guid userId, FilterPagingModel pagingModel, CancellationToken cancellationToken = default)
+        public async Task<PageModelDTO<UserDTO>> GetPage(Guid userId, FilterPagingDTO pagingModel, CancellationToken cancellationToken = default)
         {
-            var result = new PageModel<UserDTO>();
+            var result = new PageModelDTO<UserDTO>();
             var user = await _repository.GetById(userId);
             var pages = await _repository.GetPage(e => (e.IsActive || user.Role == Data.Enums.Role.Admin), pagingModel.PageNumber, pagingModel.PageSize, cancellationToken);
             try
             {
-                result = _mapper.Map<PageModel<UserDTO>>(pages);
+                result = _mapper.Map<PageModelDTO<UserDTO>>(pages);
             }
             catch
             {
@@ -53,15 +49,16 @@ namespace Logic.Services
             }
             return result;
         }
+
         public async Task<Guid> CreateAdmin(Guid userId, CreateAdminDTO model, CancellationToken cancellationToken = default)
         {
-            var existing = await _repository.GetUserByEmail(model.Email,cancellationToken);
-            if(existing != null)
+            var existing = await _repository.GetUserByEmail(model.Email, cancellationToken);
+            if (existing != null)
             {
                 throw new AlreadyExistsException("Пользователь с данной почтой уже существует", "This user already exists");
             }
             User user = new User();
-            
+
             try
             {
                 user = _mapper.Map<User>(model);
@@ -73,7 +70,7 @@ namespace Logic.Services
             user.IsEmailConfirmed = true;
             user.Role = Data.Enums.Role.Admin;
             user.Password = _hashService.HashPassword(model.Password);
-            await _repository.Create(userId, user,cancellationToken);
+            await _repository.Create(userId, user, cancellationToken);
             return user.Id;
         }
     }

@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using Data.DTO;
 using Data.DTO.Shop;
 using Data.Entities;
 using Data.IRepositories;
-using Data.Models;
 using Logic.Exceptions;
 using Logic.Interfaces;
 using Microsoft.Extensions.Configuration;
@@ -52,7 +52,6 @@ namespace Logic.Services
             _staticFileInfoRepository = staticFileInfoRepository;
         }
 
-      
         public override async Task<Guid> Create(
             Guid userId,
             CreateShopDTO createDTO,
@@ -135,7 +134,7 @@ namespace Logic.Services
             }
             if (UpdateDTO.Image != null)
             {
-                await _imageService.CreateImage(userId,UpdateDTO.Image, UpdateDTO.Id, cancellationToken);
+                await _imageService.CreateImage(userId, UpdateDTO.Image, UpdateDTO.Id, cancellationToken);
             }
             await _repository.Update(userId, shop, cancellationToken);
 
@@ -211,9 +210,9 @@ namespace Logic.Services
             await _userRepository.Update(userId, user, cancellationToken);
         }
 
-        public async Task<PageModel<ShopDTO>> ShowUserFavoriteShops(
+        public async Task<PageModelDTO<ShopDTO>> ShowUserFavoriteShops(
             Guid userId,
-            FilterPagingModel filterPaging,
+            FilterPagingDTO filterPaging,
             CancellationToken cancellationToken = default
         )
         {
@@ -222,11 +221,11 @@ namespace Logic.Services
             {
                 throw new NotFoundException("Пользователь не найден", "User not found");
             }
-            PageModel<ShopDTO> result = new PageModel<ShopDTO>();
-            var list = await _usersFavoriteShops.GetFavsPageByUserId(userId,filterPaging.PageNumber,filterPaging.PageSize,cancellationToken);
+            PageModelDTO<ShopDTO> result = new PageModelDTO<ShopDTO>();
+            var list = await _usersFavoriteShops.GetFavsPageByUserId(userId, filterPaging.PageNumber, filterPaging.PageSize, cancellationToken);
             try
             {
-                result = _mapper.Map<PageModel<ShopDTO>>(list);
+                result = _mapper.Map<PageModelDTO<ShopDTO>>(list);
             }
             catch
             {
@@ -253,38 +252,35 @@ namespace Logic.Services
             await _usersFavoriteShops.Delete(existing, cancellationToken);
         }
 
-        public  async Task<PageModel<ShopDTO>> GetPage(Guid userId, FilterPagingModel pagingModel, CancellationToken cancellationToken = default)
+        public async Task<PageModelDTO<ShopDTO>> GetPage(Guid userId, FilterPagingDTO pagingModel, CancellationToken cancellationToken = default)
         {
-            var result = new PageModel<ShopDTO>();
+            var result = new PageModelDTO<ShopDTO>();
             var user = await _userRepository.GetById(userId);
             var pages = await _repository.GetPage(e => (e.IsActive || e.SellerId == userId || user.Role == Data.Enums.Role.Admin), pagingModel.PageNumber, pagingModel.PageSize, cancellationToken);
             string basepath = _configuration.GetSection("BaseImagePath").Value;
             try
             {
-                result = _mapper.Map<PageModel<ShopDTO>>(pages);
+                result = _mapper.Map<PageModelDTO<ShopDTO>>(pages);
             }
             catch
             {
                 throw new MappingException(this);
             }
-            foreach(var shop in result.Values)
+            foreach (var shop in result.Values)
             {
-              var fileinfo = await _staticFileInfoRepository.GetByParentId(shop.Id);
-                    if (fileinfo != null)
-                    {
-                        shop.ImagePath =
-                            basepath
-                            + fileinfo.ParentEntityId.ToString()
-                            + "/"
-                            + fileinfo.Name
-                            + "."
-                            + fileinfo.Extension;
-                    }
+                var fileinfo = await _staticFileInfoRepository.GetByParentId(shop.Id);
+                if (fileinfo != null)
+                {
+                    shop.ImagePath =
+                        basepath
+                        + fileinfo.ParentEntityId.ToString()
+                        + "/"
+                        + fileinfo.Name
+                        + "."
+                        + fileinfo.Extension;
+                }
             }
             return result;
         }
-
-        
-
     }
 }

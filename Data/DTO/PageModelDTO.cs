@@ -1,6 +1,6 @@
-﻿namespace Data.Models
+﻿namespace Data.DTO
 {
-    public class PageModel<T>
+    public class PageModelDTO<T>
     {
         public int CurrentPage { get; set; }
         public int TotalPages { get; set; }

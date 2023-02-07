@@ -15,11 +15,13 @@ namespace Data.Repositories.DictionaryRepositories
             var result = await _dbset.Include(e => e.Categories).ToListAsync(cancellationToken);
             return result;
         }
-        public async Task<IEnumerable<Category>> GetCategoriesByParentId(Guid parentId,CancellationToken cancellationToken = default)
+
+        public async Task<IEnumerable<Category>> GetCategoriesByParentId(Guid parentId, CancellationToken cancellationToken = default)
         {
             var result = await _dbset.Where(e => e.ParentCategoryId == parentId).ToListAsync(cancellationToken);
             return result;
         }
+
         public async Task<IEnumerable<Category>> GetCategoriesWithoutParentId(CancellationToken cancellationToken = default)
         {
             var result = await _dbset.Where(e => e.ParentCategoryId == null).ToListAsync(cancellationToken);

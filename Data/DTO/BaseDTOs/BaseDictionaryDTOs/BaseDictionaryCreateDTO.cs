@@ -2,7 +2,7 @@
 
 namespace Data.DTO.BaseDTOs.BaseDictionaryDTOs
 {
-    public  class BaseDictionaryCreateDTO:BaseCreateDTO
+    public class BaseDictionaryCreateDTO : BaseCreateDTO
     {
         [Required]
         public string Name { get; set; }

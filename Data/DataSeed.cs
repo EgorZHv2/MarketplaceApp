@@ -28,7 +28,6 @@ namespace Data
                     IsActive = true,
                     IsDeleted = false
                 });
-               
             }
         }
     }

@@ -1,7 +1,7 @@
-﻿using Data.Entities;
+﻿using Data.DTO;
+using Data.Entities;
 using Data.Extensions;
 using Data.IRepositories;
-using Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.Repositories.Repositories
@@ -35,16 +35,16 @@ namespace Data.Repositories.Repositories
             _dbset.Remove(entity);
             await _context.SaveChangesAsync(cancellationToken);
         }
-        public async Task<PageModel<Shop>> GetFavsPageByUserId(Guid userId, int pagenumber, int pagesize, CancellationToken cancellationToken = default)
+
+        public async Task<PageModelDTO<Shop>> GetFavsPageByUserId(Guid userId, int pagenumber, int pagesize, CancellationToken cancellationToken = default)
         {
             var queryable = _dbset
                 .Include(e => e.Shop)
                 .Where(e => e.UserId == userId)
                 .Select(p => p.Shop);
 
-            var result = await queryable.ToPageModelAsync<Shop>(pagenumber,pagesize,cancellationToken);
+            var result = await queryable.ToPageModelAsync<Shop>(pagenumber, pagesize, cancellationToken);
             return result;
         }
-        
     }
 }

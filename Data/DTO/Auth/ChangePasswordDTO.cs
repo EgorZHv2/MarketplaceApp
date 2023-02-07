@@ -1,9 +1,8 @@
-﻿using Data.DTO.BaseDTOs;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Data.DTO.Auth
 {
-    public class ChangePasswordDTO 
+    public class ChangePasswordDTO
     {
         [Required]
         public string OldPassword { get; set; }

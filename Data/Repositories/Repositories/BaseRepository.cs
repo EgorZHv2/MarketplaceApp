@@ -1,7 +1,7 @@
-﻿using Data.Entities;
+﻿using Data.DTO;
+using Data.Entities;
 using Data.Extensions;
 using Data.IRepositories;
-using Data.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -17,7 +17,6 @@ namespace Data.Repositories.Repositories
             _context = context;
         }
 
-       
         public async Task<TEntity> GetById(Guid Id, CancellationToken cancellationToken = default)
         {
             return await _dbset.FirstOrDefaultAsync(e => e.Id == Id, cancellationToken);
@@ -28,12 +27,10 @@ namespace Data.Repositories.Repositories
             return _context.Set<TEntity>().Where(e => ids.Contains(e.Id));
         }
 
-      
-
-        public async Task<PageModel<TEntity>> GetPage(Expression<Func<TEntity, bool>> predicate, int pagenumber, int pagesize,CancellationToken cancellationToken = default)
+        public async Task<PageModelDTO<TEntity>> GetPage(Expression<Func<TEntity, bool>> predicate, int pagenumber, int pagesize, CancellationToken cancellationToken = default)
         {
             var queryable = _dbset.Where(predicate);
-            var result = await queryable.ToPageModelAsync(pagenumber,pagesize, cancellationToken);
+            var result = await queryable.ToPageModelAsync(pagenumber, pagesize, cancellationToken);
             return result;
         }
 
@@ -106,12 +103,14 @@ namespace Data.Repositories.Repositories
             _context.Set<TEntity>().UpdateRange(entities);
             await _context.SaveChangesAsync(cancellationToken);
         }
-        public async Task HardDelete(TEntity entity,CancellationToken cancellationToken = default)
+
+        public async Task HardDelete(TEntity entity, CancellationToken cancellationToken = default)
         {
             _dbset.Remove(entity);
             await _context.SaveChangesAsync(cancellationToken);
         }
-         public async Task HardDeleteMany(CancellationToken cancellationToken = default, params TEntity[] entities)
+
+        public async Task HardDeleteMany(CancellationToken cancellationToken = default, params TEntity[] entities)
         {
             _dbset.RemoveRange(entities);
             await _context.SaveChangesAsync(cancellationToken);

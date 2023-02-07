@@ -1,18 +1,15 @@
-﻿using Data.DTO;
-using Data.DTO.BaseDTOs.BaseDictionaryDTOs;
+﻿using Data.DTO.BaseDTOs.BaseDictionaryDTOs;
 using Data.Entities;
 using Data.IRepositories;
-using Data.Models;
 
 namespace Logic.Interfaces
 {
-    public interface IBaseDictionaryService<TEntity, TDTO, TCreateDTO, TUpdateDTO, TRepository> :IBaseService<TEntity,TDTO,TCreateDTO,TUpdateDTO,TRepository>
+    public interface IBaseDictionaryService<TEntity, TDTO, TCreateDTO, TUpdateDTO, TRepository> : IBaseService<TEntity, TDTO, TCreateDTO, TUpdateDTO, TRepository>
         where TEntity : BaseDictionaryEntity
         where TRepository : IBaseDictionaryRepository<TEntity>
         where TUpdateDTO : BaseDictionaryUpdateDTO
-        where TDTO: BaseDictinoaryOutputDTO
+        where TDTO : BaseDictinoaryOutputDTO
         where TCreateDTO : BaseDictionaryCreateDTO
     {
-      
     }
 }

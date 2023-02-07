@@ -1,6 +1,6 @@
-﻿namespace Data.Models
+﻿namespace Data.DTO
 {
-    public class FilterPagingModel
+    public class FilterPagingDTO
     {
         public int PageNumber { get; set; }
         public int PageSize { get; set; }

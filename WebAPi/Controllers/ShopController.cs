@@ -1,7 +1,7 @@
-﻿using Data.DTO.Shop;
+﻿using Data.DTO;
+using Data.DTO.Shop;
 using Data.Entities;
 using Data.IRepositories;
-using Data.Models;
 using Logic.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,8 +15,6 @@ namespace WebAPi.Controllers
         public ShopController(IShopService shopService) : base(shopService)
         {
         }
-
-       
 
         [HttpGet]
         [Authorize]
@@ -77,17 +75,17 @@ namespace WebAPi.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> ShowUserFavoriteShops([FromQuery] FilterPagingModel filterPaging)
+        public async Task<IActionResult> ShowUserFavoriteShops([FromQuery] FilterPagingDTO filterPaging)
         {
-            var result = await _service.ShowUserFavoriteShops(UserId,filterPaging);
+            var result = await _service.ShowUserFavoriteShops(UserId, filterPaging);
             return Ok(result);
         }
 
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> GetPage([FromQuery] FilterPagingModel model)
+        public async Task<IActionResult> GetPage([FromQuery] FilterPagingDTO model)
         {
-            var result = await _service.GetPage(UserId,model);
+            var result = await _service.GetPage(UserId, model);
             return Ok(result);
         }
     }

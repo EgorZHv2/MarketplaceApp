@@ -1,14 +1,9 @@
 ﻿using Data.DTO.BaseDTOs.BaseDictionaryDTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Data.DTO.DeliveryType
 {
-    public class DeliveryTypeDTO:BaseDictinoaryOutputDTO
+    public class DeliveryTypeDTO : BaseDictinoaryOutputDTO
     {
-         public bool CanBeFree { get; set; }
+        public bool CanBeFree { get; set; }
     }
 }

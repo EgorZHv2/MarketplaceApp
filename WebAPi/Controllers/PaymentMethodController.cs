@@ -1,5 +1,4 @@
-﻿using Data.DTO;
-using Data.DTO.PaymentMethod;
+﻿using Data.DTO.PaymentMethod;
 using Data.Entities;
 using Data.IRepositories;
 using Logic.Interfaces;

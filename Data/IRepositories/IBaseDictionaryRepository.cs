@@ -1,9 +1,6 @@
-﻿using Data.Models;
-
-namespace Data.IRepositories
+﻿namespace Data.IRepositories
 {
-    public interface IBaseDictionaryRepository<TEntity>:IBaseRepository<TEntity> where TEntity : class
+    public interface IBaseDictionaryRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class
     {
-      
     }
 }

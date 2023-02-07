@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
+using Data.DTO;
 using Data.DTO.Review;
-using Data.DTO.Shop;
 using Data.Entities;
 using Data.IRepositories;
-using Data.Models;
-using Data.Repositories.Repositories;
 using Logic.Exceptions;
 using Logic.Interfaces;
 
@@ -12,7 +10,6 @@ namespace Logic.Services
 {
     public class ReviewService : BaseService<Review, ReviewDTO, CreateReviewDTO, UpdateReviewDTO, IReviewRepository>, IReviewService
     {
-       
         private IUserRepository _userRepository;
         private IShopRepository _shopRepository;
 
@@ -20,7 +17,6 @@ namespace Logic.Services
             IUserRepository userRepository,
             IShopRepository shopRepository) : base(repository, mapper)
         {
-           
             _userRepository = userRepository;
             _shopRepository = shopRepository;
         }
@@ -43,12 +39,10 @@ namespace Logic.Services
             return result;
         }
 
-       
-
         public override async Task<Guid> Create(Guid userId, CreateReviewDTO createDTO, CancellationToken cancellationToken = default)
         {
             var shop = _shopRepository.GetById(createDTO.ShopId);
-            if(shop == null)
+            if (shop == null)
             {
                 throw new NotFoundException("Магазин не найден", "Parent shop not found");
             }
@@ -66,14 +60,14 @@ namespace Logic.Services
             return result;
         }
 
-        public  async Task<PageModel<ReviewDTO>> GetPage(Guid userId, FilterPagingModel pagingModel, CancellationToken cancellationToken = default)
+        public async Task<PageModelDTO<ReviewDTO>> GetPage(Guid userId, FilterPagingDTO pagingModel, CancellationToken cancellationToken = default)
         {
-            var result = new PageModel<ReviewDTO>();
+            var result = new PageModelDTO<ReviewDTO>();
             var user = await _userRepository.GetById(userId);
             var pages = await _repository.GetPage(e => (e.IsActive || e.BuyerId == userId || user.Role == Data.Enums.Role.Admin), pagingModel.PageNumber, pagingModel.PageSize, cancellationToken);
             try
             {
-                result = _mapper.Map<PageModel<ReviewDTO>>(pages);
+                result = _mapper.Map<PageModelDTO<ReviewDTO>>(pages);
             }
             catch
             {

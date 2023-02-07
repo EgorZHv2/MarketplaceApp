@@ -3,7 +3,6 @@ using Data.DTO;
 using Data.DTO.BaseDTOs;
 using Data.Entities;
 using Data.IRepositories;
-using Data.Models;
 using Logic.Exceptions;
 using Logic.Interfaces;
 
@@ -12,7 +11,7 @@ namespace Logic.Services
     public class BaseService<TEntity, TDTO, TCreateDTO, TUpdateDTO, TRepository> : IBaseService<TEntity, TDTO, TCreateDTO, TUpdateDTO, TRepository>
         where TEntity : BaseEntity
         where TUpdateDTO : BaseUpdateDTO
-        where TDTO :BaseOutputDTO
+        where TDTO : BaseOutputDTO
         where TCreateDTO : BaseCreateDTO
         where TRepository : IBaseRepository<TEntity>
     {
@@ -42,7 +41,6 @@ namespace Logic.Services
             return result;
         }
 
-     
         public virtual async Task<TDTO> GetById(Guid Id, CancellationToken cancellationToken = default)
         {
             TDTO result;
@@ -58,10 +56,10 @@ namespace Logic.Services
             return result;
         }
 
-        public virtual async Task<PageModel<TDTO>> GetPage(FilterPagingModel pagingModel, CancellationToken cancellationToken = default)
+        public virtual async Task<PageModelDTO<TDTO>> GetPage(FilterPagingDTO pagingModel, CancellationToken cancellationToken = default)
         {
-            PageModel<TDTO> result = new PageModel<TDTO>();
-            var PageModel = await _repository.GetPage(e=>e.IsActive, pagingModel.PageNumber, pagingModel.PageSize,cancellationToken);
+            PageModelDTO<TDTO> result = new PageModelDTO<TDTO>();
+            var PageModel = await _repository.GetPage(e => e.IsActive, pagingModel.PageNumber, pagingModel.PageSize, cancellationToken);
             result.CurrentPage = PageModel.CurrentPage;
             result.TotalPages = PageModel.TotalPages;
             result.ItemsOnPage = PageModel.ItemsOnPage;

@@ -1,5 +1,4 @@
 ﻿using Data.DTO;
-using Data.Models;
 using Logic.Exceptions;
 using System.Net;
 

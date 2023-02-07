@@ -1,10 +1,7 @@
 ﻿using AutoMapper;
-using Data.DTO;
-using Data.Entities;
 using Data.DTO.BaseDTOs.BaseDictionaryDTOs;
+using Data.Entities;
 using Data.IRepositories;
-using Data.Models;
-using Logic.Exceptions;
 using Logic.Interfaces;
 
 namespace Logic.Services
@@ -15,9 +12,11 @@ namespace Logic.Services
         where TEntity : BaseDictionaryEntity
         where TRepository : IBaseDictionaryRepository<TEntity>
         where TUpdateDTO : BaseDictionaryUpdateDTO
-        where TDTO: BaseDictinoaryOutputDTO
+        where TDTO : BaseDictinoaryOutputDTO
         where TCreateDTO : BaseDictionaryCreateDTO
     {
-        public BaseDictionaryService(TRepository repository, IMapper mapper) : base(repository, mapper) { }
+        public BaseDictionaryService(TRepository repository, IMapper mapper) : base(repository, mapper)
+        {
+        }
     }
 }

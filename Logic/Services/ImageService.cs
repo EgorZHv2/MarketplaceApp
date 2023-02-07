@@ -14,6 +14,7 @@ namespace Logic.Services
         private readonly ILogger<ImageService> _logger;
         private readonly IStaticFileInfoRepository _staticFileInfo;
         private string _basepath => _configuration.GetSection("BaseImagePath").Value;
+
         public ImageService(IConfiguration configuration,
             ILogger<ImageService> logger,
             IStaticFileInfoRepository staticFileInfo)
@@ -50,26 +51,27 @@ namespace Logic.Services
             };
             var existing = await _staticFileInfo.GetAllByParentId(entityid, cancellationToken);
             {
-                if(existing.Count() >0)
+                if (existing.Count() > 0)
                 {
-                    await DeleteAllImagesByParentId(userId,entityid,cancellationToken);
+                    await DeleteAllImagesByParentId(userId, entityid, cancellationToken);
                 }
             }
-            
+
             await _staticFileInfo.Create(userId, entity, cancellationToken);
         }
-        public async Task DeleteAllImagesByParentId(Guid userId, Guid id,CancellationToken cancellationToken = default)
+
+        public async Task DeleteAllImagesByParentId(Guid userId, Guid id, CancellationToken cancellationToken = default)
         {
-            var infos = await _staticFileInfo.GetAllByParentId(id,cancellationToken);
+            var infos = await _staticFileInfo.GetAllByParentId(id, cancellationToken);
             var basefilepath = _basepath + id.ToString() + "/";
-          
+
             foreach (var info in infos)
             {
                 var filepath = basefilepath + info.Name + "." + info.Extension;
                 if (File.Exists(filepath))
                 {
                     File.Delete(filepath);
-                }      
+                }
             }
             await _staticFileInfo.HardDeleteMany(cancellationToken, infos.ToArray());
         }

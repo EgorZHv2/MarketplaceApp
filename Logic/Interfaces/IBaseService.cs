@@ -1,5 +1,4 @@
 ﻿using Data.DTO;
-using Data.Models;
 
 namespace Logic.Interfaces
 {
@@ -9,7 +8,7 @@ namespace Logic.Interfaces
 
         public Task<TDTO> GetById(Guid Id, CancellationToken cancellationToken = default);
 
-        public Task<PageModel<TDTO>> GetPage(FilterPagingModel pagingModel, CancellationToken cancellationToken = default);
+        public Task<PageModelDTO<TDTO>> GetPage(FilterPagingDTO pagingModel, CancellationToken cancellationToken = default);
 
         public Task<TUpdateDTO> Update(Guid userId, TUpdateDTO DTO, CancellationToken cancellationToken = default);
 

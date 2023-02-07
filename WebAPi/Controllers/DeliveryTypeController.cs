@@ -1,5 +1,4 @@
-﻿using Data.DTO;
-using Data.DTO.DeliveryType;
+﻿using Data.DTO.DeliveryType;
 using Data.Entities;
 using Data.IRepositories;
 using Logic.Interfaces;
@@ -9,7 +8,7 @@ namespace WebAPi.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class DeliveryTypeController : BaseDictionaryController<DeliveryType, DeliveryTypeDTO, CreateDeliveryTypeDTO,UpdateDeliveryTypeDTO,IDeliveryTypeRepository,IDeliveryTypeService>
+    public class DeliveryTypeController : BaseDictionaryController<DeliveryType, DeliveryTypeDTO, CreateDeliveryTypeDTO, UpdateDeliveryTypeDTO, IDeliveryTypeRepository, IDeliveryTypeService>
     {
         public DeliveryTypeController(IDeliveryTypeService deliveryTypeService) : base(deliveryTypeService)
         {
