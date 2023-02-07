@@ -70,6 +70,7 @@ namespace Logic.Services
             {
                 throw new MappingException(this);
             }
+            user.IsEmailConfirmed = true;
             user.Role = Data.Enums.Role.Admin;
             user.Password = _hashService.HashPassword(model.Password);
             await _repository.Create(userId, user,cancellationToken);
