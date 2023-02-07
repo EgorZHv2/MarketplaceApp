@@ -15,7 +15,6 @@ namespace Logic.Services
             IShopService
     {
         private IINNService _iNNService;
-        private IRepositoryWrapper _repositoryWrapper;
         private IImageService _imageService;
         private IConfiguration _configuration;
         private IUserRepository _userRepository;
@@ -24,12 +23,12 @@ namespace Logic.Services
         private IShopDeliveryTypeRepository _shopDeliveryTypeRepository;
         private IShopPaymentMethodRepository _shopPaymentMethodRepository;
         private IShopTypeRepository _shopTypeRepository;
+        private IStaticFileInfoRepository _staticFileInfoRepository;
 
         public ShopService(
             IShopRepository repository,
             IMapper mapper,
             IINNService iNNService,
-            IRepositoryWrapper repositoryWrapper,
             IImageService imageService,
             IConfiguration configuration,
             IUserRepository userRepository,
@@ -37,11 +36,11 @@ namespace Logic.Services
             IShopCategoryRepository shopCategoryRepository,
             IShopDeliveryTypeRepository shopDeliveryTypeRepository,
             IShopPaymentMethodRepository shopPaymentMethodRepository,
-            IShopTypeRepository shopTypeRepository
+            IShopTypeRepository shopTypeRepository,
+            IStaticFileInfoRepository staticFileInfoRepository
         ) : base(repository, mapper)
         {
             _iNNService = iNNService;
-            _repositoryWrapper = repositoryWrapper;
             _imageService = imageService;
             _configuration = configuration;
             _userRepository = userRepository;
@@ -50,6 +49,7 @@ namespace Logic.Services
             _shopDeliveryTypeRepository = shopDeliveryTypeRepository;
             _shopPaymentMethodRepository = shopPaymentMethodRepository;
             _shopTypeRepository = shopTypeRepository;
+            _staticFileInfoRepository = staticFileInfoRepository;
         }
 
       
@@ -98,7 +98,7 @@ namespace Logic.Services
             }
             if (UpdateDTO.Image != null)
             {
-                await _imageService.CreateImage(UpdateDTO.Image, UpdateDTO.Id, cancellationToken);
+                await _imageService.CreateImage(userId,UpdateDTO.Image, UpdateDTO.Id, cancellationToken);
             }
             await _repository.Update(userId, shop, cancellationToken);
 
@@ -231,7 +231,7 @@ namespace Logic.Services
             }
             foreach(var shop in result.Values)
             {
-              var fileinfo = await _repositoryWrapper.StaticFileInfos.GetByParentId(shop.Id);
+              var fileinfo = await _staticFileInfoRepository.GetByParentId(shop.Id);
                     if (fileinfo != null)
                     {
                         shop.ImagePath =

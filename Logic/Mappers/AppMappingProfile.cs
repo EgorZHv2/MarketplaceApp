@@ -35,7 +35,7 @@ namespace WebAPi.Mappers
             CreateMap<UpdateUserDTO, User>();
 
             CreateMap<ChangePasswordDTO, User>().ReverseMap();
-            CreateMap<CreateAdminModel, User>().ReverseMap();
+            CreateMap<CreateAdminDTO, User>().ReverseMap();
 
             CreateMap<Shop, ShopDTO>().ForMember(x => x.ImagePath, opt => opt.Ignore());
 

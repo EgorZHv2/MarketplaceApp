@@ -12,19 +12,19 @@ namespace Logic.Services
 {
     public class ReviewService : BaseService<Review, ReviewDTO, CreateReviewDTO, UpdateReviewDTO, IReviewRepository>, IReviewService
     {
-        private IRepositoryWrapper _repositoryWrapper;
+       
         private IUserRepository _userRepository;
 
         public ReviewService(IReviewRepository repository, IMapper mapper,
-            IRepositoryWrapper repositoryWrapper, IUserRepository userRepository) : base(repository, mapper)
+            IUserRepository userRepository) : base(repository, mapper)
         {
-            _repositoryWrapper = repositoryWrapper;
+           
             _userRepository = userRepository;
         }
 
         public async Task<List<ReviewDTO>> GetReviewsByShopId(Guid userId, Guid shopId, CancellationToken cancellationToken = default)
         {
-            var user = await _repositoryWrapper.Users.GetById(userId, cancellationToken);
+            var user = await _userRepository.GetById(userId, cancellationToken);
             var list = _repository
                 .GetReviewsByShopId(shopId)
                 .Where(e => (e.IsActive || user.Id == e.BuyerId || user.Role == Data.Enums.Role.Admin)).ToList();

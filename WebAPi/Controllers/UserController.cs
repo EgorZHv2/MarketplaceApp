@@ -1,4 +1,5 @@
-﻿using Data.DTO.User;
+﻿using Data.DTO;
+using Data.DTO.User;
 using Data.Entities;
 using Data.IRepositories;
 using Data.Models;
@@ -28,6 +29,17 @@ namespace WebAPi.Controllers
             return Ok(result);
         }
 
+        [HttpPost]
+        [Authorize(Roles ="Admin")]
+        public async Task<IActionResult> CreateAdmin([FromBody] CreateAdminDTO model)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await _service.CreateAdmin(UserId, model);
+            return Ok(result);
+        }
       
     }
 }

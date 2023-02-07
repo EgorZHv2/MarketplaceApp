@@ -2,9 +2,9 @@
 using System.Text.Json;
 using System.Text.Unicode;
 
-namespace Data.Models
+namespace Data.DTO
 {
-    public class ErrorModel
+    public class ErrorResponseDTO
     {
         public int StatusCode { get; set; }
         public string Message { get; set; }

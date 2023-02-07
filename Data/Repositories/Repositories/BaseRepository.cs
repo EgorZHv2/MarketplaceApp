@@ -95,15 +95,25 @@ namespace Data.Repositories.Repositories
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task DeleteMany(Guid userid, CancellationToken cancellationToken = default, params TEntity[] entityes)
+        public async Task DeleteMany(Guid userid, CancellationToken cancellationToken = default, params TEntity[] entities)
         {
-            foreach (var entity in entityes)
+            foreach (var entity in entities)
             {
                 entity.DeletorId = userid;
                 entity.DeleteDateTime = DateTime.UtcNow;
                 entity.IsDeleted = true;
             }
-            _context.Set<TEntity>().UpdateRange(entityes);
+            _context.Set<TEntity>().UpdateRange(entities);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+        public async Task HardDelete(TEntity entity,CancellationToken cancellationToken = default)
+        {
+            _dbset.Remove(entity);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+         public async Task HardDeleteMany(CancellationToken cancellationToken = default, params TEntity[] entities)
+        {
+            _dbset.RemoveRange(entities);
             await _context.SaveChangesAsync(cancellationToken);
         }
     }

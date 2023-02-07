@@ -1,4 +1,5 @@
-﻿using Data.Models;
+﻿using Data.DTO;
+using Data.Models;
 using Logic.Exceptions;
 using System.Net;
 
@@ -40,7 +41,7 @@ namespace WebAPi.Middleware
         public async Task ResponseError(HttpContext context, string message, HttpStatusCode code)
         {
             context.Response.StatusCode = (int)code;
-            await context.Response.WriteAsJsonAsync(new ErrorModel()
+            await context.Response.WriteAsJsonAsync(new ErrorResponseDTO()
             {
                 Message = message,
                 StatusCode = context.Response.StatusCode

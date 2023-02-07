@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Data.DTO;
 using Data.DTO.Shop;
 using Data.DTO.User;
 using Data.Entities;
@@ -13,11 +14,13 @@ namespace Logic.Services
     {
         private IUserRepository _userRepository;
         private IImageService _imageService;
+        private IHashService _hashService;
 
-        public UserService(IUserRepository repository, IMapper mapper, IUserRepository userRepository, IImageService imageService) : base(repository, mapper)
+        public UserService(IUserRepository repository, IMapper mapper, IUserRepository userRepository, IImageService imageService, IHashService hashService) : base(repository, mapper)
         {
             _userRepository = userRepository;
             _imageService = imageService;
+            _hashService = hashService;
         }
 
         public override async Task<UpdateUserDTO> Update(Guid userId, UpdateUserDTO model, CancellationToken cancellationToken = default)
@@ -29,7 +32,7 @@ namespace Logic.Services
             }
             if (model.Photo != null)
             {
-                await _imageService.CreateImage(model.Photo, user.Id);
+                await _imageService.CreateImage(userId,model.Photo, user.Id);
             }
             var result = await base.Update(userId, model, cancellationToken);
             return result;
@@ -49,6 +52,22 @@ namespace Logic.Services
                 throw new MappingException(this);
             }
             return result;
+        }
+        public async Task<Guid> CreateAdmin(Guid userId, CreateAdminDTO model, CancellationToken cancellationToken = default)
+        {
+            User user = new User();
+            try
+            {
+                user = _mapper.Map<User>(model);
+            }
+            catch
+            {
+                throw new MappingException(this);
+            }
+            user.Role = Data.Enums.Role.Admin;
+            user.Password = _hashService.HashPassword(model.Password);
+            await _repository.Create(userId, user,cancellationToken);
+            return user.Id;
         }
     }
 }

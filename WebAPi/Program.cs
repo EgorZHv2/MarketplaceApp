@@ -97,7 +97,7 @@ using (var servicescope = app.Services.CreateScope())
     {
         var context = serviceprovider.GetRequiredService<ApplicationDbContext>();
         DbInitializer.Initialize(context);
-        var repository = serviceprovider.GetRequiredService<IRepositoryWrapper>();
+        var repository = serviceprovider.GetRequiredService<IUserRepository>();
         DataSeed.SeedData(repository);
     }
     catch (Exception e)

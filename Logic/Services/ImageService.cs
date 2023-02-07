@@ -13,7 +13,7 @@ namespace Logic.Services
         private readonly IConfiguration _configuration;
         private readonly ILogger<ImageService> _logger;
         private readonly IStaticFileInfoRepository _staticFileInfo;
-
+        private string _basepath => _configuration.GetSection("BaseImagePath").Value;
         public ImageService(IConfiguration configuration,
             ILogger<ImageService> logger,
             IStaticFileInfoRepository staticFileInfo)
@@ -23,7 +23,7 @@ namespace Logic.Services
             _staticFileInfo = staticFileInfo;
         }
 
-        public async Task CreateImage(IFormFile file, Guid entityid, CancellationToken cancellationToken = default)
+        public async Task CreateImage(Guid userId, IFormFile file, Guid entityid, CancellationToken cancellationToken = default)
         {
             string fileextension = file.FileName.Split(".").Last();
             if (!(fileextension == "png" || fileextension == "jpg" || fileextension == "jpeg"))
@@ -32,15 +32,14 @@ namespace Logic.Services
             }
             string filename = Guid.NewGuid().ToString();
             string foldername = entityid.ToString();
-            string filepath = _configuration.GetSection("BaseImagePath").Value + foldername + "/" + filename + "." + fileextension;
-            DirectoryInfo directoryInfo = new DirectoryInfo(_configuration.GetSection("BaseImagePath").Value + foldername);
+            string filepath = _basepath + foldername + "/" + filename + "." + fileextension;
+            DirectoryInfo directoryInfo = new DirectoryInfo(_basepath + foldername);
             if (!directoryInfo.Exists)
             {
                 directoryInfo.Create();
             }
             using (Stream stream = new FileStream(filepath, FileMode.Create))
             {
-                _logger.LogError(filepath);
                 await file.CopyToAsync(stream);
             }
             StaticFileInfo entity = new StaticFileInfo
@@ -49,7 +48,30 @@ namespace Logic.Services
                 Name = filename,
                 ParentEntityId = entityid
             };
-            await _staticFileInfo.Create(Guid.Empty, entity, cancellationToken);
+            var existing = await _staticFileInfo.GetAllByParentId(entityid, cancellationToken);
+            {
+                if(existing.Count() >0)
+                {
+                    await DeleteAllImagesByParentId(userId,entityid,cancellationToken);
+                }
+            }
+            
+            await _staticFileInfo.Create(userId, entity, cancellationToken);
+        }
+        public async Task DeleteAllImagesByParentId(Guid userId, Guid id,CancellationToken cancellationToken = default)
+        {
+            var infos = await _staticFileInfo.GetAllByParentId(id,cancellationToken);
+            var basefilepath = _basepath + id.ToString() + "/";
+          
+            foreach (var info in infos)
+            {
+                var filepath = basefilepath + info.Name + "." + info.Extension;
+                if (File.Exists(filepath))
+                {
+                    File.Delete(filepath);
+                }      
+            }
+            await _staticFileInfo.HardDeleteMany(cancellationToken, infos.ToArray());
         }
     }
 }

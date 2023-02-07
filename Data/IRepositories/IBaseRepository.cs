@@ -24,5 +24,8 @@ namespace Data.IRepositories
         Task Delete(Guid userId, TEntity entity, CancellationToken cancellationToken = default);
 
         Task DeleteMany(Guid userid, CancellationToken cancellationToken = default, params TEntity[] entities);
+        Task HardDelete(TEntity entity, CancellationToken cancellationToken = default);
+         Task HardDeleteMany(CancellationToken cancellationToken = default, params TEntity[] entities);
+        
     }
 }

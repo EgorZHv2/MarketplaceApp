@@ -7,17 +7,17 @@ namespace Data
         private const string AdminMail = "admin@mail.ru";
         private const string AdminPassword = "12345678";
 
-        public static void SeedData(IRepositoryWrapper repositoryWrapper)
+        public static void SeedData(IUserRepository userRepository)
         {
-            SeedAdmin(repositoryWrapper).Wait();
+            SeedAdmin(userRepository).Wait();
         }
 
-        public static async Task SeedAdmin(IRepositoryWrapper repositoryWrapper)
+        public static async Task SeedAdmin(IUserRepository userRepository)
         {
-            var user = await repositoryWrapper.Users.GetUserByEmail(AdminMail);
+            var user = await userRepository.GetUserByEmail(AdminMail);
             if (user == null)
             {
-                await repositoryWrapper.Users.Create(Guid.Empty, new Entities.User
+                await userRepository.Create(Guid.Empty, new Entities.User
                 {
                     FirstName = "Админ",
                     Email = AdminMail,
@@ -28,7 +28,7 @@ namespace Data
                     IsActive = true,
                     IsDeleted = false
                 });
-                repositoryWrapper.Save();
+               
             }
         }
     }

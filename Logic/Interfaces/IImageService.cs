@@ -4,6 +4,7 @@ namespace Logic.Interfaces
 {
     public interface IImageService
     {
-        Task CreateImage(IFormFile file, Guid entityid, CancellationToken cancellationToken = default);
+        Task CreateImage(Guid userId, IFormFile file, Guid entityid, CancellationToken cancellationToken = default);
+        Task DeleteAllImagesByParentId(Guid userId, Guid id, CancellationToken cancellationToken = default);
     }
 }
