@@ -77,9 +77,9 @@ namespace WebAPi.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> ShowUserFavoriteShops()
+        public async Task<IActionResult> ShowUserFavoriteShops([FromQuery] FilterPagingModel filterPaging)
         {
-            var result = await _service.ShowUserFavoriteShops(UserId);
+            var result = await _service.ShowUserFavoriteShops(UserId,filterPaging);
             return Ok(result);
         }
 

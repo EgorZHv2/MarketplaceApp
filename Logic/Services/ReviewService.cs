@@ -14,12 +14,15 @@ namespace Logic.Services
     {
        
         private IUserRepository _userRepository;
+        private IShopRepository _shopRepository;
 
         public ReviewService(IReviewRepository repository, IMapper mapper,
-            IUserRepository userRepository) : base(repository, mapper)
+            IUserRepository userRepository,
+            IShopRepository shopRepository) : base(repository, mapper)
         {
            
             _userRepository = userRepository;
+            _shopRepository = shopRepository;
         }
 
         public async Task<List<ReviewDTO>> GetReviewsByShopId(Guid userId, Guid shopId, CancellationToken cancellationToken = default)
@@ -44,6 +47,11 @@ namespace Logic.Services
 
         public override async Task<Guid> Create(Guid userId, CreateReviewDTO createDTO, CancellationToken cancellationToken = default)
         {
+            var shop = _shopRepository.GetById(createDTO.ShopId);
+            if(shop == null)
+            {
+                throw new NotFoundException("Магазин не найден", "Parent shop not found");
+            }
             Review entity = new Review();
             try
             {

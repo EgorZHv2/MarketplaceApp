@@ -10,7 +10,7 @@ namespace Logic.Interfaces
      
         public Task AddShopToFavorites(Guid userId, Guid shopId, CancellationToken cancellationToken = default);
 
-        public Task<List<ShopDTO>> ShowUserFavoriteShops(Guid userId, CancellationToken cancellationToken = default);
+        public Task<PageModel<ShopDTO>> ShowUserFavoriteShops(Guid userId, FilterPagingModel filterPaging,CancellationToken cancellationToken = default);
 
         public Task DeleteShopFromFavorites(Guid userId, Guid shopId, CancellationToken cancellationToken = default);
         public Task<PageModel<ShopDTO>> GetPage(Guid userId, FilterPagingModel pagingModel, CancellationToken cancellationToken = default);

@@ -211,8 +211,9 @@ namespace Logic.Services
             await _userRepository.Update(userId, user, cancellationToken);
         }
 
-        public async Task<List<ShopDTO>> ShowUserFavoriteShops(
+        public async Task<PageModel<ShopDTO>> ShowUserFavoriteShops(
             Guid userId,
+            FilterPagingModel filterPaging,
             CancellationToken cancellationToken = default
         )
         {
@@ -221,11 +222,11 @@ namespace Logic.Services
             {
                 throw new NotFoundException("Пользователь не найден", "User not found");
             }
-            List<ShopDTO> result = new List<ShopDTO>();
-            var list = await _usersFavoriteShops.GetFavoriteShopsByUserId(userId);
+            PageModel<ShopDTO> result = new PageModel<ShopDTO>();
+            var list = await _usersFavoriteShops.GetFavsPageByUserId(userId,filterPaging.PageNumber,filterPaging.PageSize,cancellationToken);
             try
             {
-                result = _mapper.Map<List<ShopDTO>>(list);
+                result = _mapper.Map<PageModel<ShopDTO>>(list);
             }
             catch
             {

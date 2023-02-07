@@ -12,20 +12,20 @@ namespace Logic.Services
 {
     public class UserService : BaseService<User, UserDTO, CreateUserDTO, UpdateUserDTO, IUserRepository>, IUserService
     {
-        private IUserRepository _userRepository;
+ 
         private IImageService _imageService;
         private IHashService _hashService;
 
         public UserService(IUserRepository repository, IMapper mapper, IUserRepository userRepository, IImageService imageService, IHashService hashService) : base(repository, mapper)
         {
-            _userRepository = userRepository;
+           
             _imageService = imageService;
             _hashService = hashService;
         }
 
         public override async Task<UpdateUserDTO> Update(Guid userId, UpdateUserDTO model, CancellationToken cancellationToken = default)
         {
-            var user = await _userRepository.GetById(userId);
+            var user = await _repository.GetById(userId);
             if (user == null)
             {
                 throw new NotFoundException("Пользователь не найден", "User not found");
@@ -41,7 +41,7 @@ namespace Logic.Services
         public  async Task<PageModel<UserDTO>> GetPage(Guid userId, FilterPagingModel pagingModel, CancellationToken cancellationToken = default)
         {
             var result = new PageModel<UserDTO>();
-            var user = await _userRepository.GetById(userId);
+            var user = await _repository.GetById(userId);
             var pages = await _repository.GetPage(e => (e.IsActive || user.Role == Data.Enums.Role.Admin), pagingModel.PageNumber, pagingModel.PageSize, cancellationToken);
             try
             {
@@ -55,7 +55,13 @@ namespace Logic.Services
         }
         public async Task<Guid> CreateAdmin(Guid userId, CreateAdminDTO model, CancellationToken cancellationToken = default)
         {
+            var existing = await _repository.GetUserByEmail(model.Email,cancellationToken);
+            if(existing != null)
+            {
+                throw new AlreadyExistsException("Пользователь с данной почтой уже существует", "This user already exists");
+            }
             User user = new User();
+            
             try
             {
                 user = _mapper.Map<User>(model);
