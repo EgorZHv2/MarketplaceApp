@@ -18,10 +18,16 @@ namespace WebAPi.Mappers
         {
             CreateMap<RegistrationDTO, User>();
 
-            CreateMap<Shop, ShopDTO>();
+           
+            CreateMap<Shop, ShopDTO>().ForMember(x => x.ImagePath, opt => opt.Ignore());;
             CreateMap<PageModelDTO<Shop>, PageModelDTO<ShopDTO>>();
-            CreateMap<CreateShopDTO, Shop>();
-            CreateMap<UpdateShopDTO, Shop>();
+            CreateMap<CreateShopDTO, Shop>()
+                .ForMember(e => e.ShopPaymentMethods, opt => opt.Ignore())
+                .ForMember(e => e.ShopDeliveryTypes, opt => opt.Ignore());
+       
+            CreateMap<UpdateShopDTO, Shop>()
+                .ForMember(e => e.ShopPaymentMethods, opt => opt.Ignore())
+                .ForMember(e => e.ShopDeliveryTypes, opt => opt.Ignore());
 
             CreateMap<Review, ReviewDTO>();
             CreateMap<PageModelDTO<Review>, PageModelDTO<ReviewDTO>>();
@@ -36,7 +42,7 @@ namespace WebAPi.Mappers
             CreateMap<ChangePasswordDTO, User>().ReverseMap();
             CreateMap<CreateAdminDTO, User>().ReverseMap();
 
-            CreateMap<Shop, ShopDTO>().ForMember(x => x.ImagePath, opt => opt.Ignore());
+            
 
             CreateMap<Category, CategoryDTO>();
             CreateMap<PageModelDTO<Category>, PageModelDTO<CategoryDTO>>();
