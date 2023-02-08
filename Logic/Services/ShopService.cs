@@ -63,15 +63,14 @@ namespace Logic.Services
                 throw new NotFoundException("INN не найден", "INN not valid");
             }
             Shop shop = new Shop();
-            shop = _mapper.Map<Shop>(createDTO);
-            //try
-            //{
-            //    shop = _mapper.Map<Shop>(createDTO);
-            //}
-            //catch
-            //{
-            //    throw new MappingException(this);
-            //}
+            try
+            {
+                shop = _mapper.Map<Shop>(createDTO);
+            }
+            catch
+            {
+                throw new MappingException(this);
+            }
 
             var result = await _repository.Create(userId, shop, cancellationToken);
             if (createDTO.CategoriesId.Count > 0)
