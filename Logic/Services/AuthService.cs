@@ -5,6 +5,7 @@ using Data.IRepositories;
 using Logic.Exceptions;
 using Logic.Interfaces;
 using System.Net;
+using System.Text.RegularExpressions;
 using WebAPi.Interfaces;
 
 namespace Logic.Services

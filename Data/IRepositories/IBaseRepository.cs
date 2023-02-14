@@ -9,7 +9,7 @@ namespace Data.IRepositories
 
         IEnumerable<TEntity> GetManyByIds(params Guid[] ids);
 
-        Task<PageModelDTO<TEntity>> GetPage(Expression<Func<TEntity, bool>> predicate, int pagenumber, int pagesize, CancellationToken cancellationToken = default);
+        Task<PageModelDTO<TEntity>> GetPage(Expression<Func<TEntity, bool>> predicate, PaginationDTO pagination, CancellationToken cancellationToken = default);
 
         Task<Guid> Create(Guid userId, TEntity entity, CancellationToken cancellationToken = default);
 

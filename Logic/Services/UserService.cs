@@ -34,11 +34,11 @@ namespace Logic.Services
             return result;
         }
 
-        public async Task<PageModelDTO<UserDTO>> GetPage(Guid userId, FilterPagingDTO pagingModel, CancellationToken cancellationToken = default)
+        public async Task<PageModelDTO<UserDTO>> GetPage(Guid userId, PaginationDTO pagingModel, CancellationToken cancellationToken = default)
         {
             var result = new PageModelDTO<UserDTO>();
             var user = await _repository.GetById(userId);
-            var pages = await _repository.GetPage(e => (e.IsActive || user.Role == Data.Enums.Role.Admin), pagingModel.PageNumber, pagingModel.PageSize, cancellationToken);
+            var pages = await _repository.GetPage(e => (e.IsActive || user.Role == Data.Enums.Role.Admin), pagingModel, cancellationToken);
             try
             {
                 result = _mapper.Map<PageModelDTO<UserDTO>>(pages);

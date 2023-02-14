@@ -66,7 +66,7 @@ namespace WebAPi.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> GetPage([FromQuery] FilterPagingDTO model)
+        public async Task<IActionResult> GetPage([FromQuery] PaginationDTO model)
         {
             var result = await _service.GetPage(UserId, model);
             return Ok(result);

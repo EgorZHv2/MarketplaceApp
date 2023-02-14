@@ -56,10 +56,10 @@ namespace Logic.Services
             return result;
         }
 
-        public virtual async Task<PageModelDTO<TDTO>> GetPage(FilterPagingDTO pagingModel, CancellationToken cancellationToken = default)
+        public virtual async Task<PageModelDTO<TDTO>> GetPage(PaginationDTO pagingModel, CancellationToken cancellationToken = default)
         {
             PageModelDTO<TDTO> result = new PageModelDTO<TDTO>();
-            var PageModel = await _repository.GetPage(e => e.IsActive, pagingModel.PageNumber, pagingModel.PageSize, cancellationToken);
+            var PageModel = await _repository.GetPage(e => e.IsActive, pagingModel, cancellationToken);
             result.CurrentPage = PageModel.CurrentPage;
             result.TotalPages = PageModel.TotalPages;
             result.ItemsOnPage = PageModel.ItemsOnPage;
@@ -78,6 +78,10 @@ namespace Logic.Services
         public virtual async Task<TUpdateDTO> Update(Guid userId, TUpdateDTO DTO, CancellationToken cancellationToken = default)
         {
             TEntity entity = await _repository.GetById(DTO.Id);
+            if(entity== null)
+            {
+                throw new NotFoundException("Объект не найден", "Entity Not Found");
+            }
             try
             {
                 _mapper.Map(DTO, entity);
@@ -93,6 +97,7 @@ namespace Logic.Services
         public virtual async Task Delete(Guid userId, Guid entityId, CancellationToken cancellationToken = default)
         {
             var entity = await _repository.GetById(entityId, cancellationToken);
+
             if (entity == null)
             {
                 throw new NotFoundException("Объект не найден", "Object not found");

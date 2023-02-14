@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Data.DTO;
+using Data.DTO.Filters;
 using Data.DTO.Shop;
 using Data.Entities;
 using Data.IRepositories;
@@ -73,6 +74,7 @@ namespace Logic.Services
             }
 
             var result = await _repository.Create(userId, shop, cancellationToken);
+
             if (createDTO.CategoriesId.Count > 0)
             {
                 var categories = createDTO.CategoriesId.Select(
@@ -124,6 +126,10 @@ namespace Logic.Services
                 throw new NotFoundException("INN не найден", "INN not valid");
             }
             Shop shop = await _repository.GetById(UpdateDTO.Id, cancellationToken);
+            if(shop== null)
+            {
+                throw new NotFoundException("Магазин не найден", "Shop Not Found");
+            }
             try
             {
                 _mapper.Map(UpdateDTO, shop);
@@ -206,13 +212,17 @@ namespace Logic.Services
                 throw new NotFoundException("Пользователь не найден", "User not found");
             }
             var shop = await _repository.GetById(shopId, cancellationToken);
+            if(shop== null)
+            {
+                throw new NotFoundException("Магазин не найден", "Shop Not Found");
+            }
             user.FavoriteShops.Add(shop);
             await _userRepository.Update(userId, user, cancellationToken);
         }
 
         public async Task<PageModelDTO<ShopDTO>> ShowUserFavoriteShops(
             Guid userId,
-            FilterPagingDTO filterPaging,
+            PaginationDTO filterPaging,
             CancellationToken cancellationToken = default
         )
         {
@@ -252,11 +262,11 @@ namespace Logic.Services
             await _usersFavoriteShops.Delete(existing, cancellationToken);
         }
 
-        public async Task<PageModelDTO<ShopDTO>> GetPage(Guid userId, FilterPagingDTO pagingModel, CancellationToken cancellationToken = default)
+        public async Task<PageModelDTO<ShopDTO>> GetPage(Guid userId, PaginationDTO pagingModel,ShopFilterDTO filter, CancellationToken cancellationToken = default)
         {
             var result = new PageModelDTO<ShopDTO>();
             var user = await _userRepository.GetById(userId);
-            var pages = await _repository.GetPage(e => (e.IsActive || e.SellerId == userId || user.Role == Data.Enums.Role.Admin), pagingModel.PageNumber, pagingModel.PageSize, cancellationToken);
+            var pages = await _repository.GetPage(e => (e.IsActive || e.SellerId == userId || user.Role == Data.Enums.Role.Admin), pagingModel,filter, cancellationToken);
             string basepath = _configuration.GetSection("BaseImagePath").Value;
             try
             {

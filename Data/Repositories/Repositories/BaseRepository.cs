@@ -27,10 +27,10 @@ namespace Data.Repositories.Repositories
             return _context.Set<TEntity>().Where(e => ids.Contains(e.Id));
         }
 
-        public async Task<PageModelDTO<TEntity>> GetPage(Expression<Func<TEntity, bool>> predicate, int pagenumber, int pagesize, CancellationToken cancellationToken = default)
+        public async Task<PageModelDTO<TEntity>> GetPage(Expression<Func<TEntity, bool>> predicate, PaginationDTO pagination, CancellationToken cancellationToken = default)
         {
             var queryable = _dbset.Where(predicate);
-            var result = await queryable.ToPageModelAsync(pagenumber, pagesize, cancellationToken);
+            var result = await queryable.ToPageModelAsync(pagination.PageNumber, pagination.PageSize, cancellationToken);
             return result;
         }
 

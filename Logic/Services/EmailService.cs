@@ -1,4 +1,5 @@
-﻿using MailKit.Net.Smtp;
+﻿using Logic.Exceptions;
+using MailKit.Net.Smtp;
 using MimeKit;
 using WebAPi.Interfaces;
 
@@ -19,10 +20,17 @@ namespace WebAPi.Services
 
             using (var client = new SmtpClient())
             {
-                await client.ConnectAsync("smtp.mail.ru", 465, true, cancellationToken);
-                await client.AuthenticateAsync("appsemail@bk.ru", "UTLay0QC0x0rkJBbzbua", cancellationToken);
-                await client.SendAsync(emailmessage, cancellationToken);
-                await client.DisconnectAsync(true, cancellationToken);
+                try
+                {
+                    await client.ConnectAsync("smtp.mail.ru", 465, true, cancellationToken);
+                    await client.AuthenticateAsync("appsemail@bk.ru", "UTLay0QC0x0rkJBbzbua", cancellationToken);
+                    await client.SendAsync(emailmessage, cancellationToken);
+                    await client.DisconnectAsync(true, cancellationToken);
+                }
+                catch
+                {
+                    throw new EmailServiceException("Неверный email адрес", "Wrong email address");
+                }
             }
         }
     }

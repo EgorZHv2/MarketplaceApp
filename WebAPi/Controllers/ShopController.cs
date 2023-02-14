@@ -1,4 +1,5 @@
 ﻿using Data.DTO;
+using Data.DTO.Filters;
 using Data.DTO.Shop;
 using Data.Entities;
 using Data.IRepositories;
@@ -75,7 +76,7 @@ namespace WebAPi.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> ShowUserFavoriteShops([FromQuery] FilterPagingDTO filterPaging)
+        public async Task<IActionResult> ShowUserFavoriteShops([FromQuery] PaginationDTO filterPaging)
         {
             var result = await _service.ShowUserFavoriteShops(UserId, filterPaging);
             return Ok(result);
@@ -83,9 +84,9 @@ namespace WebAPi.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> GetPage([FromQuery] FilterPagingDTO model)
+        public async Task<IActionResult> GetPage([FromQuery] PaginationDTO model, [FromQuery] ShopFilterDTO filter)
         {
-            var result = await _service.GetPage(UserId, model);
+            var result = await _service.GetPage(UserId, model,filter);
             return Ok(result);
         }
     }

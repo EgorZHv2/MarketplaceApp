@@ -44,7 +44,7 @@ namespace WebAPi.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetPage([FromQuery] FilterPagingDTO pagingModel)
+        public async Task<IActionResult> GetPage([FromQuery] PaginationDTO pagingModel)
         {
             var result = await _dictionaryService.GetPage(pagingModel);
             return Ok(result);
