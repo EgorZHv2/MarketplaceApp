@@ -4,13 +4,21 @@ using Data.Entities;
 using Data.IRepositories;
 using Logic.Exceptions;
 using Logic.Interfaces;
+using Microsoft.Extensions.Configuration;
+using System.ComponentModel.Design;
 
 namespace Logic.Services
 {
     public class CategoryService : BaseDictionaryService<Category, CategoryDTO, CreateCategoryDTO, UpdateCategoryDTO, ICategoryRepository>, ICategoryService
     {
-        public CategoryService(ICategoryRepository repository, IMapper mapper)
-            : base(repository, mapper) { }
+        private readonly IConfiguration _configuration;
+        public CategoryService(ICategoryRepository repository, 
+            IMapper mapper,
+            IConfiguration configuration)
+            : base(repository, mapper)
+        {
+            _configuration = configuration;
+                }
 
         public async Task<bool> CheckParentCategory(Guid categoryid, Guid parentid, CancellationToken cancellationToken = default)
         {
@@ -84,6 +92,92 @@ namespace Logic.Services
                 }
             }
             return result;
+        }
+        public override async Task<Guid> Create(Guid userId, CreateCategoryDTO createDTO, CancellationToken cancellationToken = default)
+        {
+            Category category = new Category();
+            Category parent = new Category();
+            if (createDTO.ParentCategoryId != null)
+            {
+                parent = await _repository.GetById((Guid)createDTO.ParentCategoryId, cancellationToken);
+            }
+            try
+            {
+                category = _mapper.Map<Category>(createDTO);
+            }
+            catch
+            {
+                throw new MappingException(this);
+            }
+            string? maxtierstr = _configuration.GetSection("MaxCategoryTier").Value;
+            int maxtier;
+            if(maxtierstr == "null" || string.IsNullOrEmpty(maxtierstr))
+            {
+                maxtier = int.MaxValue;
+            }
+            else
+            {
+                maxtier = Convert.ToInt32(maxtierstr);
+            }
+            if(parent != null)
+            {
+                if(parent.Tier >= maxtier)
+                {
+                    throw new CategoryParentException($"Максимальный уровень категории {maxtier}", "Category tier over max tier");
+                }
+                else
+                {
+                    category.Tier = parent.Tier+1;
+                }
+            }
+            Guid result = await _repository.Create(userId, category, cancellationToken);
+            return result;
+           
+        }
+        public async override Task<UpdateCategoryDTO> Update(Guid userId, UpdateCategoryDTO DTO, CancellationToken cancellationToken = default)
+        {
+            Category parent = new Category();
+            if (DTO.ParentCategoryId != null)
+            {
+                parent = await _repository.GetById((Guid)DTO.ParentCategoryId, cancellationToken);     
+                if (!await CheckParentCategory(DTO.Id, (Guid)DTO.ParentCategoryId,cancellationToken))
+                {
+                    throw new CategoryParentException("Ошибка при выборе родительской категории", "Parent category error");
+                }
+            }       
+            Category category = new Category();
+            try
+            {
+                category = _mapper.Map<Category>(DTO);
+            }
+            catch
+            {
+                throw new MappingException(this);
+            }
+            string? maxtierstr = _configuration.GetSection("MaxCategoryTier").Value;
+            int maxtier;
+            if(maxtierstr == "null" || string.IsNullOrEmpty(maxtierstr))
+            {
+                maxtier = int.MaxValue;
+            }
+            else
+            {
+                maxtier = Convert.ToInt32(maxtierstr);
+            }
+            if(parent != null)
+            {
+                if(parent.Tier >= maxtier)
+                {
+                    throw new CategoryParentException($"Максимальный уровень категории {maxtier}", "Category tier over max tier");
+                }
+                else
+                {
+                    category.Tier = parent.Tier+1;
+                }
+            }
+            await _repository.Update(userId, category, cancellationToken);
+            return DTO;
+            
         }
     }
 }
