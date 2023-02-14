@@ -4,29 +4,22 @@ using Data.Entities;
 using Data.Extensions;
 using Data.IRepositories;
 using Microsoft.EntityFrameworkCore;
+using System.Data.Common;
 using System.Linq.Expressions;
 
 namespace Data.Repositories.Repositories
 {
     public class ShopRepository : BaseRepository<Shop>, IShopRepository
     {
-        private IShopCategoryRepository _shopCategory;
-        private IShopDeliveryTypeRepository _shopDeliveryType;
-        private IShopPaymentMethodRepository _shopPaymentMethod;
-        private IShopTypeRepository _shopType;
 
+        private ICategoryRepository _categoryRepository;
         public ShopRepository(
             ApplicationDbContext context,
-            IShopCategoryRepository shopCategory,
-            IShopDeliveryTypeRepository shopDeliveryType,
-            IShopPaymentMethodRepository shopPaymentMethod,
-            IShopTypeRepository shopType
+            ICategoryRepository categoryRepository
+            
         ) : base(context)
         {
-            _shopCategory = shopCategory;
-            _shopDeliveryType = shopDeliveryType;
-            _shopPaymentMethod = shopPaymentMethod;
-            _shopType = shopType;
+          _categoryRepository = categoryRepository;
         }
 
         public override async Task<Guid> Create(
@@ -69,9 +62,7 @@ namespace Data.Repositories.Repositories
                 ? queryable.Where(e => e.Description.Contains(filter.Description))
                 : queryable;
             queryable = filter.Id is not null ? queryable.Where(e => e.Id == filter.Id) : queryable;
-            queryable = filter.CategoryId is not null
-                ? queryable.Where(e => e.Categories.Any(e => e.Id == filter.CategoryId))
-                : queryable;
+            
             queryable = filter.DeliveryTypeId is not null
                 ? queryable.Where(e => e.DeliveryTypes.Any(e => e.Id == filter.DeliveryTypeId))
                 : queryable;
@@ -81,12 +72,45 @@ namespace Data.Repositories.Repositories
             queryable = filter.TypeId is not null
                 ? queryable.Where(e => e.Types.Any(e => e.Id == filter.TypeId))
                 : queryable;
+
             var result = await queryable.ToPageModelAsync(
                 pagination.PageNumber,
                 pagination.PageSize,
                 cancellationToken
             );
+            if (filter.CategoryId is not null)
+            {
+                List<Shop> afthercategoryfilter = new List<Shop>();
+                foreach (var shop in result.Values)
+                {
+                    foreach (var cat in shop.Categories)
+                    {
+                        if (cat.Id == (Guid)filter.CategoryId)
+                        {
+                            afthercategoryfilter.Add(shop);
+                            break;
+                        }
+                        else
+                        {
+                            Category category = cat;
+                            while (category.ParentCategoryId != null)
+                            {
+                                category = await _categoryRepository.GetById((Guid)category.ParentCategoryId);
+                                if (category.Id == (Guid)filter.CategoryId)
+                                {
+                                    afthercategoryfilter.Add(shop);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                result.Values = afthercategoryfilter;
+            }
+            
+          
             return result;
         }
+        
     }
 }
