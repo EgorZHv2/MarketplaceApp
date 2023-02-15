@@ -11,15 +11,12 @@ namespace Data.Repositories.Repositories
 {
     public class ShopRepository : BaseRepository<Shop>, IShopRepository
     {
-
         private ICategoryRepository _categoryRepository;
-        public ShopRepository(
-            ApplicationDbContext context,
-            ICategoryRepository categoryRepository
-            
-        ) : base(context)
+
+        public ShopRepository(ApplicationDbContext context, ICategoryRepository categoryRepository)
+            : base(context)
         {
-          _categoryRepository = categoryRepository;
+            _categoryRepository = categoryRepository;
         }
 
         public override async Task<Guid> Create(
@@ -62,7 +59,7 @@ namespace Data.Repositories.Repositories
                 ? queryable.Where(e => e.Description.Contains(filter.Description))
                 : queryable;
             queryable = filter.Id is not null ? queryable.Where(e => e.Id == filter.Id) : queryable;
-            
+
             queryable = filter.DeliveryTypeId is not null
                 ? queryable.Where(e => e.DeliveryTypes.Any(e => e.Id == filter.DeliveryTypeId))
                 : queryable;
@@ -73,15 +70,11 @@ namespace Data.Repositories.Repositories
                 ? queryable.Where(e => e.Types.Any(e => e.Id == filter.TypeId))
                 : queryable;
 
-            var result = await queryable.ToPageModelAsync(
-                pagination.PageNumber,
-                pagination.PageSize,
-                cancellationToken
-            );
             if (filter.CategoryId is not null)
             {
+                var data = await queryable.ToListAsync(cancellationToken);
                 List<Shop> afthercategoryfilter = new List<Shop>();
-                foreach (var shop in result.Values)
+                foreach (var shop in data)
                 {
                     foreach (var cat in shop.Categories)
                     {
@@ -95,7 +88,9 @@ namespace Data.Repositories.Repositories
                             Category category = cat;
                             while (category.ParentCategoryId != null)
                             {
-                                category = await _categoryRepository.GetById((Guid)category.ParentCategoryId);
+                                category = await _categoryRepository.GetById(
+                                    (Guid)category.ParentCategoryId
+                                );
                                 if (category.Id == (Guid)filter.CategoryId)
                                 {
                                     afthercategoryfilter.Add(shop);
@@ -105,12 +100,21 @@ namespace Data.Repositories.Repositories
                         }
                     }
                 }
-                result.Values = afthercategoryfilter;
+                var result = afthercategoryfilter.ToPageModel(
+                    pagination.PageNumber,
+                    pagination.PageSize
+                );
+                return result;
             }
-            
-          
-            return result;
+            else
+            {
+                var result = await queryable.ToPageModelAsync(
+                    pagination.PageNumber,
+                    pagination.PageSize,
+                    cancellationToken
+                );
+                return result;
+            }
         }
-        
     }
 }

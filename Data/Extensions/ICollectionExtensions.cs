@@ -1,15 +1,20 @@
 ﻿using Data.DTO;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Data.Extensions
 {
-    public static class IQueryableExtensions
+    public static class ICollectionExtensions
     {
-        public static async Task<PageModelDTO<TEntity>> ToPageModelAsync<TEntity>(this IQueryable<TEntity> entities, int pagenumber, int pagesize, CancellationToken cancellationToken = default)
+        public static  PageModelDTO<TEntity> ToPageModel<TEntity>(this ICollection<TEntity> entities, int pagenumber, int pagesize)
         {
             PageModelDTO<TEntity> result = new PageModelDTO<TEntity>()
             {
-                Values = await entities.Skip((pagenumber - 1)*pagesize).Take(pagesize).ToListAsync(cancellationToken),
+                Values =  entities.Skip((pagenumber - 1)*pagesize).Take(pagesize),
                 ItemsOnPage = pagesize,
                 CurrentPage = pagenumber,
                 TotalItems = entities.Count(),
