@@ -14,6 +14,7 @@ namespace Logic.Services
         private readonly ILogger<ImageService> _logger;
         private readonly IStaticFileInfoRepository _staticFileInfo;
         private string _basepath => _configuration.GetSection("BaseImagePath").Value;
+        private string[] _allowedImageExtensions => _configuration.GetSection("AllowedImageExtensions").Get<string[]>();
 
         public ImageService(IConfiguration configuration,
             ILogger<ImageService> logger,
@@ -27,10 +28,11 @@ namespace Logic.Services
         public async Task CreateImage(Guid userId, IFormFile file, Guid entityid, CancellationToken cancellationToken = default)
         {
             string fileextension = file.FileName.Split(".").Last();
-            if (!(fileextension == "png" || fileextension == "jpg" || fileextension == "jpeg"))
+            if (!_allowedImageExtensions.Any(e => e == fileextension))
             {
                 throw new WrongExtensionException("Картинка может быть только а png, jpg или jpeg", "Wrong image extension");
             }
+
             string filename = Guid.NewGuid().ToString();
             string foldername = entityid.ToString();
             string filepath = _basepath + foldername + "/" + filename + "." + fileextension;
