@@ -8,13 +8,13 @@ namespace Data.EntitiesConfigurations
     {
         public void Configure(EntityTypeBuilder<Category> entityTypeBuilder)
         {
-            entityTypeBuilder.HasKey(x => x.Id);
-            entityTypeBuilder.HasQueryFilter(e => e.IsDeleted == false);
-            entityTypeBuilder.Property(e => e.ParentCategoryId).IsRequired(false);
+            entityTypeBuilder.HasKey(category => category.Id);
+            entityTypeBuilder.HasQueryFilter(category => category.IsDeleted == false);
+            entityTypeBuilder.Property(category => category.ParentCategoryId).IsRequired(false);
             entityTypeBuilder
-                .HasOne(e => e.ParentCategory)
-                .WithMany(e => e.Categories)
-                .HasForeignKey(e => e.ParentCategoryId)
+                .HasOne(category => category.ParentCategory)
+                .WithMany(category => category.Categories)
+                .HasForeignKey(category => category.ParentCategoryId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

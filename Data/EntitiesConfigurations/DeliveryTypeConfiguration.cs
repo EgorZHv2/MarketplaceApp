@@ -8,8 +8,8 @@ namespace Data.EntitiesConfigurations
     {
         public void Configure(EntityTypeBuilder<DeliveryType> entityTypeBuilder)
         {
-            entityTypeBuilder.HasKey(x => x.Id);
-            entityTypeBuilder.HasQueryFilter(e => e.IsDeleted == false);
+            entityTypeBuilder.HasKey(deliveryType => deliveryType.Id);
+            entityTypeBuilder.HasQueryFilter(deliveryType => deliveryType.IsDeleted == false);
         }
     }
 }

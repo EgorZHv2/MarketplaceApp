@@ -6,6 +6,7 @@ using Data.IRepositories;
 using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
 using System.Linq.Expressions;
+using System.Runtime.ConstrainedExecution;
 
 namespace Data.Repositories.Repositories
 {
@@ -66,52 +67,47 @@ namespace Data.Repositories.Repositories
                 : queryable;
             queryable = filter.TypeId is not null
                 ? queryable.Where(e => e.Types.Any(e => e.Id == filter.TypeId))
-                : queryable;
+            : queryable;
 
-            if (filter.CategoryId is not null)
+            if(filter.CategoryId is not null)
             {
-                var data = await queryable.ToListAsync(cancellationToken);
-                var categories = _categoryRepository.GetCategoriesWithChilds();
-                List<Shop> afthercategoryfilter = new List<Shop>();
-                foreach (var shop in data)
+                List<Guid> guids = await FillCategoriesGuidList(filter.CategoryId.Value, cancellationToken);
+                queryable = queryable.Where(e => e.Categories.Any(e => guids.Contains(e.Id)));
+               
+            }
+           
+            
+            
+
+            var result = await queryable.ToPageModelAsync(
+                   pagination.PageNumber,
+                   pagination.PageSize,
+                   cancellationToken
+               );
+            return result;          
+        }
+        public async Task<List<Guid>> FillCategoriesGuidList(Guid filtercategoryId,CancellationToken cancellationToken)
+        {
+            List<Guid> guids = new List<Guid>();
+            var childcategories = await _categoryRepository.GetCategoriesByParentId(filtercategoryId);
+            if (childcategories is not null)
+            {
+                await InnerRecursive(childcategories,cancellationToken);
+                async Task InnerRecursive(IEnumerable<Category> categories, CancellationToken cancellationToken)
                 {
-                    foreach (var cat in shop.Categories)
+                    foreach(var item in categories)
                     {
-                        if (cat.Id == filter.CategoryId.Value)
+                        guids.Add(item.Id);
+                        var childcategories = await _categoryRepository.GetCategoriesByParentId(item.Id);
+                        if (childcategories is not null)
                         {
-                            afthercategoryfilter.Add(shop);
-                            break;
-                        }
-                        else
-                        {
-                            Category category = cat;
-                            while (category.ParentCategoryId != null)
-                            {
-                                category = await _categoryRepository.GetById(category.ParentCategoryId.Value,cancellationToken);
-                                if (category.Id == filter.CategoryId.Value)
-                                {
-                                    afthercategoryfilter.Add(shop);
-                                    break;
-                                }
-                            }
+                           await InnerRecursive(childcategories, cancellationToken);
                         }
                     }
                 }
-                var result = afthercategoryfilter.ToPageModel(
-                    pagination.PageNumber,
-                    pagination.PageSize
-                );
-                return result;
             }
-            else
-            {
-                var result = await queryable.ToPageModelAsync(
-                    pagination.PageNumber,
-                    pagination.PageSize,
-                    cancellationToken
-                );
-                return result;
-            }
+            guids.Add(filtercategoryId);
+            return guids;
         }
     }
 }

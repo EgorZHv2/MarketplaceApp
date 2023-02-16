@@ -7,9 +7,9 @@ namespace Data.EntitiesConfigurations
     {
         public void Configure(EntityTypeBuilder<Data.Entities.Type> entityTypeBuilder)
         {
-            entityTypeBuilder.HasKey(x => x.Id);
-            entityTypeBuilder.HasQueryFilter(e => e.IsDeleted == false);
-            entityTypeBuilder.Property(e => e.Description).HasMaxLength(500);
+            entityTypeBuilder.HasKey(type => type.Id);
+            entityTypeBuilder.HasQueryFilter(type => type.IsDeleted == false);
+            entityTypeBuilder.Property(type => type.Description).HasMaxLength(500);
         }
     }
 }

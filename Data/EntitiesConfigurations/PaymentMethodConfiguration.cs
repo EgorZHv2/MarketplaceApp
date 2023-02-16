@@ -8,8 +8,8 @@ namespace Data.EntitiesConfigurations
     {
         public void Configure(EntityTypeBuilder<PaymentMethod> entityTypeBuilder)
         {
-            entityTypeBuilder.HasKey(x => x.Id);
-            entityTypeBuilder.HasQueryFilter(e => e.IsDeleted == false);
+            entityTypeBuilder.HasKey(paymentMethod => paymentMethod.Id);
+            entityTypeBuilder.HasQueryFilter(paymentMethod => paymentMethod.IsDeleted == false);
         }
     }
 }

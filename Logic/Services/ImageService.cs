@@ -51,7 +51,7 @@ namespace Logic.Services
             };
             var existing = await _staticFileInfo.GetAllByParentId(entityid, cancellationToken);
             {
-                if (existing.Count() > 0)
+                if (existing.Any())
                 {
                     await DeleteAllImagesByParentId(userId, entityid, cancellationToken);
                 }

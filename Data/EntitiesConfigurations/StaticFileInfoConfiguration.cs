@@ -8,7 +8,7 @@ namespace Data.EntitiesConfigurations
     {
         public void Configure(EntityTypeBuilder<StaticFileInfo> entityTypeBuilder)
         {
-            entityTypeBuilder.HasKey(x => x.Id);
+            entityTypeBuilder.HasKey(staticFileInfo => staticFileInfo.Id);
         }
     }
 }

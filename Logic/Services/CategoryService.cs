@@ -38,7 +38,7 @@ namespace Logic.Services
             }
 
             var childrenCategories = await _repository.GetCategoriesByParentId(categoryid, cancellationToken);
-            if (childrenCategories == null || childrenCategories.Count() == 0)
+            if (childrenCategories == null || !childrenCategories.Any())
             {
                 return true;
             }
@@ -99,7 +99,7 @@ namespace Logic.Services
             Category parent = new Category();
             if (createDTO.ParentCategoryId != null)
             {
-                parent = await _repository.GetById((Guid)createDTO.ParentCategoryId, cancellationToken);
+                parent = await _repository.GetById(createDTO.ParentCategoryId.Value, cancellationToken);
             }
             try
             {
@@ -139,8 +139,8 @@ namespace Logic.Services
             Category parent = new Category();
             if (DTO.ParentCategoryId != null)
             {
-                parent = await _repository.GetById((Guid)DTO.ParentCategoryId, cancellationToken);     
-                if (!await CheckParentCategory(DTO.Id, (Guid)DTO.ParentCategoryId,cancellationToken))
+                parent = await _repository.GetById(DTO.ParentCategoryId.Value, cancellationToken);     
+                if (!await CheckParentCategory(DTO.Id, DTO.ParentCategoryId.Value,cancellationToken))
                 {
                     throw new CategoryParentException("Ошибка при выборе родительской категории", "Parent category error");
                 }

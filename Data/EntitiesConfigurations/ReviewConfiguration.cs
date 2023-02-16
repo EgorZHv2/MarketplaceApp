@@ -8,18 +8,18 @@ namespace Data.EntitiesConfigurations
     {
         public void Configure(EntityTypeBuilder<Review> entityTypeBuilder)
         {
-            entityTypeBuilder.HasKey(x => x.Id);
+            entityTypeBuilder.HasKey(review => review.Id);
             entityTypeBuilder
-                .HasOne(e => e.Shop)
-                .WithMany(t => t.Reviews)
-                .HasForeignKey(e => e.ShopId)
+                .HasOne(review => review.Shop)
+                .WithMany(shop => shop.Reviews)
+                .HasForeignKey(review => review.ShopId)
                 .OnDelete(DeleteBehavior.Cascade);
             entityTypeBuilder
-                .HasOne(e => e.Buyer)
-                .WithMany(t => t.Reviews)
-                .HasForeignKey(e => e.BuyerId)
+                .HasOne(review => review.Buyer)
+                .WithMany(user => user.Reviews)
+                .HasForeignKey(review => review.BuyerId)
                 .OnDelete(DeleteBehavior.Cascade);
-            entityTypeBuilder.HasQueryFilter(e => e.IsDeleted == false);
+            entityTypeBuilder.HasQueryFilter(review => review.IsDeleted == false);
         }
     }
 }

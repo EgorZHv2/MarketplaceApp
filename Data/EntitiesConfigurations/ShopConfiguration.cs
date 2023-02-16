@@ -8,67 +8,71 @@ namespace Data.EntitiesConfigurations
     {
         public void Configure(EntityTypeBuilder<Shop> entityTypeBuilder)
         {
-            entityTypeBuilder.HasKey(x => x.Id);
+            entityTypeBuilder.HasKey(shop => shop.Id);
             entityTypeBuilder
-                .HasOne(e => e.Seller)
-                .WithMany(t => t.Shops)
-                .HasForeignKey(e => e.SellerId)
+                .HasOne(shop => shop.Seller)
+                .WithMany(user => user.Shops)
+                .HasForeignKey(shop => shop.SellerId)
                 .OnDelete(DeleteBehavior.Cascade);
-            entityTypeBuilder.HasQueryFilter(e => e.IsDeleted == false);
+
+            entityTypeBuilder.HasQueryFilter(shop => shop.IsDeleted == false);
 
             entityTypeBuilder
-                .HasMany<DeliveryType>(e => e.DeliveryTypes)
-                .WithMany(e => e.Shops)
-                .UsingEntity<ShopDeliveryType>(e =>
+                .HasMany<DeliveryType>(shop => shop.DeliveryTypes)
+                .WithMany(deliveryType => deliveryType.Shops)
+                .UsingEntity<ShopDeliveryType>(shopDeliveryType =>
                 {
-                    e.HasOne(e => e.Shop)
-                        .WithMany(e => e.ShopDeliveryTypes)
-                        .HasForeignKey(e => e.ShopId);
-                    e.HasOne(e => e.DeliveryType)
-                        .WithMany(e => e.ShopDeliveryTypes)
-                        .HasForeignKey(e => e.DeliveryTypeId);
-                    e.ToTable("ShopDeliveryTypes");
-                    e.Property(p => p.FreeDeliveryThreshold).IsRequired(false);
+                    shopDeliveryType.HasOne(shopDeliveryType => shopDeliveryType.Shop)
+                        .WithMany(shop => shop.ShopDeliveryTypes)
+                        .HasForeignKey(shopDeliveryType => shopDeliveryType.ShopId);
+                    shopDeliveryType.HasOne(shopDeliveryType => shopDeliveryType.DeliveryType)
+                        .WithMany(deliveryType => deliveryType.ShopDeliveryTypes)
+                        .HasForeignKey(shopDeliveryType => shopDeliveryType.DeliveryTypeId);
+                    shopDeliveryType.ToTable("ShopDeliveryTypes");
+                    shopDeliveryType.Property(shopDeliveryType => shopDeliveryType.FreeDeliveryThreshold).IsRequired(false);
                 });
+
             entityTypeBuilder
-                .HasMany<PaymentMethod>(e => e.PaymentMethods)
-                .WithMany(e => e.Shops)
-                .UsingEntity<ShopPaymentMethod>(e =>
+                .HasMany<PaymentMethod>(shop => shop.PaymentMethods)
+                .WithMany(paymentMethod => paymentMethod.Shops)
+                .UsingEntity<ShopPaymentMethod>(shopPaymentMethod =>
                 {
-                    e.HasOne(e => e.Shop)
-                        .WithMany(e => e.ShopPaymentMethods)
-                        .HasForeignKey(e => e.ShopId);
-                    e.HasOne(e => e.PaymentMethod)
-                        .WithMany(e => e.ShopPaymentMethods)
-                        .HasForeignKey(e => e.PaymentMethodId);
-                    e.ToTable("ShopPaymentMethods");
-                    e.Property(p => p.Сommission).IsRequired(false);
+                    shopPaymentMethod.HasOne(shopPaymentMethod => shopPaymentMethod.Shop)
+                        .WithMany(shop => shop.ShopPaymentMethods)
+                        .HasForeignKey(shopPaymentMethod => shopPaymentMethod.ShopId);
+                    shopPaymentMethod.HasOne(shopPaymentMethod=> shopPaymentMethod.PaymentMethod)
+                        .WithMany(paymentMethod => paymentMethod.ShopPaymentMethods)
+                        .HasForeignKey(shopPaymentMethod => shopPaymentMethod.PaymentMethodId);
+                    shopPaymentMethod.ToTable("ShopPaymentMethods");
+                    shopPaymentMethod.Property(shopPaymentMethod => shopPaymentMethod.Сommission).IsRequired(false);
                 });
+
             entityTypeBuilder
-               .HasMany<Category>(e => e.Categories)
-               .WithMany(e => e.Shops)
-               .UsingEntity<ShopCategory>(e =>
+               .HasMany<Category>(shop => shop.Categories)
+               .WithMany(category => category.Shops)
+               .UsingEntity<ShopCategory>(shopCategory =>
                {
-                   e.HasOne(e => e.Shop)
-                       .WithMany(e => e.ShopCategories)
-                       .HasForeignKey(e => e.ShopId);
-                   e.HasOne(e => e.Category)
-                       .WithMany(e => e.ShopCategories)
-                       .HasForeignKey(e => e.CategoryId);
-                   e.ToTable("ShopCategories");
+                   shopCategory.HasOne(shopCategory => shopCategory.Shop)
+                       .WithMany(shop => shop.ShopCategories)
+                       .HasForeignKey(shopCategory => shopCategory.ShopId);
+                   shopCategory.HasOne(shopCategory => shopCategory.Category)
+                       .WithMany(category => category.ShopCategories)
+                       .HasForeignKey(shopCategory => shopCategory.CategoryId);
+                   shopCategory.ToTable("ShopCategories");
                });
+
             entityTypeBuilder
-                .HasMany<Data.Entities.Type>(e => e.Types)
-                .WithMany(e => e.Shops)
-                .UsingEntity<ShopType>(e =>
+                .HasMany<Data.Entities.Type>(shop => shop.Types)
+                .WithMany(type => type.Shops)
+                .UsingEntity<ShopType>(shopType =>
                 {
-                    e.HasOne(e => e.Shop)
-                        .WithMany(e => e.ShopTypes)
-                        .HasForeignKey(e => e.ShopId);
-                    e.HasOne(e => e.Type)
-                        .WithMany(e => e.ShopTypes)
-                        .HasForeignKey(e => e.TypeId);
-                    e.ToTable("ShopTypes");
+                    shopType.HasOne(shopType => shopType.Shop)
+                        .WithMany(shop => shop.ShopTypes)
+                        .HasForeignKey(shopType => shopType.ShopId);
+                    shopType.HasOne(shopType => shopType.Type)
+                        .WithMany(type => type.ShopTypes)
+                        .HasForeignKey(shopType => shopType.TypeId);
+                    shopType.ToTable("ShopTypes");
                 });
         }
     }

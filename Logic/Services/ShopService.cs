@@ -76,7 +76,7 @@ namespace Logic.Services
 
             var result = await _repository.Create(userId, shop, cancellationToken);
 
-            if (createDTO.CategoriesId.Count > 0)
+            if (createDTO.CategoriesId.Any())
             {
                 var categories = createDTO.CategoriesId.Select(
                     e => new ShopCategory { CategoryId = e, ShopId = shop.Id }
@@ -90,7 +90,7 @@ namespace Logic.Services
                     throw new NotFoundException("Айди категории не найден", "Category id not found");
                 }
             }
-            if (createDTO.TypesId.Count > 0)
+            if (createDTO.TypesId.Any())
             {
                 var types = createDTO.CategoriesId.Select(
                     e => new ShopType { TypeId = e, ShopId = shop.Id }
@@ -104,7 +104,7 @@ namespace Logic.Services
                     throw new NotFoundException("Айди типа не найден", "Type id not found");
                 }
             }
-            if (createDTO.ShopDeliveryTypes.Count > 0)
+            if (createDTO.ShopDeliveryTypes.Any())
             {
                 var deliveryTypes = createDTO.ShopDeliveryTypes.Select(
                     e =>
@@ -124,7 +124,7 @@ namespace Logic.Services
                     throw new NotFoundException("Айди типа доставки не найден", "Delivery type id not found");
                 }
             }
-            if (createDTO.ShopPaymentMethods.Count > 0)
+            if (createDTO.ShopPaymentMethods.Any())
             {
                 var paymentMethods = createDTO.ShopPaymentMethods.Select(e => new ShopPaymentMethod
                 {
@@ -177,7 +177,7 @@ namespace Logic.Services
             await _shopDeliveryTypeRepository.DeleteAllByShop(shop);
             await _shopPaymentMethodRepository.DeleteAllByShop(shop);
             await _shopTypeRepository.DeleteAllByShop(shop);
-            if (UpdateDTO.CategoriesId.Count > 0)
+            if (UpdateDTO.CategoriesId.Any())
             {
                 var categories = UpdateDTO.CategoriesId.Select(
                     e => new ShopCategory { CategoryId = e, ShopId = shop.Id }
@@ -191,7 +191,7 @@ namespace Logic.Services
                     throw new NotFoundException("Айди категории не найден", "Category id not found");
                 }
             }
-            if (UpdateDTO.TypesId.Count > 0)
+            if (UpdateDTO.TypesId.Any())
             {
                 var types = UpdateDTO.CategoriesId.Select(
                     e => new ShopType { TypeId = e, ShopId = shop.Id }
@@ -205,7 +205,7 @@ namespace Logic.Services
                     throw new NotFoundException("Айди типа не найден", "Type id not found");
                 }
             }
-            if (UpdateDTO.ShopDeliveryTypes.Count > 0)
+            if (UpdateDTO.ShopDeliveryTypes.Any())
             {
                 var deliveryTypes = UpdateDTO.ShopDeliveryTypes.Select(
                     e =>
@@ -225,7 +225,7 @@ namespace Logic.Services
                     throw new NotFoundException("Айди типа доставки не найден", "Delivery type id not found");
                 }
             }
-            if (UpdateDTO.ShopPaymentMethods.Count > 0)
+            if (UpdateDTO.ShopPaymentMethods.Any())
             {
                 var paymentMethods = UpdateDTO.ShopPaymentMethods.Select(e => new ShopPaymentMethod
                 {

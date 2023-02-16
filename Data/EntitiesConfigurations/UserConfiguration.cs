@@ -8,24 +8,24 @@ namespace Data.EntitiesConfigurations
     {
         public void Configure(EntityTypeBuilder<User> entityTypeBuilder)
         {
-            entityTypeBuilder.HasKey(x => x.Id);
-            entityTypeBuilder.Property(e => e.FirstName).IsRequired(false);
-            entityTypeBuilder.HasQueryFilter(e => e.IsDeleted == false);
-            entityTypeBuilder.Property(e => e.CreatorId).IsRequired(false);
-            entityTypeBuilder.Property(e => e.UpdatorId).IsRequired(false);
-            entityTypeBuilder.Property(e => e.EmailConfirmationCode).IsRequired(false);
+            entityTypeBuilder.HasKey(user => user.Id);
+            entityTypeBuilder.Property(user => user.FirstName).IsRequired(false);
+            entityTypeBuilder.HasQueryFilter(user => user.IsDeleted == false);
+            entityTypeBuilder.Property(user => user.CreatorId).IsRequired(false);
+            entityTypeBuilder.Property(user => user.UpdatorId).IsRequired(false);
+            entityTypeBuilder.Property(user => user.EmailConfirmationCode).IsRequired(false);
             entityTypeBuilder
-                .HasMany(e => e.FavoriteShops)
-                .WithMany(e => e.Users)
-                .UsingEntity<UserFavoriteShop>(e =>
+                .HasMany(user => user.FavoriteShops)
+                .WithMany(shop => shop.Users)
+                .UsingEntity<UserFavoriteShop>(userFavoriteShop =>
                 {
-                    e.HasOne(e => e.Shop)
-                        .WithMany(e => e.UserFavoriteShops)
-                        .HasForeignKey(e => e.ShopId);
-                    e.HasOne(e => e.User)
-                        .WithMany(e => e.UsersFavoriteShops)
-                        .HasForeignKey(e => e.UserId);
-                    e.ToTable("UsersFavoriteShops");
+                    userFavoriteShop.HasOne(userFavoriteShop => userFavoriteShop.Shop)
+                        .WithMany(shop => shop.UserFavoriteShops)
+                        .HasForeignKey(userFavoriteShop => userFavoriteShop.ShopId);
+                    userFavoriteShop.HasOne(userFavoriteShop => userFavoriteShop.User)
+                        .WithMany(user => user.UsersFavoriteShops)
+                        .HasForeignKey(userFavoriteShop => userFavoriteShop.UserId);
+                    userFavoriteShop.ToTable("UsersFavoriteShops");
                 });
         }
     }
