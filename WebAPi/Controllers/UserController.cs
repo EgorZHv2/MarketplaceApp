@@ -29,7 +29,7 @@ namespace WebAPi.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = nameof(Data.Enums.Role.Admin))]
         public async Task<IActionResult> CreateAdmin([FromBody] CreateAdminDTO model)
         {
             if (!ModelState.IsValid)

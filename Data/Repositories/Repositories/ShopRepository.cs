@@ -52,12 +52,10 @@ namespace Data.Repositories.Repositories
                 .Include(e => e.PaymentMethods)
                 .Include(e => e.Types)
                 .AsNoTracking();
-            queryable = filter.Title is not null
-                ? queryable.Where(e => e.Title.Contains(filter.Title))
+            queryable = filter.SearchQuery is not null
+                ? queryable.Where(e => e.Title.Contains(filter.SearchQuery) || e.Description.Contains(filter.SearchQuery))
                 : queryable;
-            queryable = filter.Description is not null
-                ? queryable.Where(e => e.Description.Contains(filter.Description))
-                : queryable;
+          
             queryable = filter.Id is not null ? queryable.Where(e => e.Id == filter.Id) : queryable;
 
             queryable = filter.DeliveryTypeId is not null
@@ -73,12 +71,13 @@ namespace Data.Repositories.Repositories
             if (filter.CategoryId is not null)
             {
                 var data = await queryable.ToListAsync(cancellationToken);
+                var categories = _categoryRepository.GetCategoriesWithChilds();
                 List<Shop> afthercategoryfilter = new List<Shop>();
                 foreach (var shop in data)
                 {
                     foreach (var cat in shop.Categories)
                     {
-                        if (cat.Id == (Guid)filter.CategoryId)
+                        if (cat.Id == filter.CategoryId.Value)
                         {
                             afthercategoryfilter.Add(shop);
                             break;
@@ -88,10 +87,8 @@ namespace Data.Repositories.Repositories
                             Category category = cat;
                             while (category.ParentCategoryId != null)
                             {
-                                category = await _categoryRepository.GetById(
-                                    (Guid)category.ParentCategoryId
-                                );
-                                if (category.Id == (Guid)filter.CategoryId)
+                                category = await _categoryRepository.GetById(category.ParentCategoryId.Value,cancellationToken);
+                                if (category.Id == filter.CategoryId.Value)
                                 {
                                     afthercategoryfilter.Add(shop);
                                     break;

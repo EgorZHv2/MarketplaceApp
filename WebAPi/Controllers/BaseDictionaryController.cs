@@ -27,7 +27,7 @@ namespace WebAPi.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = nameof(Data.Enums.Role.Admin))]
         public async Task<IActionResult> Create(TCreateDTO model)
         {
             var result = await _dictionaryService.Create(UserId, model);
@@ -35,7 +35,7 @@ namespace WebAPi.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = nameof(Data.Enums.Role.Admin))]
         public virtual async Task<IActionResult> Update(TUpdateDTO model)
         {
             var result = await _dictionaryService.Update(UserId, model);
@@ -51,7 +51,7 @@ namespace WebAPi.Controllers
         }
 
         [HttpDelete]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = nameof(Data.Enums.Role.Admin))]
         public async Task<IActionResult> Delete(Guid id)
         {
             await _dictionaryService.Delete(UserId, id);

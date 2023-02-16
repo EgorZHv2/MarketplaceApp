@@ -33,7 +33,7 @@ namespace WebAPi.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Buyer,Admin")]
+        [Authorize(Roles = $"{nameof(Data.Enums.Role.Admin)},{nameof(Data.Enums.Role.Buyer)}")]
         public async Task<IActionResult> CreateReview([FromBody] CreateReviewDTO model)
         {
             if (!ModelState.IsValid)
@@ -45,7 +45,7 @@ namespace WebAPi.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Buyer,Admin")]
+        [Authorize(Roles = $"{nameof(Data.Enums.Role.Admin)},{nameof(Data.Enums.Role.Buyer)}")]
         public async Task<IActionResult> UpdateReview([FromBody] UpdateReviewDTO model)
         {
             if (!ModelState.IsValid)
@@ -57,7 +57,7 @@ namespace WebAPi.Controllers
         }
 
         [HttpDelete]
-        [Authorize(Roles = "Admin")]
+       [Authorize(Roles = nameof(Data.Enums.Role.Admin))]
         public async Task<IActionResult> DeleteReview([FromQuery] Guid Id)
         {
             await _service.Delete(UserId, Id);

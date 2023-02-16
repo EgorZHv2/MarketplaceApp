@@ -3,6 +3,7 @@ using Data.Entities;
 using Data.IRepositories;
 using Logic.Exceptions;
 using Logic.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPi.Controllers
@@ -16,6 +17,7 @@ namespace WebAPi.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetCategoryTree()
         {
             var result = await _dictionaryService.GetCategoryTree();
@@ -23,6 +25,7 @@ namespace WebAPi.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = nameof(Data.Enums.Role.Admin))]
         public override async Task<IActionResult> Update(UpdateCategoryDTO model)
         {
             if (!ModelState.IsValid)

@@ -24,7 +24,7 @@ namespace WebAPi.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = nameof(Data.Enums.Role.Admin))]
         public async Task<IActionResult> ChangeActivity([FromBody] EntityActivityDTO model)
         {
             var result = await _service.ChangeActivity(UserId, model);

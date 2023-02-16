@@ -7,6 +7,7 @@ using Data.IRepositories;
 using Logic.Exceptions;
 using Logic.Interfaces;
 using Microsoft.Extensions.Configuration;
+using System.Diagnostics;
 using WebAPi.Interfaces;
 
 namespace Logic.Services
@@ -80,14 +81,28 @@ namespace Logic.Services
                 var categories = createDTO.CategoriesId.Select(
                     e => new ShopCategory { CategoryId = e, ShopId = shop.Id }
                 ).ToArray();
-                await _shopCategoryRepository.CreateRange(cancellationToken, categories);
+               try
+                {
+                    await _shopCategoryRepository.CreateRange(cancellationToken, categories);
+                }
+                catch
+                {
+                    throw new NotFoundException("Айди категории не найден", "Category id not found");
+                }
             }
             if (createDTO.TypesId.Count > 0)
             {
                 var types = createDTO.CategoriesId.Select(
                     e => new ShopType { TypeId = e, ShopId = shop.Id }
                 ).ToArray();
-                await _shopTypeRepository.CreateRange(cancellationToken, types);
+                try
+                {
+                    await _shopTypeRepository.CreateRange(cancellationToken, types);
+                }
+                catch
+                {
+                    throw new NotFoundException("Айди типа не найден", "Type id not found");
+                }
             }
             if (createDTO.ShopDeliveryTypes.Count > 0)
             {
@@ -100,7 +115,14 @@ namespace Logic.Services
                             FreeDeliveryThreshold = e.FreeDeliveryThreshold
                         }
                 ).ToArray();
-                await _shopDeliveryTypeRepository.CreateRange(cancellationToken, deliveryTypes);
+                try
+                {
+                    await _shopDeliveryTypeRepository.CreateRange(cancellationToken, deliveryTypes);
+                }
+                catch
+                {
+                    throw new NotFoundException("Айди типа доставки не найден", "Delivery type id not found");
+                }
             }
             if (createDTO.ShopPaymentMethods.Count > 0)
             {
@@ -110,7 +132,14 @@ namespace Logic.Services
                     ShopId = shop.Id,
                     Сommission = e.Сommission
                 }).ToArray();
-                await _shopPaymentMethodRepository.CreateRange(cancellationToken, paymentMethods);
+                try
+                {
+                    await _shopPaymentMethodRepository.CreateRange(cancellationToken, paymentMethods);
+                }
+                catch
+                {
+                    throw new NotFoundException("Айди типа оплаты не найден", "Payment method id not found");
+                }
             }
             return result;
         }
@@ -153,14 +182,28 @@ namespace Logic.Services
                 var categories = UpdateDTO.CategoriesId.Select(
                     e => new ShopCategory { CategoryId = e, ShopId = shop.Id }
                 ).ToArray();
-                await _shopCategoryRepository.CreateRange(cancellationToken, categories);
+                try
+                {
+                    await _shopCategoryRepository.CreateRange(cancellationToken, categories);
+                }
+                catch
+                {
+                    throw new NotFoundException("Айди категории не найден", "Category id not found");
+                }
             }
             if (UpdateDTO.TypesId.Count > 0)
             {
                 var types = UpdateDTO.CategoriesId.Select(
                     e => new ShopType { TypeId = e, ShopId = shop.Id }
                 ).ToArray();
-                await _shopTypeRepository.CreateRange(cancellationToken, types);
+                try
+                {
+                    await _shopTypeRepository.CreateRange(cancellationToken, types);
+                }
+                catch
+                {
+                    throw new NotFoundException("Айди типа не найден", "Type id not found");
+                }
             }
             if (UpdateDTO.ShopDeliveryTypes.Count > 0)
             {
@@ -173,7 +216,14 @@ namespace Logic.Services
                             FreeDeliveryThreshold = e.FreeDeliveryThreshold
                         }
                 ).ToArray();
-                await _shopDeliveryTypeRepository.CreateRange(cancellationToken, deliveryTypes);
+                try
+                {
+                    await _shopDeliveryTypeRepository.CreateRange(cancellationToken, deliveryTypes);
+                }
+                catch
+                {
+                    throw new NotFoundException("Айди типа доставки не найден", "Delivery type id not found");
+                }
             }
             if (UpdateDTO.ShopPaymentMethods.Count > 0)
             {
@@ -183,7 +233,14 @@ namespace Logic.Services
                     ShopId = shop.Id,
                     Сommission = e.Сommission
                 }).ToArray();
-                await _shopPaymentMethodRepository.CreateRange(cancellationToken, paymentMethods);
+                try
+                {
+                    await _shopPaymentMethodRepository.CreateRange(cancellationToken, paymentMethods);
+                }
+                catch
+                {
+                    throw new NotFoundException("Айди типа оплаты не найден", "Payment method id not found");
+                }
             }
             return UpdateDTO;
         }

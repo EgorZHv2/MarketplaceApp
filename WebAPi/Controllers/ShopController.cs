@@ -26,7 +26,7 @@ namespace WebAPi.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Seller, Admin")]
+        [Authorize(Roles = $"{nameof(Data.Enums.Role.Admin)},{nameof(Data.Enums.Role.Seller)}")]
         public async Task<IActionResult> CreateShop([FromBody] CreateShopDTO model)
         {
             if (!ModelState.IsValid)
@@ -38,7 +38,7 @@ namespace WebAPi.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Seller, Admin")]
+        [Authorize(Roles = $"{nameof(Data.Enums.Role.Admin)},{nameof(Data.Enums.Role.Seller)}")]
         public async Task<IActionResult> UpdateShop([FromForm] UpdateShopDTO model)
         {
             if (!ModelState.IsValid)
@@ -51,7 +51,7 @@ namespace WebAPi.Controllers
         }
 
         [HttpDelete]
-        [Authorize(Roles = "Seller, Admin")]
+        [Authorize(Roles = $"{nameof(Data.Enums.Role.Admin)},{nameof(Data.Enums.Role.Seller)}")]
         public async Task<IActionResult> DeleteShop([FromQuery] Guid Id)
         {
             await _service.Delete(UserId, Id);
