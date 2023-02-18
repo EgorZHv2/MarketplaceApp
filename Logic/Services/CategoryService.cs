@@ -20,14 +20,14 @@ namespace Logic.Services
             _configuration = configuration;
                 }
 
-        public async Task<bool> CheckParentCategory(Guid categoryid, Guid parentid, CancellationToken cancellationToken = default)
+        public async Task<bool> CheckParentCategory(Guid categoryId, Guid parentId)
         {
-            if (categoryid == parentid)
+            if (categoryId == parentId)
             {
                 return false;
             }
-            var category = await _repository.GetById(categoryid);
-            var parentcategory = await _repository.GetById(parentid);
+            var category = await _repository.GetById(categoryId);
+            var parentcategory = await _repository.GetById(parentId);
             if (category == null)
             {
                 throw new NotFoundException("Категория не найдена", "Category not found");
@@ -37,48 +37,41 @@ namespace Logic.Services
                 throw new NotFoundException("Родительская категория не найдена", "Parent category not found");
             }
 
-            var childrenCategories = await _repository.GetCategoriesByParentId(categoryid, cancellationToken);
+            var childrenCategories = await _repository.GetCategoriesByParentId(categoryId);
             if (childrenCategories == null || !childrenCategories.Any())
             {
                 return true;
             }
             else
             {
-                return await Check(childrenCategories, parentid, cancellationToken);
+                return await Check(childrenCategories, parentId);
             }
         }
 
-        public async Task<List<CategoryDTO>> GetCategoryTree(CancellationToken cancellationToken = default)
+        public async Task<List<CategoryDTO>> GetCategoryTree()
         {
             List<CategoryDTO> result = new List<CategoryDTO>();
-            var list = await _repository.GetCategoriesWithoutParentId(cancellationToken);
-            try
-            {
-                result = _mapper.Map<List<CategoryDTO>>(list);
-            }
-            catch
-            {
-                throw new MappingException(this);
-            }
-            result = await Fill(result, cancellationToken);
+            var list = await _repository.GetCategoriesWithoutParentId();
+            result = _mapper.Map<List<CategoryDTO>>(list);
+            result = await Fill(result);
             return result;
         }
 
-        private async Task<List<CategoryDTO>> Fill(List<CategoryDTO> level, CancellationToken cancellationToken = default)
+        private async Task<List<CategoryDTO>> Fill(List<CategoryDTO> level)
         {
             foreach (var item in level)
             {
                 item.Categories.AddRange(_mapper.Map<List<CategoryDTO>>(await _repository.GetCategoriesByParentId(item.Id)));
-                await Fill(item.Categories, cancellationToken);
+                await Fill(item.Categories);
             }
             return level;
         }
 
-        private async Task<bool> Check(IEnumerable<Category> list, Guid id, CancellationToken cancellationToken = default)
+        private async Task<bool> Check(IEnumerable<Category> list, Guid id)
         {
             bool result = true;
-            await CheckInner(list, id, cancellationToken);
-            async Task CheckInner(IEnumerable<Category> list, Guid id, CancellationToken cancellationToken = default)
+            await CheckInner(list, id);
+            async Task CheckInner(IEnumerable<Category> list, Guid id)
             {
                 foreach (var item in list)
                 {
@@ -87,28 +80,21 @@ namespace Logic.Services
                         result = false;
                         break;
                     }
-                    item.Categories.AddRange(await _repository.GetCategoriesByParentId(item.Id, cancellationToken));
-                    await CheckInner(item.Categories, id, cancellationToken);
+                    item.Categories.AddRange(await _repository.GetCategoriesByParentId(item.Id));
+                    await CheckInner(item.Categories, id);
                 }
             }
             return result;
         }
-        public override async Task<Guid> Create(Guid userId, CreateCategoryDTO createDTO, CancellationToken cancellationToken = default)
+        public override async Task<Guid> Create(Guid userId, CreateCategoryDTO createDTO)
         {
             Category category = new Category();
             Category parent = new Category();
             if (createDTO.ParentCategoryId != null)
             {
-                parent = await _repository.GetById(createDTO.ParentCategoryId.Value, cancellationToken);
+                parent = await _repository.GetById(createDTO.ParentCategoryId.Value);
             }
-            try
-            {
-                category = _mapper.Map<Category>(createDTO);
-            }
-            catch
-            {
-                throw new MappingException(this);
-            }
+            category = _mapper.Map<Category>(createDTO);
             string? maxtierstr = _configuration.GetSection("MaxCategoryTier").Value;
             int maxtier;
             if(maxtierstr == "null" || string.IsNullOrEmpty(maxtierstr))
@@ -130,30 +116,23 @@ namespace Logic.Services
                     category.Tier = parent.Tier+1;
                 }
             }
-            Guid result = await _repository.Create(userId, category, cancellationToken);
+            Guid result = await _repository.Create(userId, category);
             return result;
            
         }
-        public async override Task<UpdateCategoryDTO> Update(Guid userId, UpdateCategoryDTO DTO, CancellationToken cancellationToken = default)
+        public async override Task<UpdateCategoryDTO> Update(Guid userId, UpdateCategoryDTO DTO)
         {
             Category parent = new Category();
             if (DTO.ParentCategoryId != null)
             {
-                parent = await _repository.GetById(DTO.ParentCategoryId.Value, cancellationToken);     
-                if (!await CheckParentCategory(DTO.Id, DTO.ParentCategoryId.Value,cancellationToken))
+                parent = await _repository.GetById(DTO.ParentCategoryId.Value);     
+                if (!await CheckParentCategory(DTO.Id, DTO.ParentCategoryId.Value))
                 {
                     throw new CategoryParentException("Ошибка при выборе родительской категории", "Parent category error");
                 }
             }       
             Category category = new Category();
-            try
-            {
-                category = _mapper.Map<Category>(DTO);
-            }
-            catch
-            {
-                throw new MappingException(this);
-            }
+            category = _mapper.Map<Category>(DTO);
             string? maxtierstr = _configuration.GetSection("MaxCategoryTier").Value;
             int maxtier;
             if(maxtierstr == "null" || string.IsNullOrEmpty(maxtierstr))
@@ -175,7 +154,7 @@ namespace Logic.Services
                     category.Tier = parent.Tier+1;
                 }
             }
-            await _repository.Update(userId, category, cancellationToken);
+            await _repository.Update(userId, category);
             return DTO;
             
         }

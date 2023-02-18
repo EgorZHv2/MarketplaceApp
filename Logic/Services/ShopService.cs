@@ -56,8 +56,8 @@ namespace Logic.Services
 
         public override async Task<Guid> Create(
             Guid userId,
-            CreateShopDTO createDTO,
-            CancellationToken cancellationToken = default
+            CreateShopDTO createDTO
+            
         )
         {
             if (!_iNNService.CheckINN(createDTO.INN))
@@ -65,16 +65,11 @@ namespace Logic.Services
                 throw new NotFoundException("INN не найден", "INN not valid");
             }
             Shop shop = new Shop();
-            try
-            {
+           
                 shop = _mapper.Map<Shop>(createDTO);
-            }
-            catch
-            {
-                throw new MappingException(this);
-            }
+           
 
-            var result = await _repository.Create(userId, shop, cancellationToken);
+            var result = await _repository.Create(userId, shop);
 
             if (createDTO.CategoriesId.Any())
             {
@@ -83,7 +78,7 @@ namespace Logic.Services
                 ).ToArray();
                try
                 {
-                    await _shopCategoryRepository.CreateRange(cancellationToken, categories);
+                    await _shopCategoryRepository.CreateRange( categories);
                 }
                 catch
                 {
@@ -97,7 +92,7 @@ namespace Logic.Services
                 ).ToArray();
                 try
                 {
-                    await _shopTypeRepository.CreateRange(cancellationToken, types);
+                    await _shopTypeRepository.CreateRange( types);
                 }
                 catch
                 {
@@ -117,7 +112,7 @@ namespace Logic.Services
                 ).ToArray();
                 try
                 {
-                    await _shopDeliveryTypeRepository.CreateRange(cancellationToken, deliveryTypes);
+                    await _shopDeliveryTypeRepository.CreateRange( deliveryTypes);
                 }
                 catch
                 {
@@ -134,7 +129,7 @@ namespace Logic.Services
                 }).ToArray();
                 try
                 {
-                    await _shopPaymentMethodRepository.CreateRange(cancellationToken, paymentMethods);
+                    await _shopPaymentMethodRepository.CreateRange( paymentMethods);
                 }
                 catch
                 {
@@ -146,32 +141,27 @@ namespace Logic.Services
 
         public override async Task<UpdateShopDTO> Update(
             Guid userId,
-            UpdateShopDTO UpdateDTO,
-            CancellationToken cancellationToken = default
+            UpdateShopDTO UpdateDTO
+            
         )
         {
             if (!_iNNService.CheckINN(UpdateDTO.INN))
             {
                 throw new NotFoundException("INN не найден", "INN not valid");
             }
-            Shop shop = await _repository.GetById(UpdateDTO.Id, cancellationToken);
+            Shop shop = await _repository.GetById(UpdateDTO.Id);
             if(shop== null)
             {
                 throw new NotFoundException("Магазин не найден", "Shop Not Found");
             }
-            try
-            {
+           
                 _mapper.Map(UpdateDTO, shop);
-            }
-            catch
-            {
-                throw new MappingException(this);
-            }
+          
             if (UpdateDTO.Image != null)
             {
-                await _imageService.CreateImage(userId, UpdateDTO.Image, UpdateDTO.Id, cancellationToken);
+                await _imageService.CreateImage(userId, UpdateDTO.Image, UpdateDTO.Id);
             }
-            await _repository.Update(userId, shop, cancellationToken);
+            await _repository.Update(userId, shop);
 
             await _shopCategoryRepository.DeleteAllByShop(shop);
             await _shopDeliveryTypeRepository.DeleteAllByShop(shop);
@@ -184,7 +174,7 @@ namespace Logic.Services
                 ).ToArray();
                 try
                 {
-                    await _shopCategoryRepository.CreateRange(cancellationToken, categories);
+                    await _shopCategoryRepository.CreateRange( categories);
                 }
                 catch
                 {
@@ -198,7 +188,7 @@ namespace Logic.Services
                 ).ToArray();
                 try
                 {
-                    await _shopTypeRepository.CreateRange(cancellationToken, types);
+                    await _shopTypeRepository.CreateRange( types);
                 }
                 catch
                 {
@@ -218,7 +208,7 @@ namespace Logic.Services
                 ).ToArray();
                 try
                 {
-                    await _shopDeliveryTypeRepository.CreateRange(cancellationToken, deliveryTypes);
+                    await _shopDeliveryTypeRepository.CreateRange( deliveryTypes);
                 }
                 catch
                 {
@@ -235,7 +225,7 @@ namespace Logic.Services
                 }).ToArray();
                 try
                 {
-                    await _shopPaymentMethodRepository.CreateRange(cancellationToken, paymentMethods);
+                    await _shopPaymentMethodRepository.CreateRange( paymentMethods);
                 }
                 catch
                 {
@@ -247,15 +237,15 @@ namespace Logic.Services
 
         public async Task AddShopToFavorites(
             Guid userId,
-            Guid shopId,
-            CancellationToken cancellationToken = default
+            Guid shopId
+            
         )
         {
-            var user = await _userRepository.GetById(userId, cancellationToken);
+            var user = await _userRepository.GetById(userId);
             var existing = await _usersFavoriteShops.GetFavByShopAndUserId(
                 userId,
-                shopId,
-                cancellationToken
+                shopId
+                
             );
             if (existing != null)
             {
@@ -268,71 +258,57 @@ namespace Logic.Services
             {
                 throw new NotFoundException("Пользователь не найден", "User not found");
             }
-            var shop = await _repository.GetById(shopId, cancellationToken);
+            var shop = await _repository.GetById(shopId);
             if(shop== null)
             {
                 throw new NotFoundException("Магазин не найден", "Shop Not Found");
             }
             user.FavoriteShops.Add(shop);
-            await _userRepository.Update(userId, user, cancellationToken);
+            await _userRepository.Update(userId, user);
         }
 
         public async Task<PageModelDTO<ShopDTO>> ShowUserFavoriteShops(
             Guid userId,
-            PaginationDTO filterPaging,
-            CancellationToken cancellationToken = default
+            PaginationDTO filterPaging
+            
         )
         {
-            var user = await _userRepository.GetById(userId, cancellationToken);
+            var user = await _userRepository.GetById(userId);
             if (user == null)
             {
                 throw new NotFoundException("Пользователь не найден", "User not found");
             }
             PageModelDTO<ShopDTO> result = new PageModelDTO<ShopDTO>();
-            var list = await _usersFavoriteShops.GetFavsPageByUserId(userId, filterPaging.PageNumber, filterPaging.PageSize, cancellationToken);
-            try
-            {
-                result = _mapper.Map<PageModelDTO<ShopDTO>>(list);
-            }
-            catch
-            {
-                throw new MappingException(this);
-            }
+            var list = await _usersFavoriteShops.GetFavsPageByUserId(userId, filterPaging.PageNumber, filterPaging.PageSize);
+            result = _mapper.Map<PageModelDTO<ShopDTO>>(list);
             return result;
         }
 
         public async Task DeleteShopFromFavorites(
             Guid userId,
-            Guid shopId,
-            CancellationToken cancellationToken = default
+            Guid shopId
+            
         )
         {
             var existing = await _usersFavoriteShops.GetFavByShopAndUserId(
                 userId,
-                shopId,
-                cancellationToken
+                shopId
+                
             );
             if (existing == null)
             {
                 throw new NotFoundException("Избранный магазин не найден", "Wrong shop or user id");
             }
-            await _usersFavoriteShops.Delete(existing, cancellationToken);
+            await _usersFavoriteShops.Delete(existing);
         }
 
-        public async Task<PageModelDTO<ShopDTO>> GetPage(Guid userId, PaginationDTO pagingModel,ShopFilterDTO filter, CancellationToken cancellationToken = default)
+        public async Task<PageModelDTO<ShopDTO>> GetPage(Guid userId, PaginationDTO pagingModel,ShopFilterDTO filter)
         {
             var result = new PageModelDTO<ShopDTO>();
             var user = await _userRepository.GetById(userId);
-            var pages = await _repository.GetPage(e => (e.IsActive || e.SellerId == userId || user.Role == Data.Enums.Role.Admin), pagingModel,filter, cancellationToken);
+            var pages = await _repository.GetPage(e => (e.IsActive || e.SellerId == userId || user.Role == Data.Enums.Role.Admin), pagingModel,filter);
             string basepath = _configuration.GetSection("BaseImagePath").Value;
-            try
-            {
-                result = _mapper.Map<PageModelDTO<ShopDTO>>(pages);
-            }
-            catch
-            {
-                throw new MappingException(this);
-            }
+            result = _mapper.Map<PageModelDTO<ShopDTO>>(pages);
             foreach (var shop in result.Values)
             {
                 var fileinfo = await _staticFileInfoRepository.GetByParentId(shop.Id);

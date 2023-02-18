@@ -10,16 +10,16 @@ namespace Data.Repositories.Repositories
         {
         }
 
-        public async Task<StaticFileInfo> GetByParentId(Guid Id, CancellationToken cancellationToken = default)
+        public async Task<StaticFileInfo?> GetByParentId(Guid Id)
         {
-            var file = await _dbset.FirstOrDefaultAsync(e => e.ParentEntityId == Id, cancellationToken);
-            return file;
+            
+            return await _dbset.FirstOrDefaultAsync(e => e.ParentEntityId == Id);
         }
 
-        public async Task<IEnumerable<StaticFileInfo>> GetAllByParentId(Guid Id, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<StaticFileInfo>> GetAllByParentId(Guid Id)
         {
-            var list = await _dbset.Where(e => e.ParentEntityId == Id).ToListAsync(cancellationToken);
-            return list;
+           
+            return await _dbset.Where(e => e.ParentEntityId == Id).ToListAsync();
         }
     }
 }

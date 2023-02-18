@@ -22,8 +22,8 @@ namespace Data.Repositories.Repositories
 
         public override async Task<Guid> Create(
             Guid userId,
-            Shop entity,
-            CancellationToken cancellationToken = default
+            Shop entity
+            
         )
         {
             entity.CreateDateTime = DateTime.UtcNow;
@@ -34,16 +34,16 @@ namespace Data.Repositories.Repositories
             entity.IsDeleted = false;
             entity.Id = Guid.NewGuid();
             entity.SellerId = userId;
-            await _dbset.AddAsync(entity, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _dbset.AddAsync(entity);
+            await _context.SaveChangesAsync();
             return entity.Id;
         }
 
         public async Task<PageModelDTO<Shop>> GetPage(
             Expression<Func<Shop, bool>> predicate,
             PaginationDTO pagination,
-            ShopFilterDTO filter,
-            CancellationToken cancellationToken = default
+            ShopFilterDTO filter
+            
         )
         {
             var queryable = _dbset
@@ -71,7 +71,7 @@ namespace Data.Repositories.Repositories
 
             if(filter.CategoryId is not null)
             {
-                List<Guid> guids = await FillCategoriesGuidList(filter.CategoryId.Value, cancellationToken);
+                List<Guid> guids = await FillCategoriesGuidList(filter.CategoryId.Value);
                 queryable = queryable.Where(e => e.Categories.Any(e => guids.Contains(e.Id)));
                
             }
@@ -81,19 +81,19 @@ namespace Data.Repositories.Repositories
 
             var result = await queryable.ToPageModelAsync(
                    pagination.PageNumber,
-                   pagination.PageSize,
-                   cancellationToken
+                   pagination.PageSize
+                   
                );
             return result;          
         }
-        public async Task<List<Guid>> FillCategoriesGuidList(Guid filtercategoryId,CancellationToken cancellationToken)
+        public async Task<List<Guid>> FillCategoriesGuidList(Guid filterCategoryId)
         {
             List<Guid> guids = new List<Guid>();
-            var childcategories = await _categoryRepository.GetCategoriesByParentId(filtercategoryId);
+            var childcategories = await _categoryRepository.GetCategoriesByParentId(filterCategoryId);
             if (childcategories is not null)
             {
-                await InnerRecursive(childcategories,cancellationToken);
-                async Task InnerRecursive(IEnumerable<Category> categories, CancellationToken cancellationToken)
+                await InnerRecursive(childcategories);
+                async Task InnerRecursive(IEnumerable<Category> categories )
                 {
                     foreach(var item in categories)
                     {
@@ -101,12 +101,12 @@ namespace Data.Repositories.Repositories
                         var childcategories = await _categoryRepository.GetCategoriesByParentId(item.Id);
                         if (childcategories is not null)
                         {
-                           await InnerRecursive(childcategories, cancellationToken);
+                           await InnerRecursive(childcategories);
                         }
                     }
                 }
             }
-            guids.Add(filtercategoryId);
+            guids.Add(filterCategoryId);
             return guids;
         }
     }

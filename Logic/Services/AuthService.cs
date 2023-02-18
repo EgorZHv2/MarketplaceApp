@@ -38,11 +38,11 @@ namespace Logic.Services
 
         public async Task VerifyEmail(
             string email,
-            string code,
-            CancellationToken cancellationToken = default
+            string code
+            
         )
         {
-            var user = await _userRepository.GetUserByEmail(email, cancellationToken);
+            var user = await _userRepository.GetUserByEmail(email);
             if (user == null)
             {
                 throw new NotFoundException("Email не найден", "User email not found");
@@ -57,15 +57,15 @@ namespace Logic.Services
                 );
             }
             user.IsEmailConfirmed = true;
-            await _userRepository.Update(user.Id, user, cancellationToken);
+            await _userRepository.Update(user.Id, user);
         }
 
         public async Task<string> Login(
-            LoginDTO model,
-            CancellationToken cancellationToken = default
+            LoginDTO model
+            
         )
         {
-            var user = await _userRepository.GetUserByEmail(model.Email, cancellationToken);
+            var user = await _userRepository.GetUserByEmail(model.Email);
             if (user == null)
             {
                 throw new NotFoundException("Email не найден", "User email not found");
@@ -93,11 +93,11 @@ namespace Logic.Services
         }
 
         public async Task Register(
-            RegistrationDTO model,
-            CancellationToken cancellationToken = default
+            RegistrationDTO model
+            
         )
         {
-            var dbuser = await _userRepository.GetUserByEmail(model.Email, cancellationToken);
+            var dbuser = await _userRepository.GetUserByEmail(model.Email);
             if (dbuser != null)
             {
                 throw new AuthException(
@@ -108,31 +108,26 @@ namespace Logic.Services
                 );
             }
             User user = new User();
-            try
-            {
+           
                 user = _mapper.Map<User>(model);
-            }
-            catch
-            {
-                throw new MappingException(this);
-            }
+           
             string code = _stringGeneratorService.Generate(6);
             user.Password = _hashService.HashPassword(model.Password);
             user.EmailConfirmationCode = _hashService.HashPassword(code);
             _emailService.SendEmail(
                 user.Email,
                 "MarketPlaceApp",
-                $"Your verification code = {code}",
-                cancellationToken
+                $"Your verification code = {code}"
+                
             );
-            await _userRepository.Create(Guid.Empty, user, cancellationToken);
+            await _userRepository.Create(Guid.Empty, user);
         }
 
-        public async Task ChangePassword(Guid userId, ChangePasswordDTO model,
-           CancellationToken cancellationToken = default
+        public async Task ChangePassword(Guid userId, ChangePasswordDTO model
+           
        )
         {
-            var user = await _userRepository.GetById(userId, cancellationToken);
+            var user = await _userRepository.GetById(userId);
             if (user == null)
             {
                 throw new NotFoundException("Пользователь не найден", "User not found");
@@ -148,7 +143,7 @@ namespace Logic.Services
                 );
             }
             user.Password = _hashService.HashPassword(model.Password);
-            await _userRepository.Update(userId, user, cancellationToken);
+            await _userRepository.Update(userId, user);
         }
     }
 }

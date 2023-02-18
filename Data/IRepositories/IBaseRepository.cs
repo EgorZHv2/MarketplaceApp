@@ -5,26 +5,26 @@ namespace Data.IRepositories
 {
     public interface IBaseRepository<TEntity> where TEntity : class
     {
-        Task<TEntity> GetById(Guid Id, CancellationToken cancellationToken = default);
+        Task<TEntity?> GetById(Guid Id);
 
         IEnumerable<TEntity> GetManyByIds(params Guid[] ids);
 
-        Task<PageModelDTO<TEntity>> GetPage(Expression<Func<TEntity, bool>> predicate, PaginationDTO pagination, CancellationToken cancellationToken = default);
+        Task<PageModelDTO<TEntity>> GetPage(Expression<Func<TEntity, bool>> predicate, PaginationDTO pagination);
 
-        Task<Guid> Create(Guid userId, TEntity entity, CancellationToken cancellationToken = default);
+        Task<Guid> Create(Guid userId, TEntity entity);
 
-        Task CreateMany(Guid userid, CancellationToken cancellationToken = default, params TEntity[] entities);
+        Task CreateMany(Guid userId,  params TEntity[] entities);
 
-        Task Update(Guid userId, TEntity entity, CancellationToken cancellationToken = default);
+        Task Update(Guid userId, TEntity entity);
 
-        Task UpdateMany(Guid userid, CancellationToken cancellationToken = default, params TEntity[] entities);
+        Task UpdateMany(Guid userId, params TEntity[] entities);
 
-        Task Delete(Guid userId, TEntity entity, CancellationToken cancellationToken = default);
+        Task Delete(Guid userId, TEntity entity );
 
-        Task DeleteMany(Guid userid, CancellationToken cancellationToken = default, params TEntity[] entities);
+        Task DeleteMany(Guid userId,params TEntity[] entities);
 
-        Task HardDelete(TEntity entity, CancellationToken cancellationToken = default);
+        Task HardDelete(TEntity entity );
 
-        Task HardDeleteMany(CancellationToken cancellationToken = default, params TEntity[] entities);
+        Task HardDeleteMany(params TEntity[] entities);
     }
 }

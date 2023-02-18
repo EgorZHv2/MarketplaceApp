@@ -10,10 +10,10 @@ namespace Logic.Interfaces
     {
         public Task<List<ReviewDTO>> GetReviewsByShopId(
             Guid userId,
-            Guid shopId,
-            CancellationToken cancellationToken = default
+            Guid shopId
+            
         );
 
-        public Task<PageModelDTO<ReviewDTO>> GetPage(Guid userId, PaginationDTO pagingModel, CancellationToken cancellationToken = default);
+        public Task<PageModelDTO<ReviewDTO>> GetPage(Guid userId, PaginationDTO pagingModel);
     }
 }

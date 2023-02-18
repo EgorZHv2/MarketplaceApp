@@ -5,15 +5,15 @@ namespace Data.Extensions
 {
     public static class IQueryableExtensions
     {
-        public static async Task<PageModelDTO<TEntity>> ToPageModelAsync<TEntity>(this IQueryable<TEntity> entities, int pagenumber, int pagesize, CancellationToken cancellationToken = default)
+        public static async Task<PageModelDTO<TEntity>> ToPageModelAsync<TEntity>(this IQueryable<TEntity> entities, int pageNumber, int pageSize)
         {
             PageModelDTO<TEntity> result = new PageModelDTO<TEntity>()
             {
-                Values = await entities.Skip((pagenumber - 1)*pagesize).Take(pagesize).ToListAsync(cancellationToken),
-                ItemsOnPage = pagesize,
-                CurrentPage = pagenumber,
+                Values = await entities.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync(),
+                ItemsOnPage = pageSize,
+                CurrentPage = pageNumber,
                 TotalItems = entities.Count(),
-                TotalPages = (int)Math.Ceiling(entities.Count() / (double)pagesize)
+                TotalPages = (int)Math.Ceiling(entities.Count() / (double)pageSize)
             };
             return result;
         }

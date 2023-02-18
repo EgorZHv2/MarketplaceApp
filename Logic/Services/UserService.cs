@@ -8,18 +8,30 @@ using Logic.Interfaces;
 
 namespace Logic.Services
 {
-    public class UserService : BaseService<User, UserDTO, CreateUserDTO, UpdateUserDTO, IUserRepository>, IUserService
+    public class UserService
+        : BaseService<User, UserDTO, CreateUserDTO, UpdateUserDTO, IUserRepository>,
+            IUserService
     {
         private IImageService _imageService;
         private IHashService _hashService;
 
-        public UserService(IUserRepository repository, IMapper mapper, IUserRepository userRepository, IImageService imageService, IHashService hashService) : base(repository, mapper)
+        public UserService(
+            IUserRepository repository,
+            IMapper mapper,
+            IUserRepository userRepository,
+            IImageService imageService,
+            IHashService hashService
+        ) : base(repository, mapper)
         {
             _imageService = imageService;
             _hashService = hashService;
         }
 
-        public override async Task<UpdateUserDTO> Update(Guid userId, UpdateUserDTO model, CancellationToken cancellationToken = default)
+        public override async Task<UpdateUserDTO> Update(
+            Guid userId,
+            UpdateUserDTO model
+            
+        )
         {
             var user = await _repository.GetById(userId);
             if (user == null)
@@ -30,47 +42,52 @@ namespace Logic.Services
             {
                 await _imageService.CreateImage(userId, model.Photo, user.Id);
             }
-            var result = await base.Update(userId, model, cancellationToken);
+            var result = await base.Update(userId, model);
             return result;
         }
 
-        public async Task<PageModelDTO<UserDTO>> GetPage(Guid userId, PaginationDTO pagingModel, CancellationToken cancellationToken = default)
+        public async Task<PageModelDTO<UserDTO>> GetPage(
+            Guid userId,
+            PaginationDTO pagingModel
+            
+        )
         {
             var result = new PageModelDTO<UserDTO>();
             var user = await _repository.GetById(userId);
-            var pages = await _repository.GetPage(e => (e.IsActive || user.Role == Data.Enums.Role.Admin), pagingModel, cancellationToken);
-            try
-            {
+            var pages = await _repository.GetPage(
+                e => (e.IsActive || user.Role == Data.Enums.Role.Admin),
+                pagingModel
+                
+            );
+          
                 result = _mapper.Map<PageModelDTO<UserDTO>>(pages);
-            }
-            catch
-            {
-                throw new MappingException(this);
-            }
+           
+          
             return result;
         }
 
-        public async Task<Guid> CreateAdmin(Guid userId, CreateAdminDTO model, CancellationToken cancellationToken = default)
+        public async Task<Guid> CreateAdmin(
+            Guid userId,
+            CreateAdminDTO model
+            
+        )
         {
-            var existing = await _repository.GetUserByEmail(model.Email, cancellationToken);
+            var existing = await _repository.GetUserByEmail(model.Email);
             if (existing != null)
             {
-                throw new AlreadyExistsException("Пользователь с данной почтой уже существует", "This user already exists");
+                throw new AlreadyExistsException(
+                    "Пользователь с данной почтой уже существует",
+                    "This user already exists"
+                );
             }
             User user = new User();
 
-            try
-            {
-                user = _mapper.Map<User>(model);
-            }
-            catch
-            {
-                throw new MappingException(this);
-            }
+            user = _mapper.Map<User>(model);
+
             user.IsEmailConfirmed = true;
             user.Role = Data.Enums.Role.Admin;
             user.Password = _hashService.HashPassword(model.Password);
-            await _repository.Create(userId, user, cancellationToken);
+            await _repository.Create(userId, user);
             return user.Id;
         }
     }

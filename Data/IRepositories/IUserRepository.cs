@@ -4,6 +4,6 @@ namespace Data.IRepositories
 {
     public interface IUserRepository : IBaseRepository<User>
     {
-        public Task<User> GetUserByEmail(string email, CancellationToken cancellationToken = default);
+        public Task<User?> GetUserByEmail(string email);
     }
 }

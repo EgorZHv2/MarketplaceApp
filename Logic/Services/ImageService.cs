@@ -25,16 +25,16 @@ namespace Logic.Services
             _staticFileInfo = staticFileInfo;
         }
 
-        public async Task CreateImage(Guid userId, IFormFile file, Guid entityid, CancellationToken cancellationToken = default)
+        public async Task CreateImage(Guid userId, IFormFile file, Guid entityId)
         {
             string fileextension = file.FileName.Split(".").Last();
-            if (!_allowedImageExtensions.Any(e => e == fileextension))
+            if (!_allowedImageExtensions.Contains(fileextension))
             {
                 throw new WrongExtensionException("Картинка может быть только а png, jpg или jpeg", "Wrong image extension");
             }
 
             string filename = Guid.NewGuid().ToString();
-            string foldername = entityid.ToString();
+            string foldername = entityId.ToString();
             string filepath = _basepath + foldername + "/" + filename + "." + fileextension;
             DirectoryInfo directoryInfo = new DirectoryInfo(_basepath + foldername);
             if (!directoryInfo.Exists)
@@ -49,22 +49,22 @@ namespace Logic.Services
             {
                 Extension = fileextension,
                 Name = filename,
-                ParentEntityId = entityid
+                ParentEntityId = entityId
             };
-            var existing = await _staticFileInfo.GetAllByParentId(entityid, cancellationToken);
+            var existing = await _staticFileInfo.GetAllByParentId(entityId);
             {
                 if (existing.Any())
                 {
-                    await DeleteAllImagesByParentId(userId, entityid, cancellationToken);
+                    await DeleteAllImagesByParentId(userId, entityId);
                 }
             }
 
-            await _staticFileInfo.Create(userId, entity, cancellationToken);
+            await _staticFileInfo.Create(userId, entity);
         }
 
-        public async Task DeleteAllImagesByParentId(Guid userId, Guid id, CancellationToken cancellationToken = default)
+        public async Task DeleteAllImagesByParentId(Guid userId, Guid id)
         {
-            var infos = await _staticFileInfo.GetAllByParentId(id, cancellationToken);
+            var infos = await _staticFileInfo.GetAllByParentId(id);
             var basefilepath = _basepath + id.ToString() + "/";
 
             foreach (var info in infos)
@@ -75,7 +75,7 @@ namespace Logic.Services
                     File.Delete(filepath);
                 }
             }
-            await _staticFileInfo.HardDeleteMany(cancellationToken, infos.ToArray());
+            await _staticFileInfo.HardDeleteMany( infos.ToArray());
         }
     }
 }

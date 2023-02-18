@@ -16,34 +16,34 @@ namespace Data.Repositories.Repositories
             _context = context;
         }
 
-        public async Task<UserFavoriteShop> GetFavByShopAndUserId(Guid userId, Guid shopId, CancellationToken cancellationToken = default)
+        public async Task<UserFavoriteShop?> GetFavByShopAndUserId(Guid userId, Guid shopId)
         {
-            return await _dbset.FirstOrDefaultAsync(e => e.UserId == userId && e.ShopId == shopId, cancellationToken);
+            return await _dbset.FirstOrDefaultAsync(e => e.UserId == userId && e.ShopId == shopId);
         }
 
-        public async Task<ICollection<Shop>> GetFavoriteShopsByUserId(Guid userId, CancellationToken cancellationToken = default)
+        public async Task<ICollection<Shop>> GetFavoriteShopsByUserId(Guid userId)
         {
             return await _dbset
                 .Include(e => e.Shop)
                 .Where(e => e.UserId == userId)
                 .Select(p => p.Shop)
-                .ToListAsync(cancellationToken);
+                .ToListAsync();
         }
 
-        public async Task Delete(UserFavoriteShop entity, CancellationToken cancellationToken = default)
+        public async Task Delete(UserFavoriteShop entity)
         {
             _dbset.Remove(entity);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync();
         }
 
-        public async Task<PageModelDTO<Shop>> GetFavsPageByUserId(Guid userId, int pagenumber, int pagesize, CancellationToken cancellationToken = default)
+        public async Task<PageModelDTO<Shop>> GetFavsPageByUserId(Guid userId, int pagenumber, int pagesize)
         {
             var queryable = _dbset
                 .Include(e => e.Shop)
                 .Where(e => e.UserId == userId)
                 .Select(p => p.Shop);
 
-            var result = await queryable.ToPageModelAsync<Shop>(pagenumber, pagesize, cancellationToken);
+            var result = await queryable.ToPageModelAsync<Shop>(pagenumber, pagesize);
             return result;
         }
     }

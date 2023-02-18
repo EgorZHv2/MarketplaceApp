@@ -15,17 +15,17 @@ namespace Data.Repositories.ShopDictionaryRepositories
             _context = context;
         }
 
-        public async Task CreateRange(CancellationToken cancellationToken = default, params TEntity[] entities)
+        public async Task CreateRange(params TEntity[] entities)
         {
-            await _dbSet.AddRangeAsync(entities, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _dbSet.AddRangeAsync(entities);
+            await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAllByShop(Shop shop, CancellationToken cancellationToken = default)
+        public async Task DeleteAllByShop(Shop shop)
         {
-            var list = await _dbSet.Where(e => e.ShopId == shop.Id).ToListAsync(cancellationToken);
+            var list = await _dbSet.Where(e => e.ShopId == shop.Id).ToListAsync();
             _dbSet.RemoveRange(list);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync();
         }
     }
 }

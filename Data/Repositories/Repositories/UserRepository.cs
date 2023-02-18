@@ -10,9 +10,9 @@ namespace Data.Repositories.Repositories
         {
         }
 
-        public async Task<User> GetUserByEmail(string email, CancellationToken cancellationToken = default)
+        public async Task<User?> GetUserByEmail(string email)
         {
-            return await _dbset.FirstOrDefaultAsync(e => e.Email == email, cancellationToken);
+            return await _dbset.FirstOrDefaultAsync(e => e.Email == email);
         }
     }
 }

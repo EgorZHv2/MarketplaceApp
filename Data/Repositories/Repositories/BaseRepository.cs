@@ -17,9 +17,9 @@ namespace Data.Repositories.Repositories
             _context = context;
         }
 
-        public async Task<TEntity> GetById(Guid Id, CancellationToken cancellationToken = default)
+        public async Task<TEntity?> GetById(Guid Id)
         {
-            return await _dbset.FirstOrDefaultAsync(e => e.Id == Id, cancellationToken);
+            return await _dbset.FirstOrDefaultAsync(e => e.Id == Id);
         }
 
         public IEnumerable<TEntity> GetManyByIds(params Guid[] ids)
@@ -27,14 +27,14 @@ namespace Data.Repositories.Repositories
             return _context.Set<TEntity>().Where(e => ids.Contains(e.Id));
         }
 
-        public async Task<PageModelDTO<TEntity>> GetPage(Expression<Func<TEntity, bool>> predicate, PaginationDTO pagination, CancellationToken cancellationToken = default)
+        public async Task<PageModelDTO<TEntity>> GetPage(Expression<Func<TEntity, bool>> predicate, PaginationDTO pagination)
         {
             var queryable = _dbset.Where(predicate);
-            var result = await queryable.ToPageModelAsync(pagination.PageNumber, pagination.PageSize, cancellationToken);
+            var result = await queryable.ToPageModelAsync(pagination.PageNumber, pagination.PageSize);
             return result;
         }
 
-        public virtual async Task<Guid> Create(Guid userId, TEntity entity, CancellationToken cancellationToken = default)
+        public virtual async Task<Guid> Create(Guid userId, TEntity entity)
         {
             entity.CreateDateTime = DateTime.UtcNow;
             entity.CreatorId = userId;
@@ -43,12 +43,12 @@ namespace Data.Repositories.Repositories
             entity.IsActive = true;
             entity.IsDeleted = false;
             entity.Id = Guid.NewGuid();
-            await _context.Set<TEntity>().AddAsync(entity, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.Set<TEntity>().AddAsync(entity);
+            await _context.SaveChangesAsync();
             return entity.Id;
         }
 
-        public async Task CreateMany(Guid userid, CancellationToken cancellationToken = default, params TEntity[] entities)
+        public async Task CreateMany(Guid userId,params TEntity[] entities)
         {
             foreach (TEntity entity in entities)
             {
@@ -57,63 +57,63 @@ namespace Data.Repositories.Repositories
                 entity.UpdateDateTime = DateTime.UtcNow;
                 entity.IsActive = true;
                 entity.IsDeleted = false;
-                entity.CreatorId = userid;
-                entity.UpdatorId = userid;
-                await _context.Set<TEntity>().AddAsync(entity, cancellationToken);
+                entity.CreatorId = userId;
+                entity.UpdatorId = userId;
+                await _context.Set<TEntity>().AddAsync(entity);
             }
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync();
         }
 
-        public async Task Update(Guid userId, TEntity entity, CancellationToken cancellationToken = default)
+        public async Task Update(Guid userId, TEntity entity)
         {
             entity.UpdateDateTime = DateTime.UtcNow;
             entity.UpdatorId = userId;
             _context.Set<TEntity>().Update(entity);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateMany(Guid userid, CancellationToken cancellationToken = default, params TEntity[] entities)
+        public async Task UpdateMany(Guid userId,params TEntity[] entities)
         {
             foreach (TEntity entity in entities)
             {
                 entity.UpdateDateTime = DateTime.UtcNow;
-                entity.UpdatorId = userid;
+                entity.UpdatorId = userId;
                 _context.Set<TEntity>().Update(entity);
             }
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync();
         }
 
-        public async Task Delete(Guid userid, TEntity entity, CancellationToken cancellationToken = default)
+        public async Task Delete(Guid userId, TEntity entity)
         {
-            entity.DeletorId = userid;
+            entity.DeletorId = userId;
             entity.DeleteDateTime = DateTime.UtcNow;
             entity.IsDeleted = true;
             _context.Set<TEntity>().Update(entity);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteMany(Guid userid, CancellationToken cancellationToken = default, params TEntity[] entities)
+        public async Task DeleteMany(Guid userId, params TEntity[] entities)
         {
             foreach (var entity in entities)
             {
-                entity.DeletorId = userid;
+                entity.DeletorId = userId;
                 entity.DeleteDateTime = DateTime.UtcNow;
                 entity.IsDeleted = true;
             }
             _context.Set<TEntity>().UpdateRange(entities);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync();
         }
 
-        public async Task HardDelete(TEntity entity, CancellationToken cancellationToken = default)
+        public async Task HardDelete(TEntity entity)
         {
             _dbset.Remove(entity);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync();
         }
 
-        public async Task HardDeleteMany(CancellationToken cancellationToken = default, params TEntity[] entities)
+        public async Task HardDeleteMany(params TEntity[] entities)
         {
             _dbset.RemoveRange(entities);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync();
         }
     }
 }

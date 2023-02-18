@@ -5,12 +5,12 @@ namespace Data.IRepositories
 {
     public interface IUsersFavoriteShopsRepository
     {
-        public Task<ICollection<Shop>> GetFavoriteShopsByUserId(Guid userId, CancellationToken cancellationToken = default);
+        public Task<ICollection<Shop>> GetFavoriteShopsByUserId(Guid userId);
 
-        public Task<UserFavoriteShop> GetFavByShopAndUserId(Guid userId, Guid shopId, CancellationToken cancellationToken = default);
+        public Task<UserFavoriteShop?> GetFavByShopAndUserId(Guid userId, Guid shopId);
 
-        public Task Delete(UserFavoriteShop entity, CancellationToken cancellationToken = default);
+        public Task Delete(UserFavoriteShop entity);
 
-        public Task<PageModelDTO<Shop>> GetFavsPageByUserId(Guid userId, int pagenumber, int pagesize, CancellationToken cancellationToken = default);
+        public Task<PageModelDTO<Shop>> GetFavsPageByUserId(Guid userId, int pageNumber, int pageSize);
     }
 }

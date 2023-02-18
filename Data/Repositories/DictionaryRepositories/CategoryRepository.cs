@@ -10,21 +10,21 @@ namespace Data.Repositories.DictionaryRepositories
         {
         }
 
-        public async Task<IEnumerable<Category>> GetCategoriesWithChilds(CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<Category>> GetCategoriesWithChilds()
         {
-            var result = await _dbset.Include(e => e.Categories).ToListAsync(cancellationToken);
+            var result = await _dbset.Include(e => e.Categories).ToListAsync();
             return result;
         }
 
-        public async Task<IEnumerable<Category>> GetCategoriesByParentId(Guid parentId, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<Category>> GetCategoriesByParentId(Guid parentId)
         {
-            var result = await _dbset.Where(e => e.ParentCategoryId == parentId).ToListAsync(cancellationToken);
+            var result = await _dbset.Where(e => e.ParentCategoryId == parentId).ToListAsync();
             return result;
         }
 
-        public async Task<IEnumerable<Category>> GetCategoriesWithoutParentId(CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<Category>> GetCategoriesWithoutParentId()
         {
-            var result = await _dbset.Where(e => e.ParentCategoryId == null).ToListAsync(cancellationToken);
+            var result = await _dbset.Where(e => e.ParentCategoryId == null).ToListAsync();
             return result;
         }
     }

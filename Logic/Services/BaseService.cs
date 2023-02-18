@@ -25,95 +25,67 @@ namespace Logic.Services
             _mapper = mapper;
         }
 
-        public virtual async Task<Guid> Create(Guid userId, TCreateDTO createDTO, CancellationToken cancellationToken = default)
+        public virtual async Task<Guid> Create(Guid userId, TCreateDTO createDTO)
         {
             TEntity entity;
-            try
-            {
-                entity = _mapper.Map<TEntity>(createDTO);
-            }
-            catch
-            {
-                throw new MappingException(this);
-            }
+            entity = _mapper.Map<TEntity>(createDTO);
 
-            Guid result = await _repository.Create(userId, entity, cancellationToken);
+            Guid result = await _repository.Create(userId, entity);
             return result;
         }
 
-        public virtual async Task<TDTO> GetById(Guid Id, CancellationToken cancellationToken = default)
+        public virtual async Task<TDTO> GetById(Guid Id)
         {
             TDTO result;
-            var entity = await _repository.GetById(Id, cancellationToken);
-            try
-            {
-                result = _mapper.Map<TDTO>(entity);
-            }
-            catch
-            {
-                throw new MappingException(this);
-            }
+            var entity = await _repository.GetById(Id);
+            result = _mapper.Map<TDTO>(entity);
             return result;
         }
 
-        public virtual async Task<PageModelDTO<TDTO>> GetPage(PaginationDTO pagingModel, CancellationToken cancellationToken = default)
+        public virtual async Task<PageModelDTO<TDTO>> GetPage(PaginationDTO pagingModel)
         {
             PageModelDTO<TDTO> result = new PageModelDTO<TDTO>();
-            var PageModel = await _repository.GetPage(e => e.IsActive, pagingModel, cancellationToken);
+            var PageModel = await _repository.GetPage(e => e.IsActive, pagingModel);
             result.CurrentPage = PageModel.CurrentPage;
             result.TotalPages = PageModel.TotalPages;
             result.ItemsOnPage = PageModel.ItemsOnPage;
             result.TotalItems = PageModel.TotalItems;
-            try
-            {
-                result.Values = _mapper.Map<IEnumerable<TDTO>>(PageModel.Values);
-            }
-            catch
-            {
-                throw new MappingException(this);
-            }
+            result.Values = _mapper.Map<IEnumerable<TDTO>>(PageModel.Values);
             return result;
         }
 
-        public virtual async Task<TUpdateDTO> Update(Guid userId, TUpdateDTO DTO, CancellationToken cancellationToken = default)
+        public virtual async Task<TUpdateDTO> Update(Guid userId, TUpdateDTO DTO)
         {
             TEntity entity = await _repository.GetById(DTO.Id);
             if(entity== null)
             {
                 throw new NotFoundException("Объект не найден", "Entity Not Found");
             }
-            try
-            {
-                _mapper.Map(DTO, entity);
-            }
-            catch
-            {
-                throw new MappingException(this);
-            }
+            _mapper.Map(DTO, entity);
             await _repository.Update(userId, entity);
             return DTO;
         }
 
-        public virtual async Task Delete(Guid userId, Guid entityId, CancellationToken cancellationToken = default)
+        public virtual async Task Delete(Guid userId, Guid entityId)
         {
-            var entity = await _repository.GetById(entityId, cancellationToken);
+            var entity = await _repository.GetById(entityId);
 
             if (entity == null)
             {
                 throw new NotFoundException("Объект не найден", "Object not found");
             }
-            await _repository.Delete(userId, entity, cancellationToken);
+            await _repository.Delete(userId, entity);
         }
 
-        public async Task<EntityActivityDTO> ChangeActivity(Guid userId, EntityActivityDTO model, CancellationToken cancellationToken = default)
+        public async Task<EntityActivityDTO> ChangeActivity(Guid userId, EntityActivityDTO model)
         {
-            var entity = await _repository.GetById(model.Id, cancellationToken);
+            var entity = await _repository.GetById(model.Id);
             if (entity == null)
             {
                 throw new NotFoundException("Объект не найден", "Object not found");
             }
             entity.IsActive = model.IsActive;
-            await _repository.Update(userId, entity, cancellationToken);
+            await _repository.Update(userId, entity);
             return model;
         }
     }

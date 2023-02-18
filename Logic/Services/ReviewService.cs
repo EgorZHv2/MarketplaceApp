@@ -21,25 +21,18 @@ namespace Logic.Services
             _shopRepository = shopRepository;
         }
 
-        public async Task<List<ReviewDTO>> GetReviewsByShopId(Guid userId, Guid shopId, CancellationToken cancellationToken = default)
+        public async Task<List<ReviewDTO>> GetReviewsByShopId(Guid userId, Guid shopId)
         {
-            var user = await _userRepository.GetById(userId, cancellationToken);
+            var user = await _userRepository.GetById(userId);
             var list = _repository
                 .GetReviewsByShopId(shopId)
                 .Where(e => (e.IsActive || user.Id == e.BuyerId || user.Role == Data.Enums.Role.Admin)).ToList();
             List<ReviewDTO> result = new List<ReviewDTO>();
-            try
-            {
-                result = _mapper.Map<List<ReviewDTO>>(list);
-            }
-            catch
-            {
-                throw new MappingException(this);
-            }
+            result = _mapper.Map<List<ReviewDTO>>(list);
             return result;
         }
 
-        public override async Task<Guid> Create(Guid userId, CreateReviewDTO createDTO, CancellationToken cancellationToken = default)
+        public override async Task<Guid> Create(Guid userId, CreateReviewDTO createDTO)
         {
             var shop = _shopRepository.GetById(createDTO.ShopId);
             if (shop == null)
@@ -47,32 +40,18 @@ namespace Logic.Services
                 throw new NotFoundException("Магазин не найден", "Parent shop not found");
             }
             Review entity = new Review();
-            try
-            {
-                entity = _mapper.Map<Review>(createDTO);
-            }
-            catch
-            {
-                throw new MappingException(this);
-            }
+            entity = _mapper.Map<Review>(createDTO);
             entity.BuyerId = userId;
-            var result = await _repository.Create(userId, entity, cancellationToken);
+            var result = await _repository.Create(userId, entity);
             return result;
         }
 
-        public async Task<PageModelDTO<ReviewDTO>> GetPage(Guid userId, PaginationDTO pagingModel, CancellationToken cancellationToken = default)
+        public async Task<PageModelDTO<ReviewDTO>> GetPage(Guid userId, PaginationDTO pagingModel)
         {
             var result = new PageModelDTO<ReviewDTO>();
             var user = await _userRepository.GetById(userId);
-            var pages = await _repository.GetPage(e => (e.IsActive || e.BuyerId == userId || user.Role == Data.Enums.Role.Admin), pagingModel, cancellationToken);
-            try
-            {
-                result = _mapper.Map<PageModelDTO<ReviewDTO>>(pages);
-            }
-            catch
-            {
-                throw new MappingException(this);
-            }
+            var pages = await _repository.GetPage(e => (e.IsActive || e.BuyerId == userId || user.Role == Data.Enums.Role.Admin), pagingModel);
+            result = _mapper.Map<PageModelDTO<ReviewDTO>>(pages);
             return result;
         }
     }

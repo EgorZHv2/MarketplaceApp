@@ -28,10 +28,6 @@ namespace WebAPi.Middleware
                 {
                     logmessage += "User login: " + (string.IsNullOrEmpty(authException.UserLogin) ? "none" : authException.UserLogin);
                 }
-                if (ex is MappingException mappingException)
-                {
-                    logmessage += $"ExceptionClassName: {mappingException.ExceptionClass}";
-                }
                 _logger.LogError(logmessage, ex);
                 await ResponseError(context, ex.UserMessage, ex.StatusCode);
             }
