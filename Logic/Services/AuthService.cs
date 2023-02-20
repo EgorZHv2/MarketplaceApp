@@ -107,9 +107,9 @@ namespace Logic.Services
                     string.Empty
                 );
             }
-            User user = new User();
+            UserEntity user = new UserEntity();
            
-                user = _mapper.Map<User>(model);
+                user = _mapper.Map<UserEntity>(model);
            
             string code = _stringGeneratorService.Generate(6);
             user.Password = _hashService.HashPassword(model.Password);

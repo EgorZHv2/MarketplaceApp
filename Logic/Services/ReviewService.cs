@@ -8,7 +8,7 @@ using Logic.Interfaces;
 
 namespace Logic.Services
 {
-    public class ReviewService : BaseService<Review, ReviewDTO, CreateReviewDTO, UpdateReviewDTO, IReviewRepository>, IReviewService
+    public class ReviewService : BaseService<ReviewEntity, ReviewDTO, CreateReviewDTO, UpdateReviewDTO, IReviewRepository>, IReviewService
     {
         private IUserRepository _userRepository;
         private IShopRepository _shopRepository;
@@ -39,8 +39,8 @@ namespace Logic.Services
             {
                 throw new NotFoundException("Магазин не найден", "Parent shop not found");
             }
-            Review entity = new Review();
-            entity = _mapper.Map<Review>(createDTO);
+            ReviewEntity entity = new ReviewEntity();
+            entity = _mapper.Map<ReviewEntity>(createDTO);
             entity.BuyerId = userId;
             var result = await _repository.Create(userId, entity);
             return result;
@@ -50,7 +50,8 @@ namespace Logic.Services
         {
             var result = new PageModelDTO<ReviewDTO>();
             var user = await _userRepository.GetById(userId);
-            var pages = await _repository.GetPage(e => (e.IsActive || e.BuyerId == userId || user.Role == Data.Enums.Role.Admin), pagingModel);
+             var qeryable = _repository.GetFiltered(e => (e.IsActive || e.BuyerId == userId || user.Role == Data.Enums.Role.Admin));
+            var pages = await _repository.GetPage(qeryable, pagingModel);
             result = _mapper.Map<PageModelDTO<ReviewDTO>>(pages);
             return result;
         }

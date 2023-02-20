@@ -10,7 +10,7 @@ namespace WebAPi.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class CategoryController : BaseDictionaryController<Category, CategoryDTO, CreateCategoryDTO, UpdateCategoryDTO, ICategoryRepository, ICategoryService>
+    public class CategoryController : BaseDictionaryController<CategoryEntity, CategoryDTO, CreateCategoryDTO, UpdateCategoryDTO, ICategoryRepository, ICategoryService>
     {
         public CategoryController(ICategoryService categoryService) : base(categoryService)
         {

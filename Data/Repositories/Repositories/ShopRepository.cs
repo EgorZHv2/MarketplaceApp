@@ -10,7 +10,7 @@ using System.Runtime.ConstrainedExecution;
 
 namespace Data.Repositories.Repositories
 {
-    public class ShopRepository : BaseRepository<Shop>, IShopRepository
+    public class ShopRepository : BaseRepository<ShopEntity>, IShopRepository
     {
         private ICategoryRepository _categoryRepository;
 
@@ -22,7 +22,7 @@ namespace Data.Repositories.Repositories
 
         public override async Task<Guid> Create(
             Guid userId,
-            Shop entity
+            ShopEntity entity
             
         )
         {
@@ -39,15 +39,14 @@ namespace Data.Repositories.Repositories
             return entity.Id;
         }
 
-        public async Task<PageModelDTO<Shop>> GetPage(
-            Expression<Func<Shop, bool>> predicate,
+        public async Task<PageModelDTO<ShopEntity>> GetPage(
+            IQueryable<ShopEntity> queryable,
             PaginationDTO pagination,
             ShopFilterDTO filter
             
         )
         {
-            var queryable = _dbset
-                .Where(predicate)
+            queryable = queryable
                 .Include(e => e.Categories)
                 .Include(e => e.DeliveryTypes)
                 .Include(e => e.PaymentMethods)
@@ -93,7 +92,7 @@ namespace Data.Repositories.Repositories
             if (childcategories is not null)
             {
                 await InnerRecursive(childcategories);
-                async Task InnerRecursive(IEnumerable<Category> categories )
+                async Task InnerRecursive(IEnumerable<CategoryEntity> categories )
                 {
                     foreach(var item in categories)
                     {

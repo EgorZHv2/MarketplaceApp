@@ -17,7 +17,7 @@ namespace WebAPi.Services
             _configuration = configuration;
         }
 
-        public string GetToken(User user)
+        public string GetToken(UserEntity user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("JwtAuthKey").Value));

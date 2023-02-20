@@ -5,8 +5,8 @@ using System.Linq.Expressions;
 
 namespace Data.IRepositories
 {
-    public interface IShopRepository : IBaseRepository<Shop>
+    public interface IShopRepository : IBaseRepository<ShopEntity>
     {
-        public Task<PageModelDTO<Shop>> GetPage(Expression<Func<Shop, bool>> predicate, PaginationDTO pagination, ShopFilterDTO filter);
+        public Task<PageModelDTO<ShopEntity>> GetPage(IQueryable<ShopEntity> qeryable, PaginationDTO pagination, ShopFilterDTO filter);
     }
 }

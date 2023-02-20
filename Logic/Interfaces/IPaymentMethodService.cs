@@ -4,7 +4,7 @@ using Data.IRepositories;
 
 namespace Logic.Interfaces
 {
-    public interface IPaymentMethodService : IBaseDictionaryService<PaymentMethod, PaymentMethodDTO, CreatePaymentMethodDTO, UpdatePaymentMethodDTO, IPaymentMethodRepository>
+    public interface IPaymentMethodService : IBaseDictionaryService<PaymentMethodEntity, PaymentMethodDTO, CreatePaymentMethodDTO, UpdatePaymentMethodDTO, IPaymentMethodRepository>
     {
     }
 }

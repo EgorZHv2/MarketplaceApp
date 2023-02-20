@@ -10,7 +10,7 @@ namespace WebAPi.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class UserController : BaseGenericController<User, UserDTO, CreateUserDTO, UpdateUserDTO, IUserRepository, IUserService>
+    public class UserController : BaseGenericController<UserEntity, UserDTO, CreateUserDTO, UpdateUserDTO, IUserRepository, IUserService>
     {
         public UserController(IUserService userService) : base(userService)
         {

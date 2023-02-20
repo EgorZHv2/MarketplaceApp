@@ -11,7 +11,7 @@ namespace WebAPi.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class ShopController : BaseGenericController<Shop, ShopDTO, CreateShopDTO, UpdateShopDTO, IShopRepository, IShopService>
+    public class ShopController : BaseGenericController<ShopEntity, ShopDTO, CreateShopDTO, UpdateShopDTO, IShopRepository, IShopService>
     {
         public ShopController(IShopService shopService) : base(shopService)
         {

@@ -6,7 +6,7 @@ using Logic.Interfaces;
 
 namespace Logic.Services
 {
-    public class DeliveryTypeService : BaseDictionaryService<DeliveryType, DeliveryTypeDTO, CreateDeliveryTypeDTO, UpdateDeliveryTypeDTO, IDeliveryTypeRepository>, IDeliveryTypeService
+    public class DeliveryTypeService : BaseDictionaryService<DeliveryTypeEntity, DeliveryTypeDTO, CreateDeliveryTypeDTO, UpdateDeliveryTypeDTO, IDeliveryTypeRepository>, IDeliveryTypeService
     {
         public DeliveryTypeService(IDeliveryTypeRepository repository, IMapper mapper)
             : base(repository, mapper) { }

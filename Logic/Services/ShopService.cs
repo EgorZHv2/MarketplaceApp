@@ -13,7 +13,7 @@ using WebAPi.Interfaces;
 namespace Logic.Services
 {
     public class ShopService
-        : BaseService<Shop, ShopDTO, CreateShopDTO, UpdateShopDTO, IShopRepository>,
+        : BaseService<ShopEntity, ShopDTO, CreateShopDTO, UpdateShopDTO, IShopRepository>,
             IShopService
     {
         private IINNService _iNNService;
@@ -26,6 +26,10 @@ namespace Logic.Services
         private IShopPaymentMethodRepository _shopPaymentMethodRepository;
         private IShopTypeRepository _shopTypeRepository;
         private IStaticFileInfoRepository _staticFileInfoRepository;
+        private ICategoryRepository _categoryRepository;
+        private ITypeRepository _typeRepository;
+        private IDeliveryTypeRepository _deliveryTypeRepository;
+        private IPaymentMethodRepository _paymentMethodRepository;
 
         public ShopService(
             IShopRepository repository,
@@ -39,7 +43,11 @@ namespace Logic.Services
             IShopDeliveryTypeRepository shopDeliveryTypeRepository,
             IShopPaymentMethodRepository shopPaymentMethodRepository,
             IShopTypeRepository shopTypeRepository,
-            IStaticFileInfoRepository staticFileInfoRepository
+            IStaticFileInfoRepository staticFileInfoRepository,
+            ICategoryRepository categoryRepository,
+            ITypeRepository typeRepository,
+            IDeliveryTypeRepository deliveryTypeRepository,
+            IPaymentMethodRepository paymentMethodRepository
         ) : base(repository, mapper)
         {
             _iNNService = iNNService;
@@ -52,114 +60,136 @@ namespace Logic.Services
             _shopPaymentMethodRepository = shopPaymentMethodRepository;
             _shopTypeRepository = shopTypeRepository;
             _staticFileInfoRepository = staticFileInfoRepository;
+            _categoryRepository = categoryRepository;
+            _typeRepository = typeRepository;
+            _deliveryTypeRepository = deliveryTypeRepository;
+            _paymentMethodRepository = paymentMethodRepository;
         }
 
-        public override async Task<Guid> Create(
-            Guid userId,
-            CreateShopDTO createDTO
-            
-        )
+        public override async Task<Guid> Create(Guid userId, CreateShopDTO createDTO)
         {
             if (!_iNNService.CheckINN(createDTO.INN))
             {
                 throw new NotFoundException("INN не найден", "INN not valid");
             }
-            Shop shop = new Shop();
-           
-                shop = _mapper.Map<Shop>(createDTO);
-           
+            ShopEntity shop = new ShopEntity();
+
+            shop = _mapper.Map<ShopEntity>(createDTO);
 
             var result = await _repository.Create(userId, shop);
 
             if (createDTO.CategoriesId.Any())
             {
-                var categories = createDTO.CategoriesId.Select(
-                    e => new ShopCategory { CategoryId = e, ShopId = shop.Id }
-                ).ToArray();
-               try
+                if (
+                    createDTO.CategoriesId.Count()
+                    != _categoryRepository.GetManyByIds(createDTO.CategoriesId.ToArray()).Count()
+                )
                 {
-                    await _shopCategoryRepository.CreateRange( categories);
+                    throw new NotFoundException(
+                        "Айди категории не найден",
+                        "Category id not found"
+                    );
                 }
-                catch
-                {
-                    throw new NotFoundException("Айди категории не найден", "Category id not found");
-                }
+                var categories = createDTO.CategoriesId
+                    .Select(e => new ShopCategoryEntity { CategoryId = e, ShopId = shop.Id })
+                    .ToArray();
+
+                await _shopCategoryRepository.CreateRange(categories);
             }
             if (createDTO.TypesId.Any())
             {
-                var types = createDTO.CategoriesId.Select(
-                    e => new ShopType { TypeId = e, ShopId = shop.Id }
-                ).ToArray();
-                try
+                if (
+                    createDTO.TypesId.Count()
+                    != _typeRepository.GetManyByIds(createDTO.TypesId.ToArray()).Count()
+                )
                 {
-                    await _shopTypeRepository.CreateRange( types);
+                    throw new NotFoundException(
+                        "Айди категории не найден",
+                        "Category id not found"
+                    );
                 }
-                catch
-                {
-                    throw new NotFoundException("Айди типа не найден", "Type id not found");
-                }
+                var types = createDTO.CategoriesId
+                    .Select(e => new ShopTypeEntity { TypeId = e, ShopId = shop.Id })
+                    .ToArray();
+
+                await _shopTypeRepository.CreateRange(types);
             }
             if (createDTO.ShopDeliveryTypes.Any())
             {
-                var deliveryTypes = createDTO.ShopDeliveryTypes.Select(
-                    e =>
-                        new ShopDeliveryType
-                        {
-                            DeliveryTypeId = e.Id,
-                            ShopId = shop.Id,
-                            FreeDeliveryThreshold = e.FreeDeliveryThreshold
-                        }
-                ).ToArray();
-                try
+                if (
+                    createDTO.ShopDeliveryTypes.Count()
+                    != _deliveryTypeRepository
+                        .GetManyByIds(createDTO.ShopDeliveryTypes.Select(e => e.Id).ToArray())
+                        .Count()
+                )
                 {
-                    await _shopDeliveryTypeRepository.CreateRange( deliveryTypes);
+                    throw new NotFoundException(
+                        "Айди типа доставки не найден",
+                        "Delivery type id not found"
+                    );
                 }
-                catch
-                {
-                    throw new NotFoundException("Айди типа доставки не найден", "Delivery type id not found");
-                }
+                var deliveryTypes = createDTO.ShopDeliveryTypes
+                    .Select(
+                        e =>
+                            new ShopDeliveryTypeEntity
+                            {
+                                DeliveryTypeId = e.Id,
+                                ShopId = shop.Id,
+                                FreeDeliveryThreshold = e.FreeDeliveryThreshold
+                            }
+                    )
+                    .ToArray();
+
+                await _shopDeliveryTypeRepository.CreateRange(deliveryTypes);
             }
             if (createDTO.ShopPaymentMethods.Any())
             {
-                var paymentMethods = createDTO.ShopPaymentMethods.Select(e => new ShopPaymentMethod
+                if (
+                    createDTO.ShopPaymentMethods.Count()
+                    != _paymentMethodRepository
+                        .GetManyByIds(createDTO.ShopPaymentMethods.Select(e => e.Id).ToArray())
+                        .Count()
+                )
                 {
-                    PaymentMethodId = e.Id,
-                    ShopId = shop.Id,
-                    Сommission = e.Сommission
-                }).ToArray();
-                try
-                {
-                    await _shopPaymentMethodRepository.CreateRange( paymentMethods);
+                    throw new NotFoundException(
+                        "Айди типа оплаты не найден",
+                        "Payment method id not found"
+                    );
                 }
-                catch
-                {
-                    throw new NotFoundException("Айди типа оплаты не найден", "Payment method id not found");
-                }
+                var paymentMethods = createDTO.ShopPaymentMethods
+                    .Select(
+                        e =>
+                            new ShopPaymentMethodEntity
+                            {
+                                PaymentMethodId = e.Id,
+                                ShopId = shop.Id,
+                                Сommission = e.Сommission
+                            }
+                    )
+                    .ToArray();
+
+                await _shopPaymentMethodRepository.CreateRange(paymentMethods);
             }
             return result;
         }
 
-        public override async Task<UpdateShopDTO> Update(
-            Guid userId,
-            UpdateShopDTO UpdateDTO
-            
-        )
+        public override async Task<UpdateShopDTO> Update(Guid userId, UpdateShopDTO updateDTO)
         {
-            if (!_iNNService.CheckINN(UpdateDTO.INN))
+            if (!_iNNService.CheckINN(updateDTO.INN))
             {
                 throw new NotFoundException("INN не найден", "INN not valid");
             }
-            Shop shop = await _repository.GetById(UpdateDTO.Id);
-            if(shop== null)
+            ShopEntity shop = await _repository.GetById(updateDTO.Id);
+            if (shop == null)
             {
                 throw new NotFoundException("Магазин не найден", "Shop Not Found");
             }
-           
-                _mapper.Map(UpdateDTO, shop);
-          
-            if (UpdateDTO.Image != null)
+
+            _mapper.Map(updateDTO, shop);
+
+            if (updateDTO.Image != null)
             {
-                await _imageService.CreateImage(userId, UpdateDTO.Image, UpdateDTO.Id);
+                await _imageService.CreateImage(userId, updateDTO.Image, updateDTO.Id);
             }
             await _repository.Update(userId, shop);
 
@@ -167,86 +197,104 @@ namespace Logic.Services
             await _shopDeliveryTypeRepository.DeleteAllByShop(shop);
             await _shopPaymentMethodRepository.DeleteAllByShop(shop);
             await _shopTypeRepository.DeleteAllByShop(shop);
-            if (UpdateDTO.CategoriesId.Any())
+            if (updateDTO.CategoriesId.Any())
             {
-                var categories = UpdateDTO.CategoriesId.Select(
-                    e => new ShopCategory { CategoryId = e, ShopId = shop.Id }
-                ).ToArray();
-                try
+                if (
+                    updateDTO.CategoriesId.Count()
+                    != _categoryRepository.GetManyByIds(updateDTO.CategoriesId.ToArray()).Count()
+                )
                 {
-                    await _shopCategoryRepository.CreateRange( categories);
+                    throw new NotFoundException(
+                        "Айди категории не найден",
+                        "Category id not found"
+                    );
                 }
-                catch
-                {
-                    throw new NotFoundException("Айди категории не найден", "Category id not found");
-                }
+                var categories = updateDTO.CategoriesId
+                    .Select(e => new ShopCategoryEntity { CategoryId = e, ShopId = shop.Id })
+                    .ToArray();
+
+                await _shopCategoryRepository.CreateRange(categories);
             }
-            if (UpdateDTO.TypesId.Any())
+            if (updateDTO.TypesId.Any())
             {
-                var types = UpdateDTO.CategoriesId.Select(
-                    e => new ShopType { TypeId = e, ShopId = shop.Id }
-                ).ToArray();
-                try
+                if (
+                    updateDTO.TypesId.Count()
+                    != _typeRepository.GetManyByIds(updateDTO.TypesId.ToArray()).Count()
+                )
                 {
-                    await _shopTypeRepository.CreateRange( types);
+                    throw new NotFoundException(
+                        "Айди категории не найден",
+                        "Category id not found"
+                    );
                 }
-                catch
-                {
-                    throw new NotFoundException("Айди типа не найден", "Type id not found");
-                }
+                var types = updateDTO.CategoriesId
+                    .Select(e => new ShopTypeEntity { TypeId = e, ShopId = shop.Id })
+                    .ToArray();
+                await _shopTypeRepository.CreateRange(types);
             }
-            if (UpdateDTO.ShopDeliveryTypes.Any())
+            if (updateDTO.ShopDeliveryTypes.Any())
             {
-                var deliveryTypes = UpdateDTO.ShopDeliveryTypes.Select(
-                    e =>
-                        new ShopDeliveryType
-                        {
-                            DeliveryTypeId = e.Id,
-                            ShopId = shop.Id,
-                            FreeDeliveryThreshold = e.FreeDeliveryThreshold
-                        }
-                ).ToArray();
-                try
+                if (
+                    updateDTO.ShopDeliveryTypes.Count()
+                    != _deliveryTypeRepository
+                        .GetManyByIds(updateDTO.ShopDeliveryTypes.Select(e => e.Id).ToArray())
+                        .Count()
+                )
                 {
-                    await _shopDeliveryTypeRepository.CreateRange( deliveryTypes);
+                    throw new NotFoundException(
+                        "Айди типа доставки не найден",
+                        "Delivery type id not found"
+                    );
                 }
-                catch
-                {
-                    throw new NotFoundException("Айди типа доставки не найден", "Delivery type id not found");
-                }
+                var deliveryTypes = updateDTO.ShopDeliveryTypes
+                    .Select(
+                        e =>
+                            new ShopDeliveryTypeEntity
+                            {
+                                DeliveryTypeId = e.Id,
+                                ShopId = shop.Id,
+                                FreeDeliveryThreshold = e.FreeDeliveryThreshold
+                            }
+                    )
+                    .ToArray();
+
+                await _shopDeliveryTypeRepository.CreateRange(deliveryTypes);
             }
-            if (UpdateDTO.ShopPaymentMethods.Any())
+            if (updateDTO.ShopPaymentMethods.Any())
             {
-                var paymentMethods = UpdateDTO.ShopPaymentMethods.Select(e => new ShopPaymentMethod
+                if (
+                    updateDTO.ShopPaymentMethods.Count()
+                    != _paymentMethodRepository
+                        .GetManyByIds(updateDTO.ShopPaymentMethods.Select(e => e.Id).ToArray())
+                        .Count()
+                )
                 {
-                    PaymentMethodId = e.Id,
-                    ShopId = shop.Id,
-                    Сommission = e.Сommission
-                }).ToArray();
-                try
-                {
-                    await _shopPaymentMethodRepository.CreateRange( paymentMethods);
+                    throw new NotFoundException(
+                        "Айди типа оплаты не найден",
+                        "Payment method id not found"
+                    );
                 }
-                catch
-                {
-                    throw new NotFoundException("Айди типа оплаты не найден", "Payment method id not found");
-                }
+                var paymentMethods = updateDTO.ShopPaymentMethods
+                    .Select(
+                        e =>
+                            new ShopPaymentMethodEntity
+                            {
+                                PaymentMethodId = e.Id,
+                                ShopId = shop.Id,
+                                Сommission = e.Сommission
+                            }
+                    )
+                    .ToArray();
+
+                await _shopPaymentMethodRepository.CreateRange(paymentMethods);
             }
-            return UpdateDTO;
+            return updateDTO;
         }
 
-        public async Task AddShopToFavorites(
-            Guid userId,
-            Guid shopId
-            
-        )
+        public async Task AddShopToFavorites(Guid userId, Guid shopId)
         {
             var user = await _userRepository.GetById(userId);
-            var existing = await _usersFavoriteShops.GetFavByShopAndUserId(
-                userId,
-                shopId
-                
-            );
+            var existing = await _usersFavoriteShops.GetFavByShopAndUserId(userId, shopId);
             if (existing != null)
             {
                 throw new AlreadyExistsException(
@@ -259,7 +307,7 @@ namespace Logic.Services
                 throw new NotFoundException("Пользователь не найден", "User not found");
             }
             var shop = await _repository.GetById(shopId);
-            if(shop== null)
+            if (shop == null)
             {
                 throw new NotFoundException("Магазин не найден", "Shop Not Found");
             }
@@ -270,7 +318,6 @@ namespace Logic.Services
         public async Task<PageModelDTO<ShopDTO>> ShowUserFavoriteShops(
             Guid userId,
             PaginationDTO filterPaging
-            
         )
         {
             var user = await _userRepository.GetById(userId);
@@ -279,22 +326,18 @@ namespace Logic.Services
                 throw new NotFoundException("Пользователь не найден", "User not found");
             }
             PageModelDTO<ShopDTO> result = new PageModelDTO<ShopDTO>();
-            var list = await _usersFavoriteShops.GetFavsPageByUserId(userId, filterPaging.PageNumber, filterPaging.PageSize);
+            var list = await _usersFavoriteShops.GetFavsPageByUserId(
+                userId,
+                filterPaging.PageNumber,
+                filterPaging.PageSize
+            );
             result = _mapper.Map<PageModelDTO<ShopDTO>>(list);
             return result;
         }
 
-        public async Task DeleteShopFromFavorites(
-            Guid userId,
-            Guid shopId
-            
-        )
+        public async Task DeleteShopFromFavorites(Guid userId, Guid shopId)
         {
-            var existing = await _usersFavoriteShops.GetFavByShopAndUserId(
-                userId,
-                shopId
-                
-            );
+            var existing = await _usersFavoriteShops.GetFavByShopAndUserId(userId, shopId);
             if (existing == null)
             {
                 throw new NotFoundException("Избранный магазин не найден", "Wrong shop or user id");
@@ -302,11 +345,18 @@ namespace Logic.Services
             await _usersFavoriteShops.Delete(existing);
         }
 
-        public async Task<PageModelDTO<ShopDTO>> GetPage(Guid userId, PaginationDTO pagingModel,ShopFilterDTO filter)
+        public async Task<PageModelDTO<ShopDTO>> GetPage(
+            Guid userId,
+            PaginationDTO pagingModel,
+            ShopFilterDTO filter
+        )
         {
             var result = new PageModelDTO<ShopDTO>();
             var user = await _userRepository.GetById(userId);
-            var pages = await _repository.GetPage(e => (e.IsActive || e.SellerId == userId || user.Role == Data.Enums.Role.Admin), pagingModel,filter);
+            var qeryable = _repository.GetFiltered(
+                e => (e.IsActive || e.SellerId == userId || user.Role == Data.Enums.Role.Admin)
+            );
+            var pages = await _repository.GetPage(qeryable, pagingModel, filter);
             string basepath = _configuration.GetSection("BaseImagePath").Value;
             result = _mapper.Map<PageModelDTO<ShopDTO>>(pages);
             foreach (var shop in result.Values)

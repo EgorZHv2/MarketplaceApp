@@ -10,7 +10,7 @@ namespace WebAPi.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class ReviewController : BaseGenericController<Review, ReviewDTO, CreateReviewDTO, UpdateReviewDTO, IReviewRepository, IReviewService>
+    public class ReviewController : BaseGenericController<ReviewEntity, ReviewDTO, CreateReviewDTO, UpdateReviewDTO, IReviewRepository, IReviewService>
     {
         public ReviewController(IReviewService reviewService) : base(reviewService)
         {

@@ -6,7 +6,7 @@ using Data.IRepositories;
 
 namespace Logic.Interfaces
 {
-    public interface IShopService : IBaseService<Shop, ShopDTO, CreateShopDTO, UpdateShopDTO, IShopRepository>
+    public interface IShopService : IBaseService<ShopEntity, ShopDTO, CreateShopDTO, UpdateShopDTO, IShopRepository>
     {
         public Task AddShopToFavorites(Guid userId, Guid shopId);
 

@@ -2,7 +2,7 @@
 
 namespace Data.IRepositories
 {
-    public interface IDeliveryTypeRepository : IBaseDictionaryRepository<DeliveryType>
+    public interface IDeliveryTypeRepository : IBaseDictionaryRepository<DeliveryTypeEntity>
     {
     }
 }

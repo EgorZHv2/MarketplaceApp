@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Data.EntitiesConfigurations
 {
-    public class PaymentMethodConfiguration : IEntityTypeConfiguration<PaymentMethod>
+    public class PaymentMethodConfiguration : IEntityTypeConfiguration<PaymentMethodEntity>
     {
-        public void Configure(EntityTypeBuilder<PaymentMethod> entityTypeBuilder)
+        public void Configure(EntityTypeBuilder<PaymentMethodEntity> entityTypeBuilder)
         {
             entityTypeBuilder.HasKey(paymentMethod => paymentMethod.Id);
             entityTypeBuilder.HasQueryFilter(paymentMethod => paymentMethod.IsDeleted == false);

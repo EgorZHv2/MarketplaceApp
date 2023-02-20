@@ -8,8 +8,9 @@ namespace Data.IRepositories
         Task<TEntity?> GetById(Guid Id);
 
         IEnumerable<TEntity> GetManyByIds(params Guid[] ids);
+        IQueryable<TEntity> GetFiltered(Expression<Func<TEntity, bool>> predicate);
 
-        Task<PageModelDTO<TEntity>> GetPage(Expression<Func<TEntity, bool>> predicate, PaginationDTO pagination);
+        Task<PageModelDTO<TEntity>> GetPage(IQueryable<TEntity> queryable, PaginationDTO pagination);
 
         Task<Guid> Create(Guid userId, TEntity entity);
 

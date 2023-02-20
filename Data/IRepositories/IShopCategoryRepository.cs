@@ -2,7 +2,7 @@
 
 namespace Data.IRepositories
 {
-    public interface IShopCategoryRepository : IBaseShopDictionaryRepository<ShopCategory>
+    public interface IShopCategoryRepository : IBaseShopDictionaryRepository<ShopCategoryEntity>
     {
     }
 }

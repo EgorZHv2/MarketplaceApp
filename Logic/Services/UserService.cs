@@ -9,7 +9,7 @@ using Logic.Interfaces;
 namespace Logic.Services
 {
     public class UserService
-        : BaseService<User, UserDTO, CreateUserDTO, UpdateUserDTO, IUserRepository>,
+        : BaseService<UserEntity, UserDTO, CreateUserDTO, UpdateUserDTO, IUserRepository>,
             IUserService
     {
         private IImageService _imageService;
@@ -54,11 +54,8 @@ namespace Logic.Services
         {
             var result = new PageModelDTO<UserDTO>();
             var user = await _repository.GetById(userId);
-            var pages = await _repository.GetPage(
-                e => (e.IsActive || user.Role == Data.Enums.Role.Admin),
-                pagingModel
-                
-            );
+            var qeryable = _repository.GetFiltered(e => (e.IsActive || user.Role == Data.Enums.Role.Admin));
+            var pages = await _repository.GetPage(qeryable,pagingModel);
           
                 result = _mapper.Map<PageModelDTO<UserDTO>>(pages);
            
@@ -80,9 +77,9 @@ namespace Logic.Services
                     "This user already exists"
                 );
             }
-            User user = new User();
+            UserEntity user = new UserEntity();
 
-            user = _mapper.Map<User>(model);
+            user = _mapper.Map<UserEntity>(model);
 
             user.IsEmailConfirmed = true;
             user.Role = Data.Enums.Role.Admin;

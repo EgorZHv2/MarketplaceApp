@@ -1,6 +1,6 @@
 ﻿namespace Data.Entities
 {
-    public class StaticFileInfo : BaseEntity
+    public class StaticFileInfoEntity : BaseEntity
     {
         public string Name { get; set; }
         public string Extension { get; set; }

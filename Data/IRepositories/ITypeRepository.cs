@@ -1,6 +1,8 @@
-﻿namespace Data.IRepositories
+﻿using Data.Entities;
+
+namespace Data.IRepositories
 {
-    public interface ITypeRepository : IBaseDictionaryRepository<Data.Entities.Type>
+    public interface ITypeRepository : IBaseDictionaryRepository<TypeEntity>
     {
     }
 }

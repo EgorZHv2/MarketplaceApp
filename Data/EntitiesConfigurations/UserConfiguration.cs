@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Data.EntitiesConfigurations
 {
-    public class UserConfiguration : IEntityTypeConfiguration<User>
+    public class UserConfiguration : IEntityTypeConfiguration<UserEntity>
     {
-        public void Configure(EntityTypeBuilder<User> entityTypeBuilder)
+        public void Configure(EntityTypeBuilder<UserEntity> entityTypeBuilder)
         {
             entityTypeBuilder.HasKey(user => user.Id);
             entityTypeBuilder.Property(user => user.FirstName).IsRequired(false);
@@ -17,7 +17,7 @@ namespace Data.EntitiesConfigurations
             entityTypeBuilder
                 .HasMany(user => user.FavoriteShops)
                 .WithMany(shop => shop.Users)
-                .UsingEntity<UserFavoriteShop>(userFavoriteShop =>
+                .UsingEntity<UserFavoriteShopEntity>(userFavoriteShop =>
                 {
                     userFavoriteShop.HasOne(userFavoriteShop => userFavoriteShop.Shop)
                         .WithMany(shop => shop.UserFavoriteShops)

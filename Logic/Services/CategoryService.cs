@@ -9,7 +9,7 @@ using System.ComponentModel.Design;
 
 namespace Logic.Services
 {
-    public class CategoryService : BaseDictionaryService<Category, CategoryDTO, CreateCategoryDTO, UpdateCategoryDTO, ICategoryRepository>, ICategoryService
+    public class CategoryService : BaseDictionaryService<CategoryEntity, CategoryDTO, CreateCategoryDTO, UpdateCategoryDTO, ICategoryRepository>, ICategoryService
     {
         private readonly IConfiguration _configuration;
         public CategoryService(ICategoryRepository repository, 
@@ -67,11 +67,11 @@ namespace Logic.Services
             return level;
         }
 
-        private async Task<bool> Check(IEnumerable<Category> list, Guid id)
+        private async Task<bool> Check(IEnumerable<CategoryEntity> list, Guid id)
         {
             bool result = true;
             await CheckInner(list, id);
-            async Task CheckInner(IEnumerable<Category> list, Guid id)
+            async Task CheckInner(IEnumerable<CategoryEntity> list, Guid id)
             {
                 foreach (var item in list)
                 {
@@ -88,13 +88,13 @@ namespace Logic.Services
         }
         public override async Task<Guid> Create(Guid userId, CreateCategoryDTO createDTO)
         {
-            Category category = new Category();
-            Category parent = new Category();
+            CategoryEntity category = new CategoryEntity();
+            CategoryEntity parent = new CategoryEntity();
             if (createDTO.ParentCategoryId != null)
             {
                 parent = await _repository.GetById(createDTO.ParentCategoryId.Value);
             }
-            category = _mapper.Map<Category>(createDTO);
+            category = _mapper.Map<CategoryEntity>(createDTO);
             string? maxtierstr = _configuration.GetSection("MaxCategoryTier").Value;
             int maxtier;
             if(maxtierstr == "null" || string.IsNullOrEmpty(maxtierstr))
@@ -122,7 +122,7 @@ namespace Logic.Services
         }
         public async override Task<UpdateCategoryDTO> Update(Guid userId, UpdateCategoryDTO DTO)
         {
-            Category parent = new Category();
+            CategoryEntity parent = new CategoryEntity();
             if (DTO.ParentCategoryId != null)
             {
                 parent = await _repository.GetById(DTO.ParentCategoryId.Value);     
@@ -131,8 +131,8 @@ namespace Logic.Services
                     throw new CategoryParentException("Ошибка при выборе родительской категории", "Parent category error");
                 }
             }       
-            Category category = new Category();
-            category = _mapper.Map<Category>(DTO);
+            CategoryEntity category = new CategoryEntity();
+            category = _mapper.Map<CategoryEntity>(DTO);
             string? maxtierstr = _configuration.GetSection("MaxCategoryTier").Value;
             int maxtier;
             if(maxtierstr == "null" || string.IsNullOrEmpty(maxtierstr))

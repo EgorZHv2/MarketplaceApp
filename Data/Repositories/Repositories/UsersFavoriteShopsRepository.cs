@@ -9,19 +9,19 @@ namespace Data.Repositories.Repositories
     public class UsersFavoriteShopsRepository : IUsersFavoriteShopsRepository
     {
         private ApplicationDbContext _context;
-        private DbSet<UserFavoriteShop> _dbset => _context.Set<UserFavoriteShop>();
+        private DbSet<UserFavoriteShopEntity> _dbset => _context.Set<UserFavoriteShopEntity>();
 
         public UsersFavoriteShopsRepository(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public async Task<UserFavoriteShop?> GetFavByShopAndUserId(Guid userId, Guid shopId)
+        public async Task<UserFavoriteShopEntity?> GetFavByShopAndUserId(Guid userId, Guid shopId)
         {
             return await _dbset.FirstOrDefaultAsync(e => e.UserId == userId && e.ShopId == shopId);
         }
 
-        public async Task<ICollection<Shop>> GetFavoriteShopsByUserId(Guid userId)
+        public async Task<ICollection<ShopEntity>> GetFavoriteShopsByUserId(Guid userId)
         {
             return await _dbset
                 .Include(e => e.Shop)
@@ -30,20 +30,20 @@ namespace Data.Repositories.Repositories
                 .ToListAsync();
         }
 
-        public async Task Delete(UserFavoriteShop entity)
+        public async Task Delete(UserFavoriteShopEntity entity)
         {
             _dbset.Remove(entity);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<PageModelDTO<Shop>> GetFavsPageByUserId(Guid userId, int pagenumber, int pagesize)
+        public async Task<PageModelDTO<ShopEntity>> GetFavsPageByUserId(Guid userId, int pagenumber, int pagesize)
         {
             var queryable = _dbset
                 .Include(e => e.Shop)
                 .Where(e => e.UserId == userId)
                 .Select(p => p.Shop);
 
-            var result = await queryable.ToPageModelAsync<Shop>(pagenumber, pagesize);
+            var result = await queryable.ToPageModelAsync<ShopEntity>(pagenumber, pagesize);
             return result;
         }
     }

@@ -2,10 +2,10 @@
 
 namespace Data.IRepositories
 {
-    public interface IStaticFileInfoRepository : IBaseRepository<StaticFileInfo>
+    public interface IStaticFileInfoRepository : IBaseRepository<StaticFileInfoEntity>
     {
-        Task<StaticFileInfo?> GetByParentId(Guid Id);
+        Task<StaticFileInfoEntity?> GetByParentId(Guid Id);
 
-        Task<IEnumerable<StaticFileInfo>> GetAllByParentId(Guid Id);
+        Task<IEnumerable<StaticFileInfoEntity>> GetAllByParentId(Guid Id);
     }
 }

@@ -21,7 +21,7 @@ namespace Data.Repositories.ShopDictionaryRepositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAllByShop(Shop shop)
+        public async Task DeleteAllByShop(ShopEntity shop)
         {
             var list = await _dbSet.Where(e => e.ShopId == shop.Id).ToListAsync();
             _dbSet.RemoveRange(list);

@@ -6,7 +6,7 @@ using Data.IRepositories;
 namespace Logic.Interfaces
 {
     public interface IReviewService
-        : IBaseService<Review, ReviewDTO, CreateReviewDTO, UpdateReviewDTO, IReviewRepository>
+        : IBaseService<ReviewEntity, ReviewDTO, CreateReviewDTO, UpdateReviewDTO, IReviewRepository>
     {
         public Task<List<ReviewDTO>> GetReviewsByShopId(
             Guid userId,

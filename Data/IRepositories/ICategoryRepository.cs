@@ -2,12 +2,12 @@
 
 namespace Data.IRepositories
 {
-    public interface ICategoryRepository : IBaseDictionaryRepository<Category>
+    public interface ICategoryRepository : IBaseDictionaryRepository<CategoryEntity>
     {
-        public Task<IEnumerable<Category>> GetCategoriesWithChilds();
+        public Task<IEnumerable<CategoryEntity>> GetCategoriesWithChilds();
 
-        public Task<IEnumerable<Category>> GetCategoriesByParentId(Guid parentId);
+        public Task<IEnumerable<CategoryEntity>> GetCategoriesByParentId(Guid parentId);
 
-        public Task<IEnumerable<Category>> GetCategoriesWithoutParentId();
+        public Task<IEnumerable<CategoryEntity>> GetCategoriesWithoutParentId();
     }
 }

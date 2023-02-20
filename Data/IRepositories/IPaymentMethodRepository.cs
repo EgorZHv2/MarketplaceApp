@@ -2,7 +2,7 @@
 
 namespace Data.IRepositories
 {
-    public interface IPaymentMethodRepository : IBaseDictionaryRepository<PaymentMethod>
+    public interface IPaymentMethodRepository : IBaseDictionaryRepository<PaymentMethodEntity>
     {
     }
 }

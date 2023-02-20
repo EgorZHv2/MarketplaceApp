@@ -6,14 +6,14 @@ namespace Data
 {
     public class ApplicationDbContext : DbContext
     {
-        public DbSet<User> Users => Set<User>();
-        public DbSet<Shop> Shops => Set<Shop>();
-        public DbSet<Review> Reviews => Set<Review>();
-        public DbSet<StaticFileInfo> StaticFileInfos => Set<StaticFileInfo>();
-        public DbSet<Category> Categories => Set<Category>();
-        public DbSet<Data.Entities.Type> Types => Set<Data.Entities.Type>();
-        public DbSet<PaymentMethod> PaymentMethods => Set<PaymentMethod>();
-        public DbSet<DeliveryType> DeliveryTypes => Set<DeliveryType>();
+        public DbSet<UserEntity> Users => Set<UserEntity>();
+        public DbSet<ShopEntity> Shops => Set<ShopEntity>();
+        public DbSet<ReviewEntity> Reviews => Set<ReviewEntity>();
+        public DbSet<StaticFileInfoEntity> StaticFileInfos => Set<StaticFileInfoEntity>();
+        public DbSet<CategoryEntity> Categories => Set<CategoryEntity>();
+        public DbSet<TypeEntity> Types => Set<TypeEntity>();
+        public DbSet<PaymentMethodEntity> PaymentMethods => Set<PaymentMethodEntity>();
+        public DbSet<DeliveryTypeEntity> DeliveryTypes => Set<DeliveryTypeEntity>();
 
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {

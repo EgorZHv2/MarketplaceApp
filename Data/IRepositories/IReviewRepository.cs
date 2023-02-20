@@ -2,8 +2,8 @@
 
 namespace Data.IRepositories
 {
-    public interface IReviewRepository : IBaseRepository<Review>
+    public interface IReviewRepository : IBaseRepository<ReviewEntity>
     {
-        public IEnumerable<Review> GetReviewsByShopId(Guid ShopId);
+        public IEnumerable<ReviewEntity> GetReviewsByShopId(Guid ShopId);
     }
 }

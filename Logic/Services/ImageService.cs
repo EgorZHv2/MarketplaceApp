@@ -11,17 +11,18 @@ namespace Logic.Services
     public class ImageService : IImageService
     {
         private readonly IConfiguration _configuration;
-        private readonly ILogger<ImageService> _logger;
+        private readonly IFileService _fileservice;
         private readonly IStaticFileInfoRepository _staticFileInfo;
+
         private string _basepath => _configuration.GetSection("BaseImagePath").Value;
         private string[] _allowedImageExtensions => _configuration.GetSection("AllowedImageExtensions").Get<string[]>();
 
         public ImageService(IConfiguration configuration,
-            ILogger<ImageService> logger,
+           IFileService fileService,
             IStaticFileInfoRepository staticFileInfo)
         {
             _configuration = configuration;
-            _logger = logger;
+            _fileservice = fileService;
             _staticFileInfo = staticFileInfo;
         }
 
@@ -34,29 +35,20 @@ namespace Logic.Services
             }
 
             string filename = Guid.NewGuid().ToString();
-            string foldername = entityId.ToString();
-            string filepath = _basepath + foldername + "/" + filename + "." + fileextension;
-            DirectoryInfo directoryInfo = new DirectoryInfo(_basepath + foldername);
-            if (!directoryInfo.Exists)
-            {
-                directoryInfo.Create();
-            }
-            using (Stream stream = new FileStream(filepath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-            StaticFileInfo entity = new StaticFileInfo
+            string foldername = _basepath + entityId.ToString();          
+            await _fileservice.Upload(foldername,filename + "." + fileextension, file.OpenReadStream());
+    
+            StaticFileInfoEntity entity = new StaticFileInfoEntity
             {
                 Extension = fileextension,
                 Name = filename,
                 ParentEntityId = entityId
             };
             var existing = await _staticFileInfo.GetAllByParentId(entityId);
+
+            if (existing.Any())
             {
-                if (existing.Any())
-                {
-                    await DeleteAllImagesByParentId(userId, entityId);
-                }
+                await DeleteAllImagesByParentId(userId, entityId);
             }
 
             await _staticFileInfo.Create(userId, entity);
@@ -70,10 +62,7 @@ namespace Logic.Services
             foreach (var info in infos)
             {
                 var filepath = basefilepath + info.Name + "." + info.Extension;
-                if (File.Exists(filepath))
-                {
-                    File.Delete(filepath);
-                }
+                await _fileservice.Delete(filepath);
             }
             await _staticFileInfo.HardDeleteMany( infos.ToArray());
         }

@@ -5,7 +5,7 @@ namespace WebAPi.Interfaces
 {
     public interface ITokenService
     {
-        public string GetToken(User user);
+        public string GetToken(UserEntity user);
 
         public List<Claim> DecryptToken(string token);
     }

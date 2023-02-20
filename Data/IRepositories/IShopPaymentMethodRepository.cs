@@ -2,7 +2,7 @@
 
 namespace Data.IRepositories
 {
-    public interface IShopPaymentMethodRepository : IBaseShopDictionaryRepository<ShopPaymentMethod>
+    public interface IShopPaymentMethodRepository : IBaseShopDictionaryRepository<ShopPaymentMethodEntity>
     {
     }
 }

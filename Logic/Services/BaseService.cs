@@ -45,7 +45,8 @@ namespace Logic.Services
         public virtual async Task<PageModelDTO<TDTO>> GetPage(PaginationDTO pagingModel)
         {
             PageModelDTO<TDTO> result = new PageModelDTO<TDTO>();
-            var PageModel = await _repository.GetPage(e => e.IsActive, pagingModel);
+            var filtered = _repository.GetFiltered(e => e.IsActive);
+            var PageModel = await _repository.GetPage(filtered, pagingModel);
             result.CurrentPage = PageModel.CurrentPage;
             result.TotalPages = PageModel.TotalPages;
             result.ItemsOnPage = PageModel.ItemsOnPage;

@@ -16,53 +16,53 @@ namespace WebAPi.Mappers
     {
         public AppMappingProfile()
         {
-            CreateMap<RegistrationDTO, User>();
+            CreateMap<RegistrationDTO, UserEntity>();
 
            
-            CreateMap<Shop, ShopDTO>().ForMember(x => x.ImagePath, opt => opt.Ignore());;
-            CreateMap<PageModelDTO<Shop>, PageModelDTO<ShopDTO>>();
-            CreateMap<CreateShopDTO, Shop>()
+            CreateMap<ShopEntity, ShopDTO>().ForMember(x => x.ImagePath, opt => opt.Ignore());;
+            CreateMap<PageModelDTO<ShopEntity>, PageModelDTO<ShopDTO>>();
+            CreateMap<CreateShopDTO, ShopEntity>()
                 .ForMember(e => e.ShopPaymentMethods, opt => opt.Ignore())
                 .ForMember(e => e.ShopDeliveryTypes, opt => opt.Ignore());
        
-            CreateMap<UpdateShopDTO, Shop>()
+            CreateMap<UpdateShopDTO, ShopEntity>()
                 .ForMember(e => e.ShopPaymentMethods, opt => opt.Ignore())
                 .ForMember(e => e.ShopDeliveryTypes, opt => opt.Ignore());
 
-            CreateMap<Review, ReviewDTO>();
-            CreateMap<PageModelDTO<Review>, PageModelDTO<ReviewDTO>>();
-            CreateMap<CreateReviewDTO, Review>();
-            CreateMap<UpdateReviewDTO, Review>();
+            CreateMap<ReviewEntity, ReviewDTO>();
+            CreateMap<PageModelDTO<ReviewEntity>, PageModelDTO<ReviewDTO>>();
+            CreateMap<CreateReviewDTO, ReviewEntity>();
+            CreateMap<UpdateReviewDTO, ReviewEntity>();
 
-            CreateMap<User, UserDTO>();
-            CreateMap<PageModelDTO<User>, PageModelDTO<UserDTO>>();
-            CreateMap<CreateUserDTO, User>();
-            CreateMap<UpdateUserDTO, User>();
+            CreateMap<UserEntity, UserDTO>();
+            CreateMap<PageModelDTO<UserEntity>, PageModelDTO<UserDTO>>();
+            CreateMap<CreateUserDTO, UserEntity>();
+            CreateMap<UpdateUserDTO, UserEntity>();
 
-            CreateMap<ChangePasswordDTO, User>().ReverseMap();
-            CreateMap<CreateAdminDTO, User>().ReverseMap();
+            CreateMap<ChangePasswordDTO, UserEntity>().ReverseMap();
+            CreateMap<CreateAdminDTO, UserEntity>().ReverseMap();
 
             
 
-            CreateMap<Category, CategoryDTO>();
-            CreateMap<PageModelDTO<Category>, PageModelDTO<CategoryDTO>>();
-            CreateMap<CreateCategoryDTO, Category>();
-            CreateMap<UpdateCategoryDTO, Category>();
+            CreateMap<CategoryEntity, CategoryDTO>();
+            CreateMap<PageModelDTO<CategoryEntity>, PageModelDTO<CategoryDTO>>();
+            CreateMap<CreateCategoryDTO, CategoryEntity>();
+            CreateMap<UpdateCategoryDTO, CategoryEntity>();
 
-            CreateMap<DeliveryType, DeliveryTypeDTO>();
-            CreateMap<PageModelDTO<DeliveryType>, PageModelDTO<DeliveryTypeDTO>>();
-            CreateMap<CreateDeliveryTypeDTO, DeliveryType>();
-            CreateMap<UpdateDeliveryTypeDTO, DeliveryType>();
+            CreateMap<DeliveryTypeEntity, DeliveryTypeDTO>();
+            CreateMap<PageModelDTO<DeliveryTypeEntity>, PageModelDTO<DeliveryTypeDTO>>();
+            CreateMap<CreateDeliveryTypeDTO, DeliveryTypeEntity>();
+            CreateMap<UpdateDeliveryTypeDTO, DeliveryTypeEntity>();
 
-            CreateMap<PaymentMethod, PaymentMethodDTO>();
-            CreateMap<PageModelDTO<PaymentMethod>, PageModelDTO<PaymentMethodDTO>>();
-            CreateMap<CreatePaymentMethodDTO, PaymentMethod>();
-            CreateMap<UpdatePaymentMethodDTO, PaymentMethod>();
+            CreateMap<PaymentMethodEntity, PaymentMethodDTO>();
+            CreateMap<PageModelDTO<PaymentMethodEntity>, PageModelDTO<PaymentMethodDTO>>();
+            CreateMap<CreatePaymentMethodDTO, PaymentMethodEntity>();
+            CreateMap<UpdatePaymentMethodDTO, PaymentMethodEntity>();
 
-            CreateMap<Data.Entities.Type, TypeDTO>();
-            CreateMap<PageModelDTO<Data.Entities.Type>, PageModelDTO<TypeDTO>>();
-            CreateMap<CreateTypeDTO, Data.Entities.Type>();
-            CreateMap<UpdateTypeDTO, Data.Entities.Type>();
+            CreateMap<TypeEntity, TypeDTO>();
+            CreateMap<PageModelDTO<TypeEntity>, PageModelDTO<TypeDTO>>();
+            CreateMap<CreateTypeDTO, TypeEntity>();
+            CreateMap<UpdateTypeDTO, TypeEntity>();
         }
     }
 }

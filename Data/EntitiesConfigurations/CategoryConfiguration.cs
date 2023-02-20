@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Data.EntitiesConfigurations
 {
-    public class CategoryConfiguration : IEntityTypeConfiguration<Category>
+    public class CategoryConfiguration : IEntityTypeConfiguration<CategoryEntity>
     {
-        public void Configure(EntityTypeBuilder<Category> entityTypeBuilder)
+        public void Configure(EntityTypeBuilder<CategoryEntity> entityTypeBuilder)
         {
             entityTypeBuilder.HasKey(category => category.Id);
             entityTypeBuilder.HasQueryFilter(category => category.IsDeleted == false);

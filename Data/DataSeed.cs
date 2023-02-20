@@ -17,7 +17,7 @@ namespace Data
             var user = await userRepository.GetUserByEmail(AdminMail);
             if (user == null)
             {
-                await userRepository.Create(Guid.Empty, new Entities.User
+                await userRepository.Create(Guid.Empty, new Entities.UserEntity
                 {
                     FirstName = "Админ",
                     Email = AdminMail,

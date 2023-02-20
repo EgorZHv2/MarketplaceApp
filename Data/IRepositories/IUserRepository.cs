@@ -2,8 +2,8 @@
 
 namespace Data.IRepositories
 {
-    public interface IUserRepository : IBaseRepository<User>
+    public interface IUserRepository : IBaseRepository<UserEntity>
     {
-        public Task<User?> GetUserByEmail(string email);
+        public Task<UserEntity?> GetUserByEmail(string email);
     }
 }

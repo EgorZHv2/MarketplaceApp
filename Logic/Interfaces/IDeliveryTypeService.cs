@@ -4,7 +4,7 @@ using Data.IRepositories;
 
 namespace Logic.Interfaces
 {
-    public interface IDeliveryTypeService : IBaseDictionaryService<DeliveryType, DeliveryTypeDTO, CreateDeliveryTypeDTO, UpdateDeliveryTypeDTO, IDeliveryTypeRepository>
+    public interface IDeliveryTypeService : IBaseDictionaryService<DeliveryTypeEntity, DeliveryTypeDTO, CreateDeliveryTypeDTO, UpdateDeliveryTypeDTO, IDeliveryTypeRepository>
     {
     }
 }

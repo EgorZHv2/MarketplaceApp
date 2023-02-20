@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Data.EntitiesConfigurations
 {
-    public class StaticFileInfoConfiguration : IEntityTypeConfiguration<StaticFileInfo>
+    public class StaticFileInfoConfiguration : IEntityTypeConfiguration<StaticFileInfoEntity>
     {
-        public void Configure(EntityTypeBuilder<StaticFileInfo> entityTypeBuilder)
+        public void Configure(EntityTypeBuilder<StaticFileInfoEntity> entityTypeBuilder)
         {
             entityTypeBuilder.HasKey(staticFileInfo => staticFileInfo.Id);
         }

@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Data.Repositories.Repositories
 {
-    public class UserRepository : BaseRepository<User>, IUserRepository
+    public class UserRepository : BaseRepository<UserEntity>, IUserRepository
     {
         public UserRepository(ApplicationDbContext context) : base(context)
         {
         }
 
-        public async Task<User?> GetUserByEmail(string email)
+        public async Task<UserEntity?> GetUserByEmail(string email)
         {
             return await _dbset.FirstOrDefaultAsync(e => e.Email == email);
         }

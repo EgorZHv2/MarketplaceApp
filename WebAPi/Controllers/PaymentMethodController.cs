@@ -8,7 +8,7 @@ namespace WebAPi.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class PaymentMethodController : BaseDictionaryController<PaymentMethod, PaymentMethodDTO, CreatePaymentMethodDTO, UpdatePaymentMethodDTO, IPaymentMethodRepository, IPaymentMethodService>
+    public class PaymentMethodController : BaseDictionaryController<PaymentMethodEntity, PaymentMethodDTO, CreatePaymentMethodDTO, UpdatePaymentMethodDTO, IPaymentMethodRepository, IPaymentMethodService>
     {
         public PaymentMethodController(IPaymentMethodService paymentMethodService) : base(paymentMethodService)
         {

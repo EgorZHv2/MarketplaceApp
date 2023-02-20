@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Data.EntitiesConfigurations
 {
-    public class ReviewConfiguration : IEntityTypeConfiguration<Review>
+    public class ReviewConfiguration : IEntityTypeConfiguration<ReviewEntity>
     {
-        public void Configure(EntityTypeBuilder<Review> entityTypeBuilder)
+        public void Configure(EntityTypeBuilder<ReviewEntity> entityTypeBuilder)
         {
             entityTypeBuilder.HasKey(review => review.Id);
             entityTypeBuilder

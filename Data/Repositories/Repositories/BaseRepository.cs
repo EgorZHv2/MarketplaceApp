@@ -16,22 +16,25 @@ namespace Data.Repositories.Repositories
         {
             _context = context;
         }
-
+        public IQueryable<TEntity> GetFiltered(Expression<Func<TEntity, bool>> predicate)
+        {
+            return _dbset.Where(predicate);
+        }
         public async Task<TEntity?> GetById(Guid Id)
         {
             return await _dbset.FirstOrDefaultAsync(e => e.Id == Id);
         }
 
-        public IEnumerable<TEntity> GetManyByIds(params Guid[] ids)
+        public  IEnumerable<TEntity> GetManyByIds(params Guid[] ids)
         {
-            return _context.Set<TEntity>().Where(e => ids.Contains(e.Id));
+            return _dbset.Where(e => ids.Contains(e.Id));
         }
 
-        public async Task<PageModelDTO<TEntity>> GetPage(Expression<Func<TEntity, bool>> predicate, PaginationDTO pagination)
+        public async Task<PageModelDTO<TEntity>> GetPage(IQueryable<TEntity> queryable, PaginationDTO pagination)
         {
-            var queryable = _dbset.Where(predicate);
-            var result = await queryable.ToPageModelAsync(pagination.PageNumber, pagination.PageSize);
-            return result;
+           
+            
+            return  await queryable.ToPageModelAsync(pagination.PageNumber, pagination.PageSize);
         }
 
         public virtual async Task<Guid> Create(Guid userId, TEntity entity)

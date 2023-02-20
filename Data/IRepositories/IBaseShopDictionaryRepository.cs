@@ -6,6 +6,6 @@ namespace Data.IRepositories
     {
         public Task CreateRange(params TEntity[] entities);
 
-        public Task DeleteAllByShop(Shop shop);
+        public Task DeleteAllByShop(ShopEntity shop);
     }
 }

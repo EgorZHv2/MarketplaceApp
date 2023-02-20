@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Data.EntitiesConfigurations
 {
-    public class ShopConfiguration : IEntityTypeConfiguration<Shop>
+    public class ShopConfiguration : IEntityTypeConfiguration<ShopEntity>
     {
-        public void Configure(EntityTypeBuilder<Shop> entityTypeBuilder)
+        public void Configure(EntityTypeBuilder<ShopEntity> entityTypeBuilder)
         {
             entityTypeBuilder.HasKey(shop => shop.Id);
             entityTypeBuilder
@@ -18,9 +18,9 @@ namespace Data.EntitiesConfigurations
             entityTypeBuilder.HasQueryFilter(shop => shop.IsDeleted == false);
 
             entityTypeBuilder
-                .HasMany<DeliveryType>(shop => shop.DeliveryTypes)
+                .HasMany<DeliveryTypeEntity>(shop => shop.DeliveryTypes)
                 .WithMany(deliveryType => deliveryType.Shops)
-                .UsingEntity<ShopDeliveryType>(shopDeliveryType =>
+                .UsingEntity<ShopDeliveryTypeEntity>(shopDeliveryType =>
                 {
                     shopDeliveryType.HasOne(shopDeliveryType => shopDeliveryType.Shop)
                         .WithMany(shop => shop.ShopDeliveryTypes)
@@ -33,9 +33,9 @@ namespace Data.EntitiesConfigurations
                 });
 
             entityTypeBuilder
-                .HasMany<PaymentMethod>(shop => shop.PaymentMethods)
+                .HasMany<PaymentMethodEntity>(shop => shop.PaymentMethods)
                 .WithMany(paymentMethod => paymentMethod.Shops)
-                .UsingEntity<ShopPaymentMethod>(shopPaymentMethod =>
+                .UsingEntity<ShopPaymentMethodEntity>(shopPaymentMethod =>
                 {
                     shopPaymentMethod.HasOne(shopPaymentMethod => shopPaymentMethod.Shop)
                         .WithMany(shop => shop.ShopPaymentMethods)
@@ -48,9 +48,9 @@ namespace Data.EntitiesConfigurations
                 });
 
             entityTypeBuilder
-               .HasMany<Category>(shop => shop.Categories)
+               .HasMany<CategoryEntity>(shop => shop.Categories)
                .WithMany(category => category.Shops)
-               .UsingEntity<ShopCategory>(shopCategory =>
+               .UsingEntity<ShopCategoryEntity>(shopCategory =>
                {
                    shopCategory.HasOne(shopCategory => shopCategory.Shop)
                        .WithMany(shop => shop.ShopCategories)
@@ -62,9 +62,9 @@ namespace Data.EntitiesConfigurations
                });
 
             entityTypeBuilder
-                .HasMany<Data.Entities.Type>(shop => shop.Types)
+                .HasMany<TypeEntity>(shop => shop.Types)
                 .WithMany(type => type.Shops)
-                .UsingEntity<ShopType>(shopType =>
+                .UsingEntity<ShopTypeEntity>(shopType =>
                 {
                     shopType.HasOne(shopType => shopType.Shop)
                         .WithMany(shop => shop.ShopTypes)
