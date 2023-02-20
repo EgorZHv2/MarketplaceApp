@@ -14,6 +14,7 @@ namespace Data
         public DbSet<TypeEntity> Types => Set<TypeEntity>();
         public DbSet<PaymentMethodEntity> PaymentMethods => Set<PaymentMethodEntity>();
         public DbSet<DeliveryTypeEntity> DeliveryTypes => Set<DeliveryTypeEntity>();
+        public DbSet<ProductEntity> Products => Set<ProductEntity>(); 
 
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
@@ -29,6 +30,7 @@ namespace Data
             modelBuilder.ApplyConfiguration(new StaticFileInfoConfiguration());
             modelBuilder.ApplyConfiguration(new TypeConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductConfiguration());
         }
     }
 }

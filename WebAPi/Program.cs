@@ -1,6 +1,7 @@
 using Data;
 using Data.Extensions;
 using Data.IRepositories;
+using Data.Options;
 using Logic.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -35,6 +36,9 @@ var appsettings = builder.Configuration;
 builder.Services.AddAppDbContext(appsettings);
 builder.Services.AddRepositories();
 builder.Services.AddServices();
+
+builder.Services.Configure<EmailServiceOptions>(builder.Configuration.GetSection("EmailServiceOptions"));
+
 
 builder.Services.AddSwaggerGen(c =>
 {

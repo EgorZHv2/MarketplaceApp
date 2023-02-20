@@ -8,5 +8,6 @@
         public CategoryEntity? ParentCategory { get; set; }
         public List<CategoryEntity> Categories { get; set; } = new List<CategoryEntity>();
         public List<ShopCategoryEntity> ShopCategories { get; set; } = new List<ShopCategoryEntity>();
+        public List<ProductEntity> Products { get; set; } = new List<ProductEntity>();
     }
 }
