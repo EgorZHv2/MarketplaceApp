@@ -9,22 +9,30 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPi.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class ShopController : BaseGenericController<ShopEntity, ShopDTO, CreateShopDTO, UpdateShopDTO, IShopRepository, IShopService>
     {
         public ShopController(IShopService shopService) : base(shopService)
         {
         }
-
-        [HttpGet]
+        /// <summary>
+        /// Получить магазин по айди
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("{id}")]
         [Authorize]
-        public async Task<IActionResult> GetShopById([FromQuery] Guid Id)
+        public async Task<IActionResult> GetShopById(Guid id)
         {
-            var result = await _service.GetById(Id);
+            var result = await _service.GetById(id);
             return Ok(result);
         }
-
+        /// <summary>
+        /// Создать магазин
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize(Roles = $"{nameof(Data.Enums.Role.Admin)},{nameof(Data.Enums.Role.Seller)}")]
         public async Task<IActionResult> CreateShop([FromBody] CreateShopDTO model)
@@ -36,7 +44,11 @@ namespace WebAPi.Controllers
             var result = await _service.Create(UserId, model);
             return Ok(result);
         }
-
+        /// <summary>
+        /// Изменить магазин
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPut]
         [Authorize(Roles = $"{nameof(Data.Enums.Role.Admin)},{nameof(Data.Enums.Role.Seller)}")]
         public async Task<IActionResult> UpdateShop([FromForm] UpdateShopDTO model)
@@ -50,38 +62,26 @@ namespace WebAPi.Controllers
             return Ok(result);
         }
 
-        [HttpDelete]
+        /// <summary>
+        /// Удалить магазин
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete("{id}")]
         [Authorize(Roles = $"{nameof(Data.Enums.Role.Admin)},{nameof(Data.Enums.Role.Seller)}")]
-        public async Task<IActionResult> DeleteShop([FromQuery] Guid Id)
+        public async Task<IActionResult> DeleteShop( Guid id)
         {
-            await _service.Delete(UserId, Id);
+            await _service.Delete(UserId, id);
             return Ok();
         }
 
-        [Authorize]
-        [HttpPut]
-        public async Task<IActionResult> AddShopToFavorites([FromBody] Guid shopId)
-        {
-            await _service.AddShopToFavorites(UserId, shopId);
-            return Ok();
-        }
-
-        [Authorize]
-        [HttpDelete]
-        public async Task<IActionResult> DeleteFavoriteShop([FromBody] Guid shopId)
-        {
-            await _service.DeleteShopFromFavorites(UserId, shopId);
-            return Ok();
-        }
-
-        [Authorize]
-        [HttpGet]
-        public async Task<IActionResult> ShowUserFavoriteShops([FromQuery] PaginationDTO filterPaging)
-        {
-            var result = await _service.ShowUserFavoriteShops(UserId, filterPaging);
-            return Ok(result);
-        }
-
+       
+        /// <summary>
+        /// Получить страницу магазинов
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetPage([FromQuery] PaginationDTO model, [FromQuery] ShopFilterDTO filter)

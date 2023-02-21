@@ -4,6 +4,7 @@ using Data.DTO.Auth;
 using Data.DTO.Category;
 using Data.DTO.DeliveryType;
 using Data.DTO.PaymentMethod;
+using Data.DTO.Product;
 using Data.DTO.Review;
 using Data.DTO.Shop;
 using Data.DTO.Type;
@@ -38,6 +39,10 @@ namespace WebAPi.Mappers
             CreateMap<PageModelDTO<UserEntity>, PageModelDTO<UserDTO>>();
             CreateMap<CreateUserDTO, UserEntity>();
             CreateMap<UpdateUserDTO, UserEntity>();
+
+            CreateMap<ProductEntity, ProductDTO>();
+            CreateMap<CreateProductDTO, ProductEntity>();
+            CreateMap<UpdateProductDTO, ProductEntity>();
 
             CreateMap<ChangePasswordDTO, UserEntity>().ReverseMap();
             CreateMap<CreateAdminDTO, UserEntity>().ReverseMap();

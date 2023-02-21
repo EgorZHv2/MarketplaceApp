@@ -1,16 +1,17 @@
-﻿using Data.Enums;
+﻿using Data.DTO.BaseDTOs;
+using Data.Entities;
+using Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data.Entities
+namespace Data.DTO.Product
 {
-    public class ProductEntity:BaseEntity
+    public class ProductDTO:BaseOutputDTO
     {
         public string Name { get; set; }
-        public CategoryEntity Category { get; set; }
         public Guid CategoryId { get; set; }
         public int PartNumber { get; set; }
         public string Description { get; set; }

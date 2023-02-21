@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPi.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class DeliveryTypeController : BaseDictionaryController<DeliveryTypeEntity, DeliveryTypeDTO, CreateDeliveryTypeDTO, UpdateDeliveryTypeDTO, IDeliveryTypeRepository, IDeliveryTypeService>
     {

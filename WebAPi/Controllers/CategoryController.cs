@@ -8,15 +8,18 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPi.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class CategoryController : BaseDictionaryController<CategoryEntity, CategoryDTO, CreateCategoryDTO, UpdateCategoryDTO, ICategoryRepository, ICategoryService>
     {
         public CategoryController(ICategoryService categoryService) : base(categoryService)
         {
         }
-
-        [HttpGet]
+        /// <summary>
+        /// Получить дерево категорий с вложенными категориями
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("getCategoryTree")]
         [Authorize]
         public async Task<IActionResult> GetCategoryTree()
         {
@@ -24,6 +27,11 @@ namespace WebAPi.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Изменить категорию
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPut]
         [Authorize(Roles = nameof(Data.Enums.Role.Admin))]
         public override async Task<IActionResult> Update(UpdateCategoryDTO model)

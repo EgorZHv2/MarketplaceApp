@@ -8,14 +8,18 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPi.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class UserController : BaseGenericController<UserEntity, UserDTO, CreateUserDTO, UpdateUserDTO, IUserRepository, IUserService>
     {
         public UserController(IUserService userService) : base(userService)
         {
         }
-
+        /// <summary>
+        /// Изменить данные пользователя (не регистрационные)
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [Authorize]
         [HttpPut]
         public async Task<IActionResult> UpdateUser([FromForm] UpdateUserDTO model)
@@ -27,8 +31,12 @@ namespace WebAPi.Controllers
             var result = await _service.Update(UserId, model);
             return Ok(result);
         }
-
-        [HttpPost]
+        /// <summary>
+        /// Создать аккаунт администратора
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost("createAdmin")]
         [Authorize(Roles = nameof(Data.Enums.Role.Admin))]
         public async Task<IActionResult> CreateAdmin([FromBody] CreateAdminDTO model)
         {

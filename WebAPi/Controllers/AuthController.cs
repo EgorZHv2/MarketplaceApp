@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPi.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class AuthController : BaseController
     {
@@ -15,8 +15,12 @@ namespace WebAPi.Controllers
         {
             _authService = authService;
         }
-
-        [HttpPost]
+        /// <summary>
+        /// Вход в аккаунт
+        /// </summary>
+        /// <param name="model">Модель логина</param>
+        /// <returns>JWT токен</returns>
+        [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO model)
         {
             if (!ModelState.IsValid)
@@ -26,8 +30,12 @@ namespace WebAPi.Controllers
             var result = await _authService.Login(model);
             return Ok(result);
         }
-
-        [HttpPost]
+        /// <summary>
+        /// Регистрация
+        /// </summary>
+        /// <param name="model">Модель регистрации</param>
+        /// <returns></returns>
+        [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegistrationDTO model)
         {
             if (!ModelState.IsValid)
@@ -38,14 +46,23 @@ namespace WebAPi.Controllers
             return Ok();
         }
 
-        [HttpPut]
+        /// <summary>
+        /// Подтверждение аккаунта через код пришедший на почту
+        /// </summary>
+        /// <param name="model">Модель подтверждения кода</param>
+        /// <returns></returns>
+        [HttpPut("verifyAccount")]
         public async Task<IActionResult> Verify([FromBody] LoginDTO model)
         {
             await _authService.VerifyEmail(model.Email, model.Password);
             return Ok();
         }
-
-        [HttpPut]
+        /// <summary>
+        /// Смена пароля
+        /// </summary>
+        /// <param name="model">Модель смены пароля</param>
+        /// <returns></returns>
+        [HttpPatch("changePassword")]
         [Authorize]
         public async Task<IActionResult> ChangePassword(ChangePasswordDTO model)
         {

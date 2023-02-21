@@ -30,6 +30,7 @@ namespace Data.Extensions
             services.AddScoped<IStaticFileInfoRepository, StaticFileInfoRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUsersFavoriteShopsRepository, UsersFavoriteShopsRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
 
             services.AddScoped(typeof(IBaseDictionaryRepository<>), typeof(BaseDictionaryRepository<>));
             services.AddScoped<ICategoryRepository, CategoryRepository>();

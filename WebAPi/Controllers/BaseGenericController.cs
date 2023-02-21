@@ -22,8 +22,12 @@ namespace WebAPi.Controllers
         {
             _service = service;
         }
-
-        [HttpPut]
+        /// <summary>
+        /// Сменить активность у сущности.
+        /// </summary>
+        /// <param name="model">Модель смены активности</param>
+        /// <returns></returns>
+        [HttpPatch]
         [Authorize(Roles = nameof(Data.Enums.Role.Admin))]
         public async Task<IActionResult> ChangeActivity([FromBody] EntityActivityDTO model)
         {
