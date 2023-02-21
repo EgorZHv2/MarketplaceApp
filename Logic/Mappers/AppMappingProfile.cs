@@ -41,6 +41,7 @@ namespace WebAPi.Mappers
             CreateMap<UpdateUserDTO, UserEntity>();
 
             CreateMap<ProductEntity, ProductDTO>();
+            CreateMap<PageModelDTO<ProductEntity>, PageModelDTO<ProductDTO>>();
             CreateMap<CreateProductDTO, ProductEntity>();
             CreateMap<UpdateProductDTO, ProductEntity>();
 
