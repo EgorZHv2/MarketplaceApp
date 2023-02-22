@@ -4,6 +4,9 @@ using Data.IRepositories;
 using Data.Options;
 using Logic.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -38,6 +41,7 @@ builder.Services.AddRepositories();
 builder.Services.AddServices();
 
 builder.Services.Configure<EmailServiceOptions>(builder.Configuration.GetSection("EmailServiceOptions"));
+builder.Services.Configure<ApplicationOptions>(builder.Configuration.GetSection("ApplicationOptions"));
 
 
 builder.Services.AddSwaggerGen(c =>
@@ -75,6 +79,10 @@ builder.Services.AddSwaggerGen(c =>
     );
 });
 
+var options  = builder.Configuration
+    .GetSection("ApplicationOptions")
+    .Get<ApplicationOptions>();
+
 builder.Services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -84,7 +92,7 @@ builder.Services.AddAuthentication(options =>
     {
         jwtbeareroptions.TokenValidationParameters = new TokenValidationParameters()
         {
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("JwtAuthKey").Value)),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.JwtAuthKey)),
             ValidateIssuer = false,
             ValidateAudience = false,
             ValidateIssuerSigningKey = true,
@@ -101,8 +109,7 @@ using (var servicescope = app.Services.CreateScope())
     {
         var context = serviceprovider.GetRequiredService<ApplicationDbContext>();
         DbInitializer.Initialize(context);
-        var repository = serviceprovider.GetRequiredService<IUserRepository>();
-        DataSeed.SeedData(repository);
+        
     }
     catch (Exception e)
     {

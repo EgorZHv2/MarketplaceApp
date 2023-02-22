@@ -1,5 +1,7 @@
 ﻿using Data.Entities;
+using Data.Options;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -10,17 +12,17 @@ namespace WebAPi.Services
 {
     public class TokenService : ITokenService
     {
-        private IConfiguration _configuration;
+        private ApplicationOptions _options;
 
-        public TokenService(IConfiguration configuration)
+        public TokenService(IOptions<ApplicationOptions> options)
         {
-            _configuration = configuration;
+            _options = options.Value;
         }
 
         public string GetToken(UserEntity user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("JwtAuthKey").Value));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.JwtAuthKey));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var claims = new Claim[]
             {
@@ -40,7 +42,7 @@ namespace WebAPi.Services
         {
             List<Claim> result = new List<Claim>();
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("JwtAuthKey").Value));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.JwtAuthKey));
             var jwt = tokenHandler.ReadJwtToken(token);
             result = jwt.Claims.ToList();
             return result;

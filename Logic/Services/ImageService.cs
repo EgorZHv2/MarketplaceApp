@@ -1,27 +1,29 @@
 ﻿using Data.Entities;
 using Data.IRepositories;
+using Data.Options;
 using Logic.Exceptions;
 using Logic.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Logic.Services
 {
     public class ImageService : IImageService
     {
-        private readonly IConfiguration _configuration;
+        private readonly ApplicationOptions _options;
         private readonly IFileService _fileservice;
         private readonly IStaticFileInfoRepository _staticFileInfo;
 
-        private string _basepath => _configuration.GetSection("BaseImagePath").Value;
-        private string[] _allowedImageExtensions => _configuration.GetSection("AllowedImageExtensions").Get<string[]>();
+        
+        
 
-        public ImageService(IConfiguration configuration,
+        public ImageService(IOptions<ApplicationOptions> options,
            IFileService fileService,
             IStaticFileInfoRepository staticFileInfo)
         {
-            _configuration = configuration;
+            _options = options.Value;
             _fileservice = fileService;
             _staticFileInfo = staticFileInfo;
         }
@@ -29,13 +31,13 @@ namespace Logic.Services
         public async Task CreateImage(Guid userId, IFormFile file, Guid entityId)
         {
             string fileextension = file.FileName.Split(".").Last();
-            if (!_allowedImageExtensions.Contains(fileextension))
+            if (!_options.AllowedImageExtensions.Contains(fileextension))
             {
                 throw new WrongExtensionException("Картинка может быть только а png, jpg или jpeg", "Wrong image extension");
             }
 
             string filename = Guid.NewGuid().ToString();
-            string foldername = _basepath + entityId.ToString();          
+            string foldername = _options.BaseImagePath + entityId.ToString();          
             await _fileservice.Upload(foldername,filename + "." + fileextension, file.OpenReadStream());
     
             StaticFileInfoEntity entity = new StaticFileInfoEntity
@@ -57,7 +59,7 @@ namespace Logic.Services
         public async Task DeleteAllImagesByParentId(Guid userId, Guid id)
         {
             var infos = await _staticFileInfo.GetAllByParentId(id);
-            var basefilepath = _basepath + id.ToString() + "/";
+            var basefilepath = _options.BaseImagePath + id.ToString() + "/";
 
             foreach (var info in infos)
             {

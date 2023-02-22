@@ -13,15 +13,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Logic.Exceptions;
 
 namespace Logic.Services
 {
     public class ProductService:BaseService<ProductEntity,ProductDTO,CreateProductDTO,UpdateProductDTO,IProductRepository>,IProductService
     {
       private IUserRepository _userRepository;
-      public ProductService(IProductRepository repository,IMapper mapper,IUserRepository userRepository):base(repository,mapper) 
+        private ICategoryRepository _categoryRepository;
+      public ProductService(IProductRepository repository,IMapper mapper,IUserRepository userRepository, ICategoryRepository categoryRepository):base(repository,mapper) 
       {
             _userRepository = userRepository;
+            _categoryRepository = categoryRepository;
       }
 
       public async Task<PageModelDTO<ProductDTO>> GetPage(Guid userId,PaginationDTO pagingModel,ProductFilterDTO filter)
@@ -35,5 +38,23 @@ namespace Logic.Services
             
             return result;
       }
+        public override Task<Guid> Create(Guid userId, CreateProductDTO createDTO)
+        {
+            var category = _categoryRepository.GetById(createDTO.CategoryId);
+            if(category == default)
+            {
+                throw new NotFoundException("Категория не найдена","Category not found");
+            }
+            return base.Create(userId, createDTO);
+        }
+        public override Task<UpdateProductDTO> Update(Guid userId, UpdateProductDTO DTO)
+        {
+            var category = _categoryRepository.GetById(DTO.CategoryId);
+            if(category == default)
+            {
+                throw new NotFoundException("Категория не найдена","Category not found");
+            }
+            return base.Update(userId, DTO);
+        }
     }
 }

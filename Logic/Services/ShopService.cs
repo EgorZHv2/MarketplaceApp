@@ -4,9 +4,11 @@ using Data.DTO.Filters;
 using Data.DTO.Shop;
 using Data.Entities;
 using Data.IRepositories;
+using Data.Options;
 using Logic.Exceptions;
 using Logic.Interfaces;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System.Diagnostics;
 using WebAPi.Interfaces;
 
@@ -18,7 +20,7 @@ namespace Logic.Services
     {
         private IINNService _iNNService;
         private IImageService _imageService;
-        private IConfiguration _configuration;
+        private ApplicationOptions _options;
         private IUserRepository _userRepository;
         private IUsersFavoriteShopsRepository _usersFavoriteShops;
         private IShopCategoryRepository _shopCategoryRepository;
@@ -36,7 +38,7 @@ namespace Logic.Services
             IMapper mapper,
             IINNService iNNService,
             IImageService imageService,
-            IConfiguration configuration,
+            IOptions<ApplicationOptions> options,
             IUserRepository userRepository,
             IUsersFavoriteShopsRepository usersFavoriteShops,
             IShopCategoryRepository shopCategoryRepository,
@@ -52,7 +54,7 @@ namespace Logic.Services
         {
             _iNNService = iNNService;
             _imageService = imageService;
-            _configuration = configuration;
+            _options = options.Value;
             _userRepository = userRepository;
             _usersFavoriteShops = usersFavoriteShops;
             _shopCategoryRepository = shopCategoryRepository;
@@ -357,7 +359,7 @@ namespace Logic.Services
                 e => (e.IsActive || e.SellerId == userId || user.Role == Data.Enums.Role.Admin)
             );
             var pages = await _repository.GetPage(qeryable, pagingModel, filter);
-            string basepath = _configuration.GetSection("BaseImagePath").Value;
+            string basepath = _options.BaseImagePath;
             result = _mapper.Map<PageModelDTO<ShopDTO>>(pages);
             foreach (var shop in result.Values)
             {
