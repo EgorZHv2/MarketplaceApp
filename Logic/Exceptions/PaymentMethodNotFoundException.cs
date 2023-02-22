@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Logic.Exceptions
 {
-    internal class PaymentMethodNotFoundException
+    public class PaymentMethodNotFoundException:ApiException
     {
+        public PaymentMethodNotFoundException():base("Тип оплаты не найден","Payment method not found",System.Net.HttpStatusCode.NotFound) { }
     }
 }

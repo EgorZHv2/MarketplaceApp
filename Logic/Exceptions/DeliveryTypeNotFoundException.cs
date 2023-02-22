@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Logic.Exceptions
 {
-    internal class DeliveryTypeNotFoundException
+    public class DeliveryTypeNotFoundException:ApiException
     {
+        public DeliveryTypeNotFoundException() : base("Способ доставки не найден", "Delivery type not found", System.Net.HttpStatusCode.NotFound) { }
     }
 }

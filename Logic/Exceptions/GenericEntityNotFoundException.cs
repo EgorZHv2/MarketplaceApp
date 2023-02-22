@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Logic.Exceptions
 {
-    internal class EntityNotFoundException
+    public class GenericEntityNotFoundException:ApiException
     {
+        public GenericEntityNotFoundException():base("Объект не найден","Entity not found",System.Net.HttpStatusCode.NotFound) { }
     }
 }

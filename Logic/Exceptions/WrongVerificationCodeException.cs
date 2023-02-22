@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Logic.Exceptions
 {
-    internal class WrongVerificationCodeException
+    public class WrongVerificationCodeException:ApiException
     {
+        public WrongVerificationCodeException() : base("Неверный код подтверждения", "Wrong verification code", System.Net.HttpStatusCode.Unauthorized) { }
     }
 }

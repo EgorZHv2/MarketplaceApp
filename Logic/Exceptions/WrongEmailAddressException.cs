@@ -9,6 +9,6 @@ namespace Logic.Exceptions
 {
     public class WrongEmailAddressException:ApiException
     {
-        public WrongEmailAddressException("Неверный Email адрес","Wrong email", HttpStatusCode.NotFound) { }
+        public WrongEmailAddressException():base("Неверный Email адрес","Wrong Email address",HttpStatusCode.NotFound) { }
     }
 }

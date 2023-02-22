@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Logic.Exceptions
 {
-    internal class TypeNotFoundException
+    public class TypeNotFoundException:ApiException
     {
+        public TypeNotFoundException():base("Тип магазина не найден","TypeEntity not found",System.Net.HttpStatusCode.NotFound) { }
     }
 }

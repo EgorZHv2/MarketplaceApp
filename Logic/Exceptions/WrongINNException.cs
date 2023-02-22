@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Logic.Exceptions
 {
-    internal class WrongINNException
+    public class WrongINNException:ApiException
     {
+        public WrongINNException() : base("Неверный ИНН", "INN not found", System.Net.HttpStatusCode.NotFound) { }
     }
 }

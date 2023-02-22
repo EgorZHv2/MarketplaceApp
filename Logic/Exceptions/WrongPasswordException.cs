@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Logic.Exceptions
 {
-    internal class WrongPasswordException
+    public class WrongPasswordException:ApiException
     {
+        public WrongPasswordException():base("Неверный пароль","Wrong password",System.Net.HttpStatusCode.Unauthorized) { }
     }
 }

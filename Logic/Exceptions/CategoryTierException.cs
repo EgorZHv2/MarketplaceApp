@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Logic.Exceptions
 {
-    internal class CategoryTierException
+    public class CategoryTierException:ApiException
     {
+        public CategoryTierException(int maxtier) : base($"Максимальный уровень категории {maxtier}","Category tier over max tier",System.Net.HttpStatusCode.BadRequest) { }
     }
 }

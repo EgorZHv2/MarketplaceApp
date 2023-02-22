@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Logic.Exceptions
 {
-    internal class EmailNotConfirmedException
+    public class EmailNotConfirmedException:ApiException
     {
+        public EmailNotConfirmedException():base("Почта не подтверждена","Email not confirmed",System.Net.HttpStatusCode.Forbidden) { }
     }
 }

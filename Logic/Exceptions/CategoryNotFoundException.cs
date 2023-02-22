@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Logic.Exceptions
 {
-    internal class CategoryNotFoundException
+    public class CategoryNotFoundException:ApiException
     {
+        public CategoryNotFoundException():base("Категория не найдена","Category not found",System.Net.HttpStatusCode.NotFound) { }
     }
 }

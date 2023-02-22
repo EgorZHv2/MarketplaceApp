@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Logic.Exceptions
 {
-    internal class IncorrectJWTException
+    public class IncorrectJWTException:ApiException
     {
+        public IncorrectJWTException():base("Некорректный токен авторизацияя","Incorrect JWT",System.Net.HttpStatusCode.Forbidden) { }
     }
 }

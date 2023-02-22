@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Logic.Exceptions
 {
-    internal class BlockedUserException
+    public class BlockedUserException:ApiException
     {
+        public BlockedUserException():base("Пользователь заблокирован","User blocked", System.Net.HttpStatusCode.Forbidden) { }
     }
 }
