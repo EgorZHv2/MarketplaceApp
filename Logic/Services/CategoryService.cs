@@ -30,11 +30,11 @@ namespace Logic.Services
             var parentcategory = await _repository.GetById(parentId);
             if (category == null)
             {
-                throw new NotFoundException("Категория не найдена", "Category not found");
+                throw new CategoryNotFoundException();
             }
             if (parentcategory == null)
             {
-                throw new NotFoundException("Родительская категория не найдена", "Parent category not found");
+                throw new CategoryNotFoundException();
             }
 
             var childrenCategories = await _repository.GetCategoriesByParentId(categoryId);
@@ -109,7 +109,7 @@ namespace Logic.Services
             {
                 if(parent.Tier >= maxtier)
                 {
-                    throw new CategoryParentException($"Максимальный уровень категории {maxtier}", "Category tier over max tier");
+                    throw new CategoryTierException(maxtier);
                 }
                 else
                 {
@@ -128,7 +128,7 @@ namespace Logic.Services
                 parent = await _repository.GetById(DTO.ParentCategoryId.Value);     
                 if (!await CheckParentCategory(DTO.Id, DTO.ParentCategoryId.Value))
                 {
-                    throw new CategoryParentException("Ошибка при выборе родительской категории", "Parent category error");
+                    throw new CategoryParentException();
                 }
             }       
             var category = new CategoryEntity();
@@ -147,7 +147,7 @@ namespace Logic.Services
             {
                 if(parent.Tier >= maxtier)
                 {
-                    throw new CategoryParentException($"Максимальный уровень категории {maxtier}", "Category tier over max tier");
+                    throw new CategoryTierException(maxtier);
                 }
                 else
                 {

@@ -24,10 +24,6 @@ namespace WebAPi.Middleware
             catch (ApiException ex)
             {
                 string logmessage = $"Date: {DateTime.UtcNow} | Exception: {ex.GetType().Name} | Code: {ex.StatusCode} | Message: {ex.LogMessage} | ";
-                if (ex is AuthException authException)
-                {
-                    logmessage += "User login: " + (string.IsNullOrEmpty(authException.UserLogin) ? "none" : authException.UserLogin);
-                }
                 _logger.LogError(logmessage, ex);
                 await ResponseError(context, ex.UserMessage, ex.StatusCode);
             }

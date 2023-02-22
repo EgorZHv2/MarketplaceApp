@@ -36,7 +36,7 @@ namespace WebAPi.Services
                 }
                 catch
                 {
-                    throw new EmailServiceException("Неверный email адрес", "Wrong email address");
+                    throw new WrongEmailAddressException();
                 }
             }
         }

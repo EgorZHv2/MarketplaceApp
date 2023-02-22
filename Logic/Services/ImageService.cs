@@ -33,7 +33,7 @@ namespace Logic.Services
             string fileextension = file.FileName.Split(".").Last();
             if (!_options.AllowedImageExtensions.Contains(fileextension))
             {
-                throw new WrongExtensionException("Картинка может быть только а png, jpg или jpeg", "Wrong image extension");
+                throw new WrongExtensionException();
             }
 
             string filename = Guid.NewGuid().ToString();

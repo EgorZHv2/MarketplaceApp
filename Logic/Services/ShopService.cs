@@ -72,7 +72,7 @@ namespace Logic.Services
         {
             if (!_iNNService.CheckINN(createDTO.INN))
             {
-                throw new NotFoundException("INN не найден", "INN not valid");
+                throw new WrongINNException();
             }
             ShopEntity shop = new ShopEntity();
 
@@ -87,10 +87,7 @@ namespace Logic.Services
                     != _categoryRepository.GetManyByIds(createDTO.CategoriesId.ToArray()).Count()
                 )
                 {
-                    throw new NotFoundException(
-                        "Айди категории не найден",
-                        "Category id not found"
-                    );
+                    throw new CategoryNotFoundException();
                 }
                 var categories = createDTO.CategoriesId
                     .Select(e => new ShopCategoryEntity { CategoryId = e, ShopId = shop.Id })
@@ -105,10 +102,7 @@ namespace Logic.Services
                     != _typeRepository.GetManyByIds(createDTO.TypesId.ToArray()).Count()
                 )
                 {
-                    throw new NotFoundException(
-                        "Айди категории не найден",
-                        "Category id not found"
-                    );
+                    throw new TypeNotFoundException();
                 }
                 var types = createDTO.CategoriesId
                     .Select(e => new ShopTypeEntity { TypeId = e, ShopId = shop.Id })
@@ -125,10 +119,7 @@ namespace Logic.Services
                         .Count()
                 )
                 {
-                    throw new NotFoundException(
-                        "Айди типа доставки не найден",
-                        "Delivery type id not found"
-                    );
+                    throw new DeliveryTypeNotFoundException();
                 }
                 var deliveryTypes = createDTO.ShopDeliveryTypes
                     .Select(
@@ -153,10 +144,7 @@ namespace Logic.Services
                         .Count()
                 )
                 {
-                    throw new NotFoundException(
-                        "Айди типа оплаты не найден",
-                        "Payment method id not found"
-                    );
+                    throw new PaymentMethodNotFoundException();
                 }
                 var paymentMethods = createDTO.ShopPaymentMethods
                     .Select(
@@ -179,12 +167,12 @@ namespace Logic.Services
         {
             if (!_iNNService.CheckINN(updateDTO.INN))
             {
-                throw new NotFoundException("INN не найден", "INN not valid");
+                throw new WrongINNException();
             }
-            ShopEntity shop = await _repository.GetById(updateDTO.Id);
+            var shop = await _repository.GetById(updateDTO.Id);
             if (shop == null)
             {
-                throw new NotFoundException("Магазин не найден", "Shop Not Found");
+                throw new ShopNotFoundException();
             }
 
             _mapper.Map(updateDTO, shop);
@@ -206,10 +194,7 @@ namespace Logic.Services
                     != _categoryRepository.GetManyByIds(updateDTO.CategoriesId.ToArray()).Count()
                 )
                 {
-                    throw new NotFoundException(
-                        "Айди категории не найден",
-                        "Category id not found"
-                    );
+                    throw new CategoryNotFoundException();
                 }
                 var categories = updateDTO.CategoriesId
                     .Select(e => new ShopCategoryEntity { CategoryId = e, ShopId = shop.Id })
@@ -224,10 +209,7 @@ namespace Logic.Services
                     != _typeRepository.GetManyByIds(updateDTO.TypesId.ToArray()).Count()
                 )
                 {
-                    throw new NotFoundException(
-                        "Айди категории не найден",
-                        "Category id not found"
-                    );
+                    throw new TypeNotFoundException();
                 }
                 var types = updateDTO.CategoriesId
                     .Select(e => new ShopTypeEntity { TypeId = e, ShopId = shop.Id })
@@ -243,10 +225,7 @@ namespace Logic.Services
                         .Count()
                 )
                 {
-                    throw new NotFoundException(
-                        "Айди типа доставки не найден",
-                        "Delivery type id not found"
-                    );
+                    throw new DeliveryTypeNotFoundException();
                 }
                 var deliveryTypes = updateDTO.ShopDeliveryTypes
                     .Select(
@@ -271,10 +250,7 @@ namespace Logic.Services
                         .Count()
                 )
                 {
-                    throw new NotFoundException(
-                        "Айди типа оплаты не найден",
-                        "Payment method id not found"
-                    );
+                    throw new PaymentMethodNotFoundException();
                 }
                 var paymentMethods = updateDTO.ShopPaymentMethods
                     .Select(
@@ -306,12 +282,12 @@ namespace Logic.Services
             }
             if (user == null)
             {
-                throw new NotFoundException("Пользователь не найден", "User not found");
+                throw new UserNotFoundException();
             }
             var shop = await _repository.GetById(shopId);
             if (shop == null)
             {
-                throw new NotFoundException("Магазин не найден", "Shop Not Found");
+                throw new ShopNotFoundException();
             }
             user.FavoriteShops.Add(shop);
             await _userRepository.Update(userId, user);
@@ -325,7 +301,7 @@ namespace Logic.Services
             var user = await _userRepository.GetById(userId);
             if (user == null)
             {
-                throw new NotFoundException("Пользователь не найден", "User not found");
+                throw new UserNotFoundException();
             }
             var result = new PageModelDTO<ShopDTO>();
             var list = await _usersFavoriteShops.GetFavsPageByUserId(
@@ -342,7 +318,7 @@ namespace Logic.Services
             var existing = await _usersFavoriteShops.GetFavByShopAndUserId(userId, shopId);
             if (existing == null)
             {
-                throw new NotFoundException("Избранный магазин не найден", "Wrong shop or user id");
+                throw new ShopNotFoundException();
             }
             await _usersFavoriteShops.Delete(existing);
         }

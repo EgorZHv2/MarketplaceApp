@@ -43,7 +43,7 @@ namespace Logic.Services
             var category = _categoryRepository.GetById(createDTO.CategoryId);
             if(category == default)
             {
-                throw new NotFoundException("Категория не найдена","Category not found");
+                throw new CategoryNotFoundException();
             }
             return base.Create(userId, createDTO);
         }
@@ -52,7 +52,7 @@ namespace Logic.Services
             var category = _categoryRepository.GetById(DTO.CategoryId);
             if(category == default)
             {
-                throw new NotFoundException("Категория не найдена","Category not found");
+                throw new CategoryNotFoundException();
             }
             return base.Update(userId, DTO);
         }

@@ -36,7 +36,7 @@ namespace Logic.Services
             var user = await _repository.GetById(userId);
             if (user == null)
             {
-                throw new NotFoundException("Пользователь не найден", "User not found");
+                throw new UserNotFoundException();
             }
             if (model.Photo != null)
             {

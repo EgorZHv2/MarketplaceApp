@@ -45,16 +45,11 @@ namespace Logic.Services
             var user = await _userRepository.GetUserByEmail(email);
             if (user == null)
             {
-                throw new NotFoundException("Email не найден", "User email not found");
+                throw new WrongEmailAddressException();
             }
             if (!_hashService.ComparePasswordWithHash(code, user.EmailConfirmationCode))
             {
-                throw new AuthException(
-                    "Неправильный код",
-                    "Wrong email verification code",
-                    System.Net.HttpStatusCode.Unauthorized,
-                    user.Email
-                );
+                throw new WrongVerificationCodeException();
             }
             user.IsEmailConfirmed = true;
             await _userRepository.Update(user.Id, user);
@@ -68,25 +63,15 @@ namespace Logic.Services
             var user = await _userRepository.GetUserByEmail(model.Email);
             if (user == null)
             {
-                throw new NotFoundException("Email не найден", "User email not found");
+                throw new WrongEmailAddressException();
             }
             if (!user.IsEmailConfirmed)
             {
-                throw new AuthException(
-                    "Почта не подтверждёна",
-                    "Email not verified",
-                    System.Net.HttpStatusCode.Forbidden,
-                    model.Email
-                );
+                throw new EmailNotConfirmedException();
             }
             if (!_hashService.ComparePasswordWithHash(model.Password, user.Password))
             {
-                throw new AuthException(
-                    "Неверный пароль",
-                    "Wrong password",
-                    System.Net.HttpStatusCode.Unauthorized,
-                    model.Email
-                );
+                throw new WrongPasswordException();
             }
             var result = _tokenService.GetToken(user);
             return result;
@@ -100,12 +85,7 @@ namespace Logic.Services
             var dbuser = await _userRepository.GetUserByEmail(model.Email);
             if (dbuser != null)
             {
-                throw new AuthException(
-                    "Email занят",
-                    "Email already in use",
-                    System.Net.HttpStatusCode.Unauthorized,
-                    string.Empty
-                );
+                throw new EmailInUseException();
             }
             UserEntity user = new UserEntity();
            
@@ -130,17 +110,12 @@ namespace Logic.Services
             var user = await _userRepository.GetById(userId);
             if (user == null)
             {
-                throw new NotFoundException("Пользователь не найден", "User not found");
+                throw new UserNotFoundException();
             }
 
             if (!_hashService.ComparePasswordWithHash(model.OldPassword, user.Password))
             {
-                throw new AuthException(
-                    "Старый пароль неверный",
-                    "Wrong old password",
-                    HttpStatusCode.Unauthorized,
-                    user.Email
-                );
+                throw new WrongPasswordException();
             }
             user.Password = _hashService.HashPassword(model.Password);
             await _userRepository.Update(userId, user);

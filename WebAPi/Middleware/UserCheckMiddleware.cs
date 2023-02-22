@@ -26,11 +26,11 @@ namespace WebAPi.Middleware
                 var user = await userRepository.GetUserByEmail(useremail);
                 if (user == null)
                 {
-                    throw new AuthException("Некорректный токен авторизации", "Uncorrect jwttoken", HttpStatusCode.Forbidden);
+                    throw new IncorrectJWTException();
                 }
                 if (!user.IsActive)
                 {
-                    throw new AuthException("Пользователь заблокирован", "User not active", HttpStatusCode.Forbidden, user.Email);
+                    throw new BlockedUserException();
                 }
             }
             await _next.Invoke(context);

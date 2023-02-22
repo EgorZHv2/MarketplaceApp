@@ -60,7 +60,7 @@ namespace Logic.Services
             TEntity entity = await _repository.GetById(DTO.Id);
             if(entity== null)
             {
-                throw new NotFoundException("Объект не найден", "Entity Not Found");
+                throw new GenericEntityNotFoundException();
             }
             _mapper.Map(DTO, entity);
             await _repository.Update(userId, entity);
@@ -73,7 +73,7 @@ namespace Logic.Services
 
             if (entity == null)
             {
-                throw new NotFoundException("Объект не найден", "Object not found");
+                throw new GenericEntityNotFoundException();
             }
             await _repository.Delete(userId, entity);
         }
@@ -83,7 +83,7 @@ namespace Logic.Services
             var entity = await _repository.GetById(model.Id);
             if (entity == null)
             {
-                throw new NotFoundException("Объект не найден", "Object not found");
+                throw new GenericEntityNotFoundException();
             }
             entity.IsActive = model.IsActive;
             await _repository.Update(userId, entity);

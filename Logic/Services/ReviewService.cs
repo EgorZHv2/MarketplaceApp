@@ -37,7 +37,7 @@ namespace Logic.Services
             var shop = _shopRepository.GetById(createDTO.ShopId);
             if (shop == null)
             {
-                throw new NotFoundException("Магазин не найден", "Parent shop not found");
+                throw new ShopNotFoundException();
             }
             var entity = new ReviewEntity();
             entity = _mapper.Map<ReviewEntity>(createDTO);
