@@ -27,7 +27,7 @@ namespace Logic.Services
             var list = _repository
                 .GetReviewsByShopId(shopId)
                 .Where(e => (e.IsActive || user.Id == e.BuyerId || user.Role == Data.Enums.Role.Admin)).ToList();
-            List<ReviewDTO> result = new List<ReviewDTO>();
+            var result = new List<ReviewDTO>();
             result = _mapper.Map<List<ReviewDTO>>(list);
             return result;
         }
@@ -39,7 +39,7 @@ namespace Logic.Services
             {
                 throw new NotFoundException("Магазин не найден", "Parent shop not found");
             }
-            ReviewEntity entity = new ReviewEntity();
+            var entity = new ReviewEntity();
             entity = _mapper.Map<ReviewEntity>(createDTO);
             entity.BuyerId = userId;
             var result = await _repository.Create(userId, entity);

@@ -327,7 +327,7 @@ namespace Logic.Services
             {
                 throw new NotFoundException("Пользователь не найден", "User not found");
             }
-            PageModelDTO<ShopDTO> result = new PageModelDTO<ShopDTO>();
+            var result = new PageModelDTO<ShopDTO>();
             var list = await _usersFavoriteShops.GetFavsPageByUserId(
                 userId,
                 filterPaging.PageNumber,

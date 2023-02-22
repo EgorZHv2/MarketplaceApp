@@ -77,7 +77,7 @@ namespace Logic.Services
                     "This user already exists"
                 );
             }
-            UserEntity user = new UserEntity();
+            var user = new UserEntity();
 
             user = _mapper.Map<UserEntity>(model);
 

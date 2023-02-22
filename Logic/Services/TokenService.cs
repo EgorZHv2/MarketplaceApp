@@ -40,7 +40,7 @@ namespace WebAPi.Services
 
         public List<Claim> DecryptToken(string token)
         {
-            List<Claim> result = new List<Claim>();
+            var result = new List<Claim>();
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.JwtAuthKey));
             var jwt = tokenHandler.ReadJwtToken(token);

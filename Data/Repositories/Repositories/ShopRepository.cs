@@ -87,7 +87,7 @@ namespace Data.Repositories.Repositories
         }
         public async Task<List<Guid>> FillCategoriesGuidList(Guid filterCategoryId)
         {
-            List<Guid> guids = new List<Guid>();
+            var guids = new List<Guid>();
             var childcategories = await _categoryRepository.GetCategoriesByParentId(filterCategoryId);
             if (childcategories is not null)
             {

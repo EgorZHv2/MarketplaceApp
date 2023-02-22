@@ -50,7 +50,7 @@ namespace Logic.Services
 
         public async Task<List<CategoryDTO>> GetCategoryTree()
         {
-            List<CategoryDTO> result = new List<CategoryDTO>();
+            var result = new List<CategoryDTO>();
             var list = await _repository.GetCategoriesWithoutParentId();
             result = _mapper.Map<List<CategoryDTO>>(list);
             result = await Fill(result);
@@ -88,8 +88,8 @@ namespace Logic.Services
         }
         public override async Task<Guid> Create(Guid userId, CreateCategoryDTO createDTO)
         {
-            CategoryEntity category = new CategoryEntity();
-            CategoryEntity parent = new CategoryEntity();
+            var category = new CategoryEntity();
+            var parent = new CategoryEntity();
             if (createDTO.ParentCategoryId != null)
             {
                 parent = await _repository.GetById(createDTO.ParentCategoryId.Value);
@@ -116,7 +116,7 @@ namespace Logic.Services
                     category.Tier = parent.Tier+1;
                 }
             }
-            Guid result = await _repository.Create(userId, category);
+            var result = await _repository.Create(userId, category);
             return result;
            
         }
@@ -131,7 +131,7 @@ namespace Logic.Services
                     throw new CategoryParentException("Ошибка при выборе родительской категории", "Parent category error");
                 }
             }       
-            CategoryEntity category = new CategoryEntity();
+            var category = new CategoryEntity();
             category = _mapper.Map<CategoryEntity>(DTO);
             string? maxtierstr = _configuration.GetSection("MaxCategoryTier").Value;
             int maxtier;
