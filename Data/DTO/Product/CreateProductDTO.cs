@@ -1,6 +1,7 @@
 ﻿using Data.DTO.BaseDTOs;
 using Data.Entities;
 using Data.Enums;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -30,5 +31,7 @@ namespace Data.DTO.Product
         public double Depth { get; set; }
         [Required]
         public Country Country { get; set; }
+
+        public List<IFormFile> Photos { get; set; } = new List<IFormFile>();
     }
 }

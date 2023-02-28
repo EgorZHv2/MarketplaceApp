@@ -16,16 +16,39 @@ namespace Logic.Services
         private readonly IFileService _fileservice;
         private readonly IStaticFileInfoRepository _staticFileInfo;
 
-        
-        
-
-        public ImageService(IOptions<ApplicationOptions> options,
-           IFileService fileService,
-            IStaticFileInfoRepository staticFileInfo)
+        public ImageService(
+            IOptions<ApplicationOptions> options,
+            IFileService fileService,
+            IStaticFileInfoRepository staticFileInfo
+        )
         {
             _options = options.Value;
             _fileservice = fileService;
             _staticFileInfo = staticFileInfo;
+        }
+
+        public async Task CreateImage(Guid userId, string webPath, Guid entityId)
+        {
+            string fileextension = webPath.Split("/").Last().Split(".").Last();
+            if (!_options.AllowedImageExtensions.Contains(fileextension))
+            {
+                throw new WrongExtensionException();
+            }
+            string filename = Guid.NewGuid().ToString();
+            string foldername = _options.BaseImagePath + entityId.ToString();
+            await _fileservice.UploadFromWeb(foldername, filename + "." + fileextension, webPath);
+            StaticFileInfoEntity entity = new StaticFileInfoEntity
+            {
+                Extension = fileextension,
+                Name = filename,
+                ParentEntityId = entityId
+            };
+            var existing = await _staticFileInfo.GetAllByParentId(entityId);
+            if (existing.Any())
+            {
+                await DeleteAllImagesByParentId(userId, entityId);
+            }
+            await _staticFileInfo.Create(userId, entity);
         }
 
         public async Task CreateImage(Guid userId, IFormFile file, Guid entityId)
@@ -37,9 +60,13 @@ namespace Logic.Services
             }
 
             string filename = Guid.NewGuid().ToString();
-            string foldername = _options.BaseImagePath + entityId.ToString();          
-            await _fileservice.Upload(foldername,filename + "." + fileextension, file.OpenReadStream());
-    
+            string foldername = _options.BaseImagePath + entityId.ToString();
+            await _fileservice.Upload(
+                foldername,
+                filename + "." + fileextension,
+                file.OpenReadStream()
+            );
+
             StaticFileInfoEntity entity = new StaticFileInfoEntity
             {
                 Extension = fileextension,
@@ -56,6 +83,66 @@ namespace Logic.Services
             await _staticFileInfo.Create(userId, entity);
         }
 
+        public async Task CreateManyImages(Guid userId, ICollection<IFormFile> files, Guid entityId)
+        {
+            var existing = await _staticFileInfo.GetAllByParentId(entityId);
+            if (existing.Any())
+            {
+                await DeleteAllImagesByParentId(userId, entityId);
+            }
+            foreach (var file in files)
+            {
+                string fileextension = file.FileName.Split(".").Last();
+                if (!_options.AllowedImageExtensions.Contains(fileextension))
+                {
+                    throw new WrongExtensionException();
+                }
+
+                string filename = Guid.NewGuid().ToString();
+                string foldername = _options.BaseImagePath + entityId.ToString();
+                await _fileservice.Upload(
+                    foldername,
+                    filename + "." + fileextension,
+                    file.OpenReadStream()
+                );
+
+                StaticFileInfoEntity entity = new StaticFileInfoEntity
+                {
+                    Extension = fileextension,
+                    Name = filename,
+                    ParentEntityId = entityId
+                };
+                await _staticFileInfo.Create(userId, entity);
+            }
+        }
+
+        public async Task CreateManyImages(Guid userId, ICollection<string> webPaths, Guid entityId)
+        {
+            var existing = await _staticFileInfo.GetAllByParentId(entityId);
+            if (existing.Any())
+            {
+                await DeleteAllImagesByParentId(userId, entityId);
+            }
+            foreach (var webPath in webPaths)
+            {
+                string fileextension = webPath.Split("/").Last().Split(".").Last();
+                if (!_options.AllowedImageExtensions.Contains(fileextension))
+                {
+                    throw new WrongExtensionException();
+                }
+                string filename = Guid.NewGuid().ToString();
+                string foldername = _options.BaseImagePath + entityId.ToString();
+                await _fileservice.UploadFromWeb(foldername, filename + "." +fileextension, webPath);
+                StaticFileInfoEntity entity = new StaticFileInfoEntity
+                {
+                    Extension = fileextension,
+                    Name = filename,
+                    ParentEntityId = entityId
+                };
+                await _staticFileInfo.Create(userId, entity);
+            }
+        }
+
         public async Task DeleteAllImagesByParentId(Guid userId, Guid id)
         {
             var infos = await _staticFileInfo.GetAllByParentId(id);
@@ -66,7 +153,7 @@ namespace Logic.Services
                 var filepath = basefilepath + info.Name + "." + info.Extension;
                 await _fileservice.Delete(filepath);
             }
-            await _staticFileInfo.HardDeleteMany( infos.ToArray());
+            await _staticFileInfo.HardDeleteMany(infos.ToArray());
         }
     }
 }

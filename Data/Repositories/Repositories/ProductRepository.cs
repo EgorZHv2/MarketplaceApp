@@ -43,5 +43,9 @@ namespace Data.Repositories.Repositories
 
             return result;
         }
+        public async Task<ProductEntity> GetByPartNumber(int partNumber)
+        {
+            return await _dbset.FirstOrDefaultAsync(e => e.PartNumber == partNumber);
+        }
     }
 }

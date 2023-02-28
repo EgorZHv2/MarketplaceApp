@@ -16,5 +16,6 @@ namespace Data.IRepositories
             PaginationDTO pagination,
             ProductFilterDTO filter
         );
+        Task<ProductEntity> GetByPartNumber(int partNumber);
     }
 }

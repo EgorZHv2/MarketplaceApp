@@ -36,7 +36,7 @@ namespace WebAPi.Controllers
         /// <returns></returns>
         [HttpPost]
         [Authorize(Roles = nameof(Data.Enums.Role.Admin))]
-        public async Task<IActionResult> CreateProduct([FromBody] CreateProductDTO model)
+        public async Task<IActionResult> CreateProduct([FromForm] CreateProductDTO model)
         {
             if (!ModelState.IsValid)
             {
@@ -90,5 +90,14 @@ namespace WebAPi.Controllers
             var result = await _service.GetPage(UserId, model,filter);
             return Ok(result);
         }
+
+        [HttpPost("from-excel")]
+        [Authorize(Roles = nameof(Data.Enums.Role.Admin))]
+        public async Task<IActionResult> UploadFromExcel([FromForm]UploadFileDTO dto)
+        {
+            await _service.AddProductsFromExcelFile(UserId, dto.File);
+            return Ok();
+        }
+
     }
 }

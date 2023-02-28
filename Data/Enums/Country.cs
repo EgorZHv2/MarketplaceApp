@@ -15,7 +15,8 @@ namespace Data.Enums
         France,
         Japan,
         Italia,
-        GreatBritain
+        GreatBritain,
+        Korea
 
     }
 }

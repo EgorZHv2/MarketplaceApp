@@ -10,11 +10,7 @@ namespace Data.Repositories.DictionaryRepositories
         {
         }
 
-        public async Task<IEnumerable<CategoryEntity>> GetCategoriesWithChilds()
-        {
-            var result = await _dbset.Include(e => e.Categories).ToListAsync();
-            return result;
-        }
+    
 
         public async Task<IEnumerable<CategoryEntity>> GetCategoriesByParentId(Guid parentId)
         {
@@ -25,6 +21,12 @@ namespace Data.Repositories.DictionaryRepositories
         public async Task<IEnumerable<CategoryEntity>> GetCategoriesWithoutParentId()
         {
             var result = await _dbset.Where(e => e.ParentCategoryId == null).ToListAsync();
+            return result;
+        }
+
+        public async Task<CategoryEntity> GetCategoryByName(string name)
+        {
+            var result = await _dbset.FirstOrDefaultAsync(e=>e.Name == name);
             return result;
         }
     }

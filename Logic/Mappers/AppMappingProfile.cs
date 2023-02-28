@@ -44,6 +44,7 @@ namespace WebAPi.Mappers
             CreateMap<PageModelDTO<ProductEntity>, PageModelDTO<ProductDTO>>();
             CreateMap<CreateProductDTO, ProductEntity>();
             CreateMap<UpdateProductDTO, ProductEntity>();
+            CreateMap<ExcelProductModel, ProductEntity>().ForMember(e=>e.Country,opt => opt.Ignore());
 
             CreateMap<ChangePasswordDTO, UserEntity>().ReverseMap();
             CreateMap<CreateAdminDTO, UserEntity>().ReverseMap();
