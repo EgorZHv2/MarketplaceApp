@@ -103,18 +103,18 @@ namespace Logic.Services
                     {
                         list.Add(new ExcelProductModel
                         {
-                            Tier1CategoryName = worksheet.Cells[row, 1].Value?.ToString().Trim(),
+                            Tier1CategoryName = worksheet.Cells[row, 1].Value?.ToString().Trim() ?? throw new CategoryNotFoundException(),
                             Tier2CategoryName = worksheet.Cells[row, 2].Value?.ToString().Trim(),
                             Tier3CategoryName = worksheet.Cells[row, 3].Value?.ToString().Trim(),
                             Tier4CategoryName = worksheet.Cells[row, 4].Value?.ToString().Trim(),
-                            PartNumber = int.Parse(worksheet.Cells[row, 5].Value?.ToString().Trim()),
-                            Name = worksheet.Cells[row, 6].Value.ToString()?.Trim(),
-                            Description = worksheet.Cells[row, 7].Value?.ToString().Trim(),
-                            Weight = double.Parse(worksheet.Cells[row, 8].Value?.ToString().Trim()),
-                            Width = double.Parse(worksheet.Cells[row, 9].Value?.ToString().Trim()),
-                            Height = double.Parse(worksheet.Cells[row, 10].Value?.ToString().Trim()),
-                            Depth = double.Parse(worksheet.Cells[row, 11].Value?.ToString().Trim()),
-                            Country = worksheet.Cells[row, 12].Value?.ToString().Trim(),
+                            PartNumber = int.Parse(worksheet.Cells[row, 5].Value?.ToString().Trim() ?? throw new RequiredImportPropertyException("Код")) ,
+                            Name = worksheet.Cells[row, 6].Value.ToString().Trim() ?? throw new RequiredImportPropertyException("Название"),
+                            Description = worksheet.Cells[row, 7].Value?.ToString().Trim() ?? throw new RequiredImportPropertyException("Описание"),
+                            Weight = double.Parse(worksheet.Cells[row, 8].Value?.ToString().Trim()?? throw new RequiredImportPropertyException("Вес")),
+                            Width = double.Parse(worksheet.Cells[row, 9].Value?.ToString().Trim()?? throw new RequiredImportPropertyException("Ширина")),
+                            Height = double.Parse(worksheet.Cells[row, 10].Value?.ToString().Trim()?? throw new RequiredImportPropertyException("Высота")),
+                            Depth = double.Parse(worksheet.Cells[row, 11].Value?.ToString().Trim()?? throw new RequiredImportPropertyException("Длинна")),
+                            Country = worksheet.Cells[row, 12].Value?.ToString().Trim()?? throw new RequiredImportPropertyException("Страна"),
                             Photos = (worksheet.Cells[row, 13].Value?.ToString().Trim().Replace(" ","")).Split(";").ToList()
                         });
                     }
@@ -122,43 +122,8 @@ namespace Logic.Services
             }
             foreach(var item in list)
             {
-                if (item.PartNumber == null)
-                {
-                    throw new RequiredImportPropertyException(nameof(item.PartNumber));
-                }
-                if (string.IsNullOrEmpty(item.Name))
-                {
-                    throw new RequiredImportPropertyException(nameof(item.Name));
-                }
-                if (string.IsNullOrEmpty(item.Description))
-                {
-                    throw new RequiredImportPropertyException(nameof(item.Description));
-                }
-                if (string.IsNullOrEmpty(item.Country))
-                {
-                    throw new RequiredImportPropertyException(nameof(item.Description));
-                }
-                if(item.Weight == null)
-                {
-                    throw new RequiredImportPropertyException(nameof(item.Weight));
-                }
-                 if(item.Width == null)
-                {
-                    throw new RequiredImportPropertyException(nameof(item.Width));
-                }
-                  if(item.Height == null)
-                {
-                    throw new RequiredImportPropertyException(nameof(item.Height));
-                }
-                   if(item.Depth == null)
-                {
-                    throw new RequiredImportPropertyException(nameof(item.Depth));
-                }
+                
                 var productCategory = new Guid();
-                if(string.IsNullOrEmpty(item.Tier1CategoryName))
-                {
-                     throw new CategoryNotFoundException();
-                }
                 var tier1Category = await _categoryRepository.GetCategoryByName(item.Tier1CategoryName);
                 if(tier1Category == default)
                 {
