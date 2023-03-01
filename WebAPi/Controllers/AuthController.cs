@@ -51,7 +51,7 @@ namespace WebAPi.Controllers
         /// </summary>
         /// <param name="model">Модель подтверждения кода</param>
         /// <returns></returns>
-        [HttpPut("verifyAccount")]
+        [HttpPut("verify-account")]
         public async Task<IActionResult> Verify([FromBody] LoginDTO model)
         {
             await _authService.VerifyEmail(model.Email, model.Password);
@@ -62,7 +62,7 @@ namespace WebAPi.Controllers
         /// </summary>
         /// <param name="model">Модель смены пароля</param>
         /// <returns></returns>
-        [HttpPatch("changePassword")]
+        [HttpPatch("change-password")]
         [Authorize]
         public async Task<IActionResult> ChangePassword(ChangePasswordDTO model)
         {

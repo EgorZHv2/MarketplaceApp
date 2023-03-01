@@ -14,5 +14,7 @@ namespace Data.Options
         public List<string> AllowedImageExtensions { get; set; } = new List<string>();
         public int MaxCategoryTier { get; set; }
         public string JwtAuthKey { get; set; }
+        public int JwtTimeInMinutes { get; set; }
+
     }
 }

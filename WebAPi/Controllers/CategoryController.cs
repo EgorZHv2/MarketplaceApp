@@ -19,7 +19,7 @@ namespace WebAPi.Controllers
         /// Получить дерево категорий с вложенными категориями
         /// </summary>
         /// <returns></returns>
-        [HttpGet("getCategoryTree")]
+        [HttpGet("get-tree")]
         [Authorize]
         public async Task<IActionResult> GetCategoryTree()
         {

@@ -10,33 +10,33 @@ namespace Logic.Services
 {
     public class FIleService:IFileService
     {
-        public async Task Upload(string directory,string filename,Stream datastream)
+        public async Task Upload(string directory,string fileName,Stream datastream)
         {
             CheckDirectoryAndCreateIfNotExist(directory);
             
-            var filepath = directory + "/" + filename;
-            using(var filestream = new FileStream(filepath, FileMode.CreateNew, FileAccess.Write, FileShare.None))
+            var filePath = directory + "/" + fileName;
+            using(var filestream = new FileStream(filePath, FileMode.CreateNew, FileAccess.Write, FileShare.None))
             {
                 await datastream.CopyToAsync(filestream);
             }
         }
-        public Task Delete(string filepath)
+        public Task Delete(string filePath)
         {
             
-            if (!File.Exists(filepath))
+            if (!File.Exists(filePath))
             {
                 throw new DirectoryNotFoundException("Папка не найдена");
             }
-            File.Delete(filepath);
+            File.Delete(filePath);
             return Task.CompletedTask;
         }
-        public  Task UploadFromWeb(string directory,string filename,string webPath)
+        public  Task UploadFromWeb(string directory,string fileName,string webPath)
         {
             CheckDirectoryAndCreateIfNotExist(directory);
-            Uri uri = new Uri(webPath);
-            using(WebClient client = new WebClient())
+            var uri = new Uri(webPath);
+            using(var client = new WebClient())
             {
-                client.DownloadFileAsync(uri, directory + "/" + filename);
+                client.DownloadFileAsync(uri, directory + "/" + fileName);
             }
             return Task.CompletedTask;
         }

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPi.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class BaseGenericController<TEntity, TDTO, TCreateDTO, TUpdateDTO, TRepository, TService> : BaseController
         where TService : IBaseService<TEntity, TDTO, TCreateDTO, TUpdateDTO, TRepository>
@@ -27,7 +27,7 @@ namespace WebAPi.Controllers
         /// </summary>
         /// <param name="model">Модель смены активности</param>
         /// <returns></returns>
-        [HttpPatch]
+        [HttpPatch("change-activity")]
         [Authorize(Roles = nameof(Data.Enums.Role.Admin))]
         public async Task<IActionResult> ChangeActivity([FromBody] EntityActivityDTO model)
         {

@@ -1,4 +1,5 @@
 ﻿using Data.DTO;
+using Data.Entities;
 using System.Linq.Expressions;
 
 namespace Data.IRepositories
@@ -8,9 +9,8 @@ namespace Data.IRepositories
         Task<TEntity?> GetById(Guid Id);
 
         IEnumerable<TEntity> GetManyByIds(params Guid[] ids);
-        IQueryable<TEntity> GetFiltered(Expression<Func<TEntity, bool>> predicate);
 
-        Task<PageModelDTO<TEntity>> GetPage(IQueryable<TEntity> queryable, PaginationDTO pagination);
+        Task<PageModelDTO<TEntity>> GetPage(PaginationDTO pagination, IQueryable<TEntity> queryable = null);
 
         Task<Guid> Create(Guid userId, TEntity entity);
 

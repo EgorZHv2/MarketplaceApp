@@ -32,7 +32,7 @@ namespace WebAPi.Controllers
         /// </summary>
         /// <param name="shopId"></param>
         /// <returns></returns>
-        [HttpGet("getByShopId")]
+        [HttpGet("get-by-shop-id")]
         [Authorize]
         public async Task<IActionResult> GetReviewsByShopId([FromQuery] Guid shopId)
         {

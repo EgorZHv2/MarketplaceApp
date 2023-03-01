@@ -8,8 +8,8 @@ namespace Logic.Interfaces
 {
     public interface IFileService
     {
-        Task Upload(string directory,string filename,Stream datastream);
-        Task Delete(string filepath);
-        Task UploadFromWeb(string directory, string filename, string webPath);
+        Task Upload(string directory,string fileName,Stream datastream);
+        Task Delete(string filePath);
+        Task UploadFromWeb(string directory, string fileName, string webPath);
     }
 }

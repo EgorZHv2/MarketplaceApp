@@ -1,6 +1,7 @@
 ﻿using System;
 using Data.Entities;
 using Data.Options;
+using Data.Options.Сonstants;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Options;
 
@@ -31,7 +32,7 @@ namespace Data.Migrations
                 },
                 new object[]
                 {
-                    Guid.NewGuid(),
+                   new Guid(ApplicationConstants.DefaultAdminGuid),
                     "admin@mail.ru",
                    "$2a$10$ntrhHyNh2tckZPClvP9she5i/0H8aKdghEewbb02Kfa3v1CRwACAa",
                     2,

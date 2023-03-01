@@ -29,18 +29,18 @@ namespace Logic.Services
 
         public async Task CreateImage(Guid userId, string webPath, Guid entityId)
         {
-            string fileextension = webPath.Split("/").Last().Split(".").Last();
-            if (!_options.AllowedImageExtensions.Contains(fileextension))
+            var fileExtension = webPath.Split("/").Last().Split(".").Last();
+            if (!_options.AllowedImageExtensions.Contains(fileExtension))
             {
                 throw new WrongExtensionException();
             }
-            string filename = Guid.NewGuid().ToString();
-            string foldername = _options.BaseImagePath + entityId.ToString();
-            await _fileservice.UploadFromWeb(foldername, filename + "." + fileextension, webPath);
-            StaticFileInfoEntity entity = new StaticFileInfoEntity
+            var fileName = Guid.NewGuid().ToString();
+            var folderName = _options.BaseImagePath + entityId.ToString();
+            await _fileservice.UploadFromWeb(folderName, fileName + "." + fileExtension, webPath);
+            var entity = new StaticFileInfoEntity
             {
-                Extension = fileextension,
-                Name = filename,
+                Extension = fileExtension,
+                Name = fileName,
                 ParentEntityId = entityId
             };
             var existing = await _staticFileInfo.GetAllByParentId(entityId);
@@ -53,24 +53,24 @@ namespace Logic.Services
 
         public async Task CreateImage(Guid userId, IFormFile file, Guid entityId)
         {
-            string fileextension = file.FileName.Split(".").Last();
-            if (!_options.AllowedImageExtensions.Contains(fileextension))
+            var fileExtension = file.FileName.Split(".").Last();
+            if (!_options.AllowedImageExtensions.Contains(fileExtension))
             {
                 throw new WrongExtensionException();
             }
 
-            string filename = Guid.NewGuid().ToString();
-            string foldername = _options.BaseImagePath + entityId.ToString();
+            var fileName = Guid.NewGuid().ToString();
+            var folderName = _options.BaseImagePath + entityId.ToString();
             await _fileservice.Upload(
-                foldername,
-                filename + "." + fileextension,
+                folderName,
+                fileName + "." + fileExtension,
                 file.OpenReadStream()
             );
 
-            StaticFileInfoEntity entity = new StaticFileInfoEntity
+            var entity = new StaticFileInfoEntity
             {
-                Extension = fileextension,
-                Name = filename,
+                Extension = fileExtension,
+                Name = fileName,
                 ParentEntityId = entityId
             };
             var existing = await _staticFileInfo.GetAllByParentId(entityId);
@@ -92,24 +92,24 @@ namespace Logic.Services
             }
             foreach (var file in files)
             {
-                string fileextension = file.FileName.Split(".").Last();
-                if (!_options.AllowedImageExtensions.Contains(fileextension))
+                var fileExtension = file.FileName.Split(".").Last();
+                if (!_options.AllowedImageExtensions.Contains(fileExtension))
                 {
                     throw new WrongExtensionException();
                 }
 
-                string filename = Guid.NewGuid().ToString();
-                string foldername = _options.BaseImagePath + entityId.ToString();
+                var fileName = Guid.NewGuid().ToString();
+                var folderName = _options.BaseImagePath + entityId.ToString();
                 await _fileservice.Upload(
-                    foldername,
-                    filename + "." + fileextension,
+                    folderName,
+                    fileName + "." + fileExtension,
                     file.OpenReadStream()
                 );
 
-                StaticFileInfoEntity entity = new StaticFileInfoEntity
+                var entity = new StaticFileInfoEntity
                 {
-                    Extension = fileextension,
-                    Name = filename,
+                    Extension = fileExtension,
+                    Name = fileName,
                     ParentEntityId = entityId
                 };
                 await _staticFileInfo.Create(userId, entity);
@@ -125,18 +125,18 @@ namespace Logic.Services
             }
             foreach (var webPath in webPaths)
             {
-                string fileextension = webPath.Split("/").Last().Split(".").Last();
-                if (!_options.AllowedImageExtensions.Contains(fileextension))
+                var fileExtension = webPath.Split("/").Last().Split(".").Last();
+                if (!_options.AllowedImageExtensions.Contains(fileExtension))
                 {
                     throw new WrongExtensionException();
                 }
-                string filename = Guid.NewGuid().ToString();
-                string foldername = _options.BaseImagePath + entityId.ToString();
-                await _fileservice.UploadFromWeb(foldername, filename + "." +fileextension, webPath);
+                var fileName = Guid.NewGuid().ToString();
+                var folderName = _options.BaseImagePath + entityId.ToString();
+                await _fileservice.UploadFromWeb(folderName, fileName + "." +fileExtension, webPath);
                 StaticFileInfoEntity entity = new StaticFileInfoEntity
                 {
-                    Extension = fileextension,
-                    Name = filename,
+                    Extension = fileExtension,
+                    Name = fileName,
                     ParentEntityId = entityId
                 };
                 await _staticFileInfo.Create(userId, entity);
@@ -146,12 +146,12 @@ namespace Logic.Services
         public async Task DeleteAllImagesByParentId(Guid userId, Guid id)
         {
             var infos = await _staticFileInfo.GetAllByParentId(id);
-            var basefilepath = _options.BaseImagePath + id.ToString() + "/";
+            var baseFilePath = _options.BaseImagePath + id.ToString() + "/";
 
             foreach (var info in infos)
             {
-                var filepath = basefilepath + info.Name + "." + info.Extension;
-                await _fileservice.Delete(filepath);
+                var filePath = baseFilePath + info.Name + "." + info.Extension;
+                await _fileservice.Delete(filePath);
             }
             await _staticFileInfo.HardDeleteMany(infos.ToArray());
         }

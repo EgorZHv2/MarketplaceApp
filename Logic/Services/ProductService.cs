@@ -59,14 +59,10 @@ namespace Logic.Services
             ProductFilterDTO filter
         )
         {
-            var result = new PageModelDTO<ProductDTO>();
             var user = await _userRepository.GetById(userId);
-            var qeryable = _repository.GetFiltered(
-                e => (e.IsActive || user.Role == Data.Enums.Role.Admin)
-            );
-            var pages = await _repository.GetPage(qeryable, pagingModel, filter);
+            var pages = await _repository.GetPage(user,pagingModel, filter);
 
-            result = _mapper.Map<PageModelDTO<ProductDTO>>(pages);
+            var result = _mapper.Map<PageModelDTO<ProductDTO>>(pages);
 
             return result;
         }
@@ -163,72 +159,70 @@ namespace Logic.Services
                 {
                      throw new CategoryNotFoundException();
                 }
-                var tier1category = await _categoryRepository.GetCategoryByName(item.Tier1CategoryName);
-                if(tier1category == default)
+                var tier1Category = await _categoryRepository.GetCategoryByName(item.Tier1CategoryName);
+                if(tier1Category == default)
                 {
                    productCategory =  await _categoryService.Create(userId, new CreateCategoryDTO { Name = item.Tier1CategoryName, ParentCategoryId = null });
                 }
                 else
                 {
-                    productCategory = tier1category.Id;
+                    productCategory = tier1Category.Id;
                 }
                 if (!string.IsNullOrEmpty(item.Tier2CategoryName))
                 {
-                   var tier2category = await _categoryRepository.GetCategoryByName(item.Tier2CategoryName);
-                   if(tier2category == default)
+                   var tier2Category = await _categoryRepository.GetCategoryByName(item.Tier2CategoryName);
+                   if(tier2Category == default)
                    {
                         productCategory = await _categoryService.Create(userId, new CreateCategoryDTO { Name = item.Tier2CategoryName, ParentCategoryId = productCategory });
                    }
                    else
                    {
-                        productCategory = tier2category.Id;
+                        productCategory = tier2Category.Id;
                    }
 
                 }
                 if (!string.IsNullOrEmpty(item.Tier3CategoryName))
                 {
-                   var tier3category = await _categoryRepository.GetCategoryByName(item.Tier3CategoryName);
-                   if(tier3category == default)
+                   var tier3Category = await _categoryRepository.GetCategoryByName(item.Tier3CategoryName);
+                   if(tier3Category == default)
                    {
                         productCategory = await _categoryService.Create(userId, new CreateCategoryDTO { Name = item.Tier3CategoryName, ParentCategoryId = productCategory });
                    }
                    else
                    {
-                        productCategory = tier3category.Id;
+                        productCategory = tier3Category.Id;
                    }
 
                 }
                 if (!string.IsNullOrEmpty(item.Tier4CategoryName))
                 {
-                   var tier4category = await _categoryRepository.GetCategoryByName(item.Tier4CategoryName);
-                   if(tier4category == default)
+                   var tier4Category = await _categoryRepository.GetCategoryByName(item.Tier4CategoryName);
+                   if(tier4Category == default)
                    {
                         productCategory = await _categoryService.Create(userId, new CreateCategoryDTO { Name = item.Tier4CategoryName, ParentCategoryId = productCategory });
                    }
                    else
                    {
-                        productCategory = tier4category.Id;
+                        productCategory = tier4Category.Id;
                    }
 
                 }
-                Country country = default(Country);
+                var country = default(Country);
                 try
                 {
-                        country = (Country)Enum.Parse(typeof(Country), item.Country);
+                   country = (Country)Enum.Parse(typeof(Country), item.Country);
                 }
                 catch
                 {
-                        throw new CountryNotFoundException();
+                     throw new CountryNotFoundException();
                 }
                 var existingProduct = await _repository.GetByPartNumber(item.PartNumber.Value);
                 if (existingProduct == default)
                 {
                     var product = _mapper.Map<ProductEntity>(item);
                     product.CategoryId = productCategory;
-                    
                     product.Country = country;
                     await _repository.Create(userId, product);
-
                     await _imageService.CreateManyImages(userId, item.Photos, product.Id);
                 }
                 else

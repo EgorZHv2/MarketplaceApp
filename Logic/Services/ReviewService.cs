@@ -8,14 +8,19 @@ using Logic.Interfaces;
 
 namespace Logic.Services
 {
-    public class ReviewService : BaseService<ReviewEntity, ReviewDTO, CreateReviewDTO, UpdateReviewDTO, IReviewRepository>, IReviewService
+    public class ReviewService
+        : BaseService<ReviewEntity, ReviewDTO, CreateReviewDTO, UpdateReviewDTO, IReviewRepository>,
+            IReviewService
     {
         private IUserRepository _userRepository;
         private IShopRepository _shopRepository;
 
-        public ReviewService(IReviewRepository repository, IMapper mapper,
+        public ReviewService(
+            IReviewRepository repository,
+            IMapper mapper,
             IUserRepository userRepository,
-            IShopRepository shopRepository) : base(repository, mapper)
+            IShopRepository shopRepository
+        ) : base(repository, mapper)
         {
             _userRepository = userRepository;
             _shopRepository = shopRepository;
@@ -26,9 +31,12 @@ namespace Logic.Services
             var user = await _userRepository.GetById(userId);
             var list = _repository
                 .GetReviewsByShopId(shopId)
-                .Where(e => (e.IsActive || user.Id == e.BuyerId || user.Role == Data.Enums.Role.Admin)).ToList();
-            var result = new List<ReviewDTO>();
-            result = _mapper.Map<List<ReviewDTO>>(list);
+                .Where(
+                    e => (e.IsActive || user.Id == e.BuyerId || user.Role == Data.Enums.Role.Admin)
+                )
+                .ToList();
+
+            var result = _mapper.Map<List<ReviewDTO>>(list);
             return result;
         }
 
@@ -39,8 +47,8 @@ namespace Logic.Services
             {
                 throw new ShopNotFoundException();
             }
-            var entity = new ReviewEntity();
-            entity = _mapper.Map<ReviewEntity>(createDTO);
+
+            var entity = _mapper.Map<ReviewEntity>(createDTO);
             entity.BuyerId = userId;
             var result = await _repository.Create(userId, entity);
             return result;
@@ -48,11 +56,10 @@ namespace Logic.Services
 
         public async Task<PageModelDTO<ReviewDTO>> GetPage(Guid userId, PaginationDTO pagingModel)
         {
-            var result = new PageModelDTO<ReviewDTO>();
             var user = await _userRepository.GetById(userId);
-             var qeryable = _repository.GetFiltered(e => (e.IsActive || e.BuyerId == userId || user.Role == Data.Enums.Role.Admin));
-            var pages = await _repository.GetPage(qeryable, pagingModel);
-            result = _mapper.Map<PageModelDTO<ReviewDTO>>(pages);
+
+            var pages = await _repository.GetPage(user, pagingModel);
+            var result = _mapper.Map<PageModelDTO<ReviewDTO>>(pages);
             return result;
         }
     }

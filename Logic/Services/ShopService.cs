@@ -74,9 +74,8 @@ namespace Logic.Services
             {
                 throw new WrongINNException();
             }
-            ShopEntity shop = new ShopEntity();
 
-            shop = _mapper.Map<ShopEntity>(createDTO);
+            var shop = _mapper.Map<ShopEntity>(createDTO);
 
             var result = await _repository.Create(userId, shop);
 
@@ -303,13 +302,13 @@ namespace Logic.Services
             {
                 throw new UserNotFoundException();
             }
-            var result = new PageModelDTO<ShopDTO>();
+
             var list = await _usersFavoriteShops.GetFavsPageByUserId(
                 userId,
                 filterPaging.PageNumber,
                 filterPaging.PageSize
             );
-            result = _mapper.Map<PageModelDTO<ShopDTO>>(list);
+            var result = _mapper.Map<PageModelDTO<ShopDTO>>(list);
             return result;
         }
 
@@ -329,14 +328,10 @@ namespace Logic.Services
             ShopFilterDTO filter
         )
         {
-            var result = new PageModelDTO<ShopDTO>();
             var user = await _userRepository.GetById(userId);
-            var qeryable = _repository.GetFiltered(
-                e => (e.IsActive || e.SellerId == userId || user.Role == Data.Enums.Role.Admin)
-            );
-            var pages = await _repository.GetPage(qeryable, pagingModel, filter);
+            var pages = await _repository.GetPage(user, pagingModel, filter);
             string basepath = _options.BaseImagePath;
-            result = _mapper.Map<PageModelDTO<ShopDTO>>(pages);
+            var result = _mapper.Map<PageModelDTO<ShopDTO>>(pages);
             foreach (var shop in result.Values)
             {
                 var fileinfo = await _staticFileInfoRepository.GetByParentId(shop.Id);

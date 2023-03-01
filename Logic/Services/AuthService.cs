@@ -36,11 +36,7 @@ namespace Logic.Services
             _emailService = emailService;
         }
 
-        public async Task VerifyEmail(
-            string email,
-            string code
-            
-        )
+        public async Task VerifyEmail(string email, string code)
         {
             var user = await _userRepository.GetUserByEmail(email);
             if (user == null)
@@ -55,10 +51,7 @@ namespace Logic.Services
             await _userRepository.Update(user.Id, user);
         }
 
-        public async Task<string> Login(
-            LoginDTO model
-            
-        )
+        public async Task<string> Login(LoginDTO model)
         {
             var user = await _userRepository.GetUserByEmail(model.Email);
             if (user == null)
@@ -77,35 +70,26 @@ namespace Logic.Services
             return result;
         }
 
-        public async Task Register(
-            RegistrationDTO model
-            
-        )
+        public async Task Register(RegistrationDTO model)
         {
             var dbuser = await _userRepository.GetUserByEmail(model.Email);
             if (dbuser != null)
             {
                 throw new EmailInUseException();
             }
-            UserEntity user = new UserEntity();
-           
-                user = _mapper.Map<UserEntity>(model);
-           
             string code = _stringGeneratorService.Generate(6);
+            var user = _mapper.Map<UserEntity>(model);
             user.Password = _hashService.HashPassword(model.Password);
             user.EmailConfirmationCode = _hashService.HashPassword(code);
             _emailService.SendEmail(
                 user.Email,
                 "MarketPlaceApp",
                 $"Your verification code = {code}"
-                
             );
             await _userRepository.Create(Guid.Empty, user);
         }
 
-        public async Task ChangePassword(Guid userId, ChangePasswordDTO model
-           
-       )
+        public async Task ChangePassword(Guid userId, ChangePasswordDTO model)
         {
             var user = await _userRepository.GetById(userId);
             if (user == null)

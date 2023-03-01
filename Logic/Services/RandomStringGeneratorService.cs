@@ -8,7 +8,7 @@ namespace WebAPi.Services
 
         public string Generate(int count)
         {
-            string password = string.Empty;
+            var password = string.Empty;
             for (int i = 0; i < count; i++)
             {
                 switch (rnd.Next(1, 4))

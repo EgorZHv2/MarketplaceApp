@@ -18,7 +18,6 @@ namespace Logic.Services
         public UserService(
             IUserRepository repository,
             IMapper mapper,
-            IUserRepository userRepository,
             IImageService imageService,
             IHashService hashService
         ) : base(repository, mapper)
@@ -27,11 +26,7 @@ namespace Logic.Services
             _hashService = hashService;
         }
 
-        public override async Task<UpdateUserDTO> Update(
-            Guid userId,
-            UpdateUserDTO model
-            
-        )
+        public override async Task<UpdateUserDTO> Update(Guid userId, UpdateUserDTO model)
         {
             var user = await _repository.GetById(userId);
             if (user == null)
@@ -46,28 +41,16 @@ namespace Logic.Services
             return result;
         }
 
-        public async Task<PageModelDTO<UserDTO>> GetPage(
-            Guid userId,
-            PaginationDTO pagingModel
-            
-        )
+        public async Task<PageModelDTO<UserDTO>> GetPage(Guid userId, PaginationDTO pagingModel)
         {
-            var result = new PageModelDTO<UserDTO>();
             var user = await _repository.GetById(userId);
-            var qeryable = _repository.GetFiltered(e => (e.IsActive || user.Role == Data.Enums.Role.Admin));
-            var pages = await _repository.GetPage(qeryable,pagingModel);
-          
-                result = _mapper.Map<PageModelDTO<UserDTO>>(pages);
-           
-          
+            var pages = await _repository.GetPage(user, pagingModel);
+            var result = _mapper.Map<PageModelDTO<UserDTO>>(pages);
+
             return result;
         }
 
-        public async Task<Guid> CreateAdmin(
-            Guid userId,
-            CreateAdminDTO model
-            
-        )
+        public async Task<Guid> CreateAdmin(Guid userId, CreateAdminDTO model)
         {
             var existing = await _repository.GetUserByEmail(model.Email);
             if (existing != null)
@@ -77,10 +60,8 @@ namespace Logic.Services
                     "This user already exists"
                 );
             }
-            var user = new UserEntity();
 
-            user = _mapper.Map<UserEntity>(model);
-
+            var user = _mapper.Map<UserEntity>(model);
             user.IsEmailConfirmed = true;
             user.Role = Data.Enums.Role.Admin;
             user.Password = _hashService.HashPassword(model.Password);

@@ -7,6 +7,8 @@ namespace Data.IRepositories
 {
     public interface IShopRepository : IBaseRepository<ShopEntity>
     {
-        public Task<PageModelDTO<ShopEntity>> GetPage(IQueryable<ShopEntity> qeryable, PaginationDTO pagination, ShopFilterDTO filter);
+        Task<PageModelDTO<ShopEntity>> GetPage(UserEntity user,  PaginationDTO pagination,
+            ShopFilterDTO filter);
+
     }
 }

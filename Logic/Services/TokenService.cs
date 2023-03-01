@@ -32,7 +32,7 @@ namespace WebAPi.Services
             };
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.UtcNow.AddHours(1),
+                expires: DateTime.UtcNow.AddMinutes(_options.JwtTimeInMinutes),
                 signingCredentials: credentials
             );
             return tokenHandler.WriteToken(token);
@@ -40,11 +40,10 @@ namespace WebAPi.Services
 
         public List<Claim> DecryptToken(string token)
         {
-            var result = new List<Claim>();
+            
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.JwtAuthKey));
             var jwt = tokenHandler.ReadJwtToken(token);
-            result = jwt.Claims.ToList();
+            var result = jwt.Claims.ToList();
             return result;
         }
     }

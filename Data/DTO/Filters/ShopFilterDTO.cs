@@ -11,10 +11,9 @@ namespace Data.DTO.Filters
     {
         
         public string? SearchQuery { get; set; }
-        public Guid? Id { get; set; }
-        public Guid? CategoryId { get; set; }
-        public Guid? TypeId { get; set; }
-        public Guid? DeliveryTypeId { get; set; }
-        public Guid? PaymentMethodId { get; set; }
+        public List<Guid> CategoriesIds { get; set; } = new List<Guid>();
+        public List<Guid> TypesIds { get; set; } = new List<Guid>();
+        public List<Guid> DeliveryTypesIds { get; set; } = new List<Guid>();
+        public List<Guid> PaymentMethodsIds { get; set; }= new List<Guid>();
     }
 }

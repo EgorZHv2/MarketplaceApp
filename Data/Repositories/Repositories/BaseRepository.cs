@@ -16,10 +16,7 @@ namespace Data.Repositories.Repositories
         {
             _context = context;
         }
-        public IQueryable<TEntity> GetFiltered(Expression<Func<TEntity, bool>> predicate)
-        {
-            return _dbset.Where(predicate);
-        }
+        
         public async Task<TEntity?> GetById(Guid Id)
         {
             return await _dbset.FirstOrDefaultAsync(e => e.Id == Id);
@@ -30,9 +27,13 @@ namespace Data.Repositories.Repositories
             return _dbset.Where(e => ids.Contains(e.Id));
         }
 
-        public async Task<PageModelDTO<TEntity>> GetPage(IQueryable<TEntity> queryable, PaginationDTO pagination)
+        public async Task<PageModelDTO<TEntity>> GetPage(PaginationDTO pagination,IQueryable<TEntity> queryable = null)
         {
-           
+           if(queryable == null)
+           {
+              queryable = _dbset.AsNoTracking();
+              queryable = queryable.Where(e => e.IsActive);
+           }
             
             return  await queryable.ToPageModelAsync(pagination.PageNumber, pagination.PageSize);
         }

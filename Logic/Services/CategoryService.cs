@@ -2,23 +2,35 @@
 using Data.DTO.Category;
 using Data.Entities;
 using Data.IRepositories;
+using Data.Options;
 using Logic.Exceptions;
 using Logic.Interfaces;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System.ComponentModel.Design;
 
 namespace Logic.Services
 {
-    public class CategoryService : BaseDictionaryService<CategoryEntity, CategoryDTO, CreateCategoryDTO, UpdateCategoryDTO, ICategoryRepository>, ICategoryService
+    public class CategoryService
+        : BaseDictionaryService<
+            CategoryEntity,
+            CategoryDTO,
+            CreateCategoryDTO,
+            UpdateCategoryDTO,
+            ICategoryRepository
+        >,
+            ICategoryService
     {
-        private readonly IConfiguration _configuration;
-        public CategoryService(ICategoryRepository repository, 
+        private readonly ApplicationOptions _options;
+
+        public CategoryService(
+            ICategoryRepository repository,
             IMapper mapper,
-            IConfiguration configuration)
-            : base(repository, mapper)
+            IOptions<ApplicationOptions> options
+        ) : base(repository, mapper)
         {
-            _configuration = configuration;
-                }
+            _options = options.Value;
+        }
 
         public async Task<bool> CheckParentCategory(Guid categoryId, Guid parentId)
         {
@@ -27,16 +39,15 @@ namespace Logic.Services
                 return false;
             }
             var category = await _repository.GetById(categoryId);
-            var parentcategory = await _repository.GetById(parentId);
+            var parentCategory = await _repository.GetById(parentId);
             if (category == null)
             {
                 throw new CategoryNotFoundException();
             }
-            if (parentcategory == null)
+            if (parentCategory == null)
             {
                 throw new CategoryNotFoundException();
             }
-
             var childrenCategories = await _repository.GetCategoriesByParentId(categoryId);
             if (childrenCategories == null || !childrenCategories.Any())
             {
@@ -50,9 +61,8 @@ namespace Logic.Services
 
         public async Task<List<CategoryDTO>> GetCategoryTree()
         {
-            var result = new List<CategoryDTO>();
             var list = await _repository.GetCategoriesWithoutParentId();
-            result = _mapper.Map<List<CategoryDTO>>(list);
+            var result = _mapper.Map<List<CategoryDTO>>(list);
             result = await Fill(result);
             return result;
         }
@@ -61,7 +71,11 @@ namespace Logic.Services
         {
             foreach (var item in level)
             {
-                item.Categories.AddRange(_mapper.Map<List<CategoryDTO>>(await _repository.GetCategoriesByParentId(item.Id)));
+                item.Categories.AddRange(
+                    _mapper.Map<List<CategoryDTO>>(
+                        await _repository.GetCategoriesByParentId(item.Id)
+                    )
+                );
                 await Fill(item.Categories);
             }
             return level;
@@ -86,77 +100,55 @@ namespace Logic.Services
             }
             return result;
         }
+
         public override async Task<Guid> Create(Guid userId, CreateCategoryDTO createDTO)
         {
-            var category = new CategoryEntity();
             var parent = new CategoryEntity();
             if (createDTO.ParentCategoryId != null)
             {
                 parent = await _repository.GetById(createDTO.ParentCategoryId.Value);
             }
-            category = _mapper.Map<CategoryEntity>(createDTO);
-            string? maxtierstr = _configuration.GetSection("MaxCategoryTier").Value;
-            int maxtier;
-            if(maxtierstr == "null" || string.IsNullOrEmpty(maxtierstr))
+            var category = _mapper.Map<CategoryEntity>(createDTO);
+            if (parent != null)
             {
-                maxtier = int.MaxValue;
-            }
-            else
-            {
-                maxtier = Convert.ToInt32(maxtierstr);
-            }
-            if(parent != null)
-            {
-                if(parent.Tier >= maxtier)
+                if (parent.Tier >= _options.MaxCategoryTier)
                 {
-                    throw new CategoryTierException(maxtier);
+                    throw new CategoryTierException(_options.MaxCategoryTier);
                 }
                 else
                 {
-                    category.Tier = parent.Tier+1;
+                    category.Tier = parent.Tier + 1;
                 }
             }
             var result = await _repository.Create(userId, category);
             return result;
-           
         }
+
         public async override Task<UpdateCategoryDTO> Update(Guid userId, UpdateCategoryDTO DTO)
         {
-            CategoryEntity parent = new CategoryEntity();
+            var parent = new CategoryEntity();
             if (DTO.ParentCategoryId != null)
             {
-                parent = await _repository.GetById(DTO.ParentCategoryId.Value);     
+                parent = await _repository.GetById(DTO.ParentCategoryId.Value);
                 if (!await CheckParentCategory(DTO.Id, DTO.ParentCategoryId.Value))
                 {
                     throw new CategoryParentException();
                 }
-            }       
-            var category = new CategoryEntity();
-            category = _mapper.Map<CategoryEntity>(DTO);
-            string? maxtierstr = _configuration.GetSection("MaxCategoryTier").Value;
-            int maxtier;
-            if(maxtierstr == "null" || string.IsNullOrEmpty(maxtierstr))
-            {
-                maxtier = int.MaxValue;
             }
-            else
+            var category = _mapper.Map<CategoryEntity>(DTO);
+            if (parent != null)
             {
-                maxtier = Convert.ToInt32(maxtierstr);
-            }
-            if(parent != null)
-            {
-                if(parent.Tier >= maxtier)
+                if (parent.Tier >= _options.MaxCategoryTier)
                 {
-                    throw new CategoryTierException(maxtier);
+                    throw new CategoryTierException(_options.MaxCategoryTier);
                 }
                 else
                 {
-                    category.Tier = parent.Tier+1;
+                    category.Tier = parent.Tier + 1;
                 }
             }
             await _repository.Update(userId, category);
             return DTO;
-            
         }
     }
 }

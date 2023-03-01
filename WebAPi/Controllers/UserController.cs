@@ -36,7 +36,7 @@ namespace WebAPi.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [HttpPost("createAdmin")]
+        [HttpPost("create-admin")]
         [Authorize(Roles = nameof(Data.Enums.Role.Admin))]
         public async Task<IActionResult> CreateAdmin([FromBody] CreateAdminDTO model)
         {

@@ -40,13 +40,11 @@ namespace Data.Repositories.Repositories
         }
 
         public async Task<PageModelDTO<ShopEntity>> GetPage(
-            IQueryable<ShopEntity> queryable,
+           UserEntity user,
             PaginationDTO pagination,
-            ShopFilterDTO filter
-            
-        )
+            ShopFilterDTO filter)
         {
-            queryable = queryable
+            var queryable = _dbset.Where(e=>e.IsActive || user.Role == Enums.Role.Admin || e.SellerId == user.Id)
                 .Include(e => e.Categories)
                 .Include(e => e.DeliveryTypes)
                 .Include(e => e.PaymentMethods)
@@ -56,34 +54,32 @@ namespace Data.Repositories.Repositories
                 ? queryable.Where(e => e.Title.Contains(filter.SearchQuery) || e.Description.Contains(filter.SearchQuery))
                 : queryable;
           
-            queryable = filter.Id is not null ? queryable.Where(e => e.Id == filter.Id) : queryable;
+          
 
-            queryable = filter.DeliveryTypeId is not null
-                ? queryable.Where(e => e.DeliveryTypes.Any(e => e.Id == filter.DeliveryTypeId))
+            queryable = filter.DeliveryTypesIds.Any() 
+                ? queryable.Where(e => e.DeliveryTypes.Any(e => filter.DeliveryTypesIds.Contains(e.Id)))
                 : queryable;
-            queryable = filter.PaymentMethodId is not null
-                ? queryable.Where(e => e.PaymentMethods.Any(e => e.Id == filter.PaymentMethodId))
+            queryable = filter.PaymentMethodsIds.Any()
+                ? queryable.Where(e => e.PaymentMethods.Any(e => filter.PaymentMethodsIds.Contains(e.Id)))
                 : queryable;
-            queryable = filter.TypeId is not null
-                ? queryable.Where(e => e.Types.Any(e => e.Id == filter.TypeId))
+            queryable = filter.TypesIds.Any() 
+                ? queryable.Where(e => e.Types.Any(e => filter.TypesIds.Contains(e.Id)))
             : queryable;
 
-            if(filter.CategoryId is not null)
+            if(filter.CategoriesIds.Any())
             {
-                List<Guid> guids = await FillCategoriesGuidList(filter.CategoryId.Value);
+                var guids = new List<Guid>();
+                foreach (var item in filter.CategoriesIds)
+                {
+                  guids.AddRange(await FillCategoriesGuidList(item));
+                }
+                guids = guids.Distinct().ToList();
                 queryable = queryable.Where(e => e.Categories.Any(e => guids.Contains(e.Id)));
                
             }
-           
-            
-            
 
-            var result = await queryable.ToPageModelAsync(
-                   pagination.PageNumber,
-                   pagination.PageSize
-                   
-               );
-            return result;          
+            
+            return await GetPage(pagination,queryable);          
         }
         public async Task<List<Guid>> FillCategoriesGuidList(Guid filterCategoryId)
         {
