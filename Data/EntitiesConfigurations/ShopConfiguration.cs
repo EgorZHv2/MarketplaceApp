@@ -74,6 +74,22 @@ namespace Data.EntitiesConfigurations
                         .HasForeignKey(shopType => shopType.TypeId);
                     shopType.ToTable("ShopTypes");
                 });
+
+            entityTypeBuilder
+                .HasMany<ProductEntity>(shop => shop.Products)
+                .WithMany(product => product.Shops)
+                .UsingEntity<ShopProductEntity>(shopProduct =>
+                {
+                    shopProduct.HasOne(shopProduct => shopProduct.Shop)
+                    .WithMany(shop=>shop.ShopProducts)
+                    .HasForeignKey(shopProduct=> shopProduct.ShopId);
+
+                    shopProduct.HasOne(shopProduct => shopProduct.Product)
+                    .WithMany(product=>product.ShopProducts)
+                    .HasForeignKey(shopProduct=> shopProduct.ProductId);
+
+                    shopProduct.ToTable("ShopProducts");
+                });
         }
     }
 }
