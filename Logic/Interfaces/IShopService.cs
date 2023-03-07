@@ -3,6 +3,7 @@ using Data.DTO.Filters;
 using Data.DTO.Shop;
 using Data.Entities;
 using Data.IRepositories;
+using Microsoft.AspNetCore.Http;
 
 namespace Logic.Interfaces
 {
@@ -15,5 +16,6 @@ namespace Logic.Interfaces
         public Task DeleteShopFromFavorites(Guid userId, Guid shopId);
 
         public Task<PageModelDTO<ShopDTO>> GetPage(Guid userId, PaginationDTO pagingModel, ShopFilterDTO filter);
+        public Task AddProductsToShopFromXML(Guid shopId, IFormFile xmlFile);
     }
 }

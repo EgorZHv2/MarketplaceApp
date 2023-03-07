@@ -1,15 +1,19 @@
 ﻿using AutoMapper;
 using Data.DTO;
 using Data.DTO.Filters;
+using Data.DTO.ProductXmlModels;
 using Data.DTO.Shop;
 using Data.Entities;
 using Data.IRepositories;
 using Data.Options;
 using Logic.Exceptions;
 using Logic.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
+using System.Xml;
+using System.Xml.Serialization;
 using WebAPi.Interfaces;
 
 namespace Logic.Services
@@ -32,6 +36,8 @@ namespace Logic.Services
         private ITypeRepository _typeRepository;
         private IDeliveryTypeRepository _deliveryTypeRepository;
         private IPaymentMethodRepository _paymentMethodRepository;
+        private IProductRepository _productRepository;
+        private IShopProductRepository _shopProductRepository;
 
         public ShopService(
             IShopRepository repository,
@@ -49,7 +55,11 @@ namespace Logic.Services
             ICategoryRepository categoryRepository,
             ITypeRepository typeRepository,
             IDeliveryTypeRepository deliveryTypeRepository,
-            IPaymentMethodRepository paymentMethodRepository
+            IPaymentMethodRepository paymentMethodRepository,
+            IProductRepository productRepository
+,
+            IShopProductRepository shopProductRepository
+
         ) : base(repository, mapper)
         {
             _iNNService = iNNService;
@@ -66,6 +76,8 @@ namespace Logic.Services
             _typeRepository = typeRepository;
             _deliveryTypeRepository = deliveryTypeRepository;
             _paymentMethodRepository = paymentMethodRepository;
+            _productRepository = productRepository;
+            _shopProductRepository = shopProductRepository;
         }
 
         public override async Task<Guid> Create(Guid userId, CreateShopDTO createDTO)
@@ -347,6 +359,43 @@ namespace Logic.Services
                 }
             }
             return result;
+        }
+
+        public async Task AddProductsToShopFromXML(Guid shopId,IFormFile xmlFile)
+        {
+            var shop = _repository.GetById(shopId); 
+            if (shop == null) 
+            {
+                throw new ShopNotFoundException();
+            }
+            var shopProducts = new List<ShopProductEntity>();
+            var list = new List<Offer>();
+            var settings = new XmlReaderSettings();
+            settings.ProhibitDtd = false;
+            using (var reader = XmlReader.Create(xmlFile.OpenReadStream(), settings))
+            {
+                var xmlSerializer = new XmlSerializer(typeof(Shop));
+                list.AddRange((xmlSerializer.Deserialize(reader) as Shop).offers);
+            }
+            foreach (var item in list)
+            {
+                var product = await _productRepository.GetByPartNumber(item.vendorCode);
+                if (product == null)
+                {
+                    throw new ProductNotFoundException();
+                }
+                shopProducts.Add(new ShopProductEntity
+                {
+                    ShopId = shopId,
+                    ProductId = product.Id,
+                    Quantity = item.count,
+                    Price = item.price,
+                    Description = item.description
+                });
+            }
+            await _shopProductRepository.CreateRange(shopProducts.ToArray());
+          
+            
         }
     }
 }
