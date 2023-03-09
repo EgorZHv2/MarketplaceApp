@@ -49,13 +49,13 @@ namespace Data.Repositories.Repositories
                 .Include(e => e.DeliveryTypes)
                 .Include(e => e.PaymentMethods)
                 .Include(e => e.Types)
+                .Include(e=>e.Products)
+                .Include(e=>e.ShopProducts)
                 .AsNoTracking();
             queryable = filter.SearchQuery is not null
                 ? queryable.Where(e => e.Title.Contains(filter.SearchQuery) || e.Description.Contains(filter.SearchQuery))
                 : queryable;
           
-          
-
             queryable = filter.DeliveryTypesIds.Any() 
                 ? queryable.Where(e => e.DeliveryTypes.Any(e => filter.DeliveryTypesIds.Contains(e.Id)))
                 : queryable;
@@ -65,6 +65,10 @@ namespace Data.Repositories.Repositories
             queryable = filter.TypesIds.Any() 
                 ? queryable.Where(e => e.Types.Any(e => filter.TypesIds.Contains(e.Id)))
             : queryable;
+
+            queryable = queryable.Where(e=>e.ShopProducts.Any(e=>e.Price >= filter.MinPrice && e.Price <= filter.MaxPrice));
+
+            queryable = filter.ProductId is not null ? queryable.Where(e => e.Products.Any(e => e.Id == filter.ProductId)) : queryable;
 
             if(filter.CategoriesIds.Any())
             {

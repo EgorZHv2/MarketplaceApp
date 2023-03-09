@@ -92,7 +92,7 @@ namespace WebAPi.Controllers
 
 
         [HttpPost("add-products-from-xml")]
-        //[Authorize(Roles = nameof(Data.Enums.Role.Admin))]
+        [Authorize(Roles = nameof(Data.Enums.Role.Admin))]
         public async Task<IActionResult> UploadFromExcel(Guid shopId,[FromForm]UploadFileDTO dto)
         {
             await _service.AddProductsToShopFromXML(shopId, dto.File);

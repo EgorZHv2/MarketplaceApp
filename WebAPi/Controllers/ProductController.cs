@@ -84,7 +84,7 @@ namespace WebAPi.Controllers
         /// <param name="filter"></param>
         /// <returns></returns>
         [Authorize(Roles = nameof(Data.Enums.Role.Admin))]
-        [HttpGet]
+        [HttpGet("all-products")]
         public async Task<IActionResult> GetPage([FromQuery] PaginationDTO model, [FromQuery] ProductFilterDTO filter)
         {
             var result = await _service.GetPage(UserId, model,filter);
@@ -97,6 +97,14 @@ namespace WebAPi.Controllers
         {
             await _service.AddProductsFromExcelFile(UserId, dto.File);
             return Ok();
+        }
+
+        [Authorize]
+        [HttpGet("products-in-shops")]
+        public async Task<IActionResult> GetProductsInShopsPage([FromQuery] PaginationDTO model, [FromQuery] ShopProductFilterDTO filter)
+        {
+            var result = await _service.GetProductsInShopsPage(UserId, model,filter);
+            return Ok(result);
         }
 
     }

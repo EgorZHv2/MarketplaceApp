@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Data.Enums;
+using Data.DTO.Product;
 
 namespace Data.IRepositories
 {
@@ -15,5 +16,9 @@ namespace Data.IRepositories
         Task<PageModelDTO<ProductEntity>> GetPage(UserEntity user, PaginationDTO pagination,
          ProductFilterDTO filter);
         Task<ProductEntity> GetByPartNumber(int partNumber);
+
+        Task<PageModelDTO<ProductEntityWithPriceDTO>> GetProductsInShopsPage(UserEntity user, PaginationDTO pagination,
+          ShopProductFilterDTO filter);
+        
     }
 }

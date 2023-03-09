@@ -16,5 +16,6 @@ namespace Logic.Interfaces
     {
         Task<PageModelDTO<ProductDTO>> GetPage(Guid userId, PaginationDTO pagingModel, ProductFilterDTO filter);
         Task AddProductsFromExcelFile(Guid userId, IFormFile excelFile);
+        Task<PageModelDTO<ProductDTOWithPrice>> GetProductsInShopsPage(Guid userId,PaginationDTO pagingModel,ShopProductFilterDTO filter);
     }
 }

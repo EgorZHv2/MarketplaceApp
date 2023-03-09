@@ -45,6 +45,19 @@ namespace WebAPi.Mappers
             CreateMap<CreateProductDTO, ProductEntity>();
             CreateMap<UpdateProductDTO, ProductEntity>();
             CreateMap<ExcelProductModel, ProductEntity>().ForMember(e=>e.Country,opt => opt.Ignore());
+            CreateMap<ProductEntityWithPriceDTO, ProductDTOWithPrice>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(e => e.Product.Id))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(e => e.Product.Name))
+                .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(e => e.Product.CategoryId))
+                .ForMember(dest => dest.PartNumber, opt => opt.MapFrom(e => e.Product.PartNumber))
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(e => e.Product.Description))
+                .ForMember(dest => dest.Weight, opt => opt.MapFrom(e => e.Product.Weight))
+                .ForMember(dest => dest.Width, opt => opt.MapFrom(e => e.Product.Width))
+                .ForMember(dest => dest.Height, opt => opt.MapFrom(e => e.Product.Height))
+                .ForMember(dest => dest.Depth, opt => opt.MapFrom(e => e.Product.Depth))
+                .ForMember(dest => dest.Price, opt => opt.MapFrom(e => e.Price))
+                .ForMember(dest => dest.Country, opt => opt.MapFrom(e => e.Product.Country));
+            CreateMap<PageModelDTO<ProductEntityWithPriceDTO>, PageModelDTO<ProductDTOWithPrice>>();
 
             CreateMap<ChangePasswordDTO, UserEntity>().ReverseMap();
             CreateMap<CreateAdminDTO, UserEntity>().ReverseMap();

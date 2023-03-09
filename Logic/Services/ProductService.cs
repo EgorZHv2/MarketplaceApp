@@ -66,7 +66,19 @@ namespace Logic.Services
 
             return result;
         }
+        public async Task<PageModelDTO<ProductDTOWithPrice>> GetProductsInShopsPage(
+            Guid userId,
+            PaginationDTO pagingModel,
+            ShopProductFilterDTO filter
+        )
+        {
+            var user = await _userRepository.GetById(userId);
+            var pages = await _repository.GetProductsInShopsPage(user,pagingModel, filter);
+            
+            var result = _mapper.Map<PageModelDTO<ProductDTOWithPrice>>(pages);
 
+            return result;
+        }
         public override async Task<Guid> Create(Guid userId, CreateProductDTO createDTO)
         {
             var category = _categoryRepository.GetById(createDTO.CategoryId);

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Data.DTO.Filters
 {
-    public class ProductFilterDTO
+    public class ShopProductFilterDTO
     {
         public string? SearchQuery { get; set; }
         public Country? Country { get; set; }
@@ -20,5 +20,8 @@ namespace Data.DTO.Filters
         public double? MinDepth { get; set; } = 0;
         public double? MaxDepth { get; set; } = double.MaxValue;
         public Guid? ShopId { get; set; }
+        public decimal? MinPrice { get; set; } = 0;
+        public decimal? MaxPrice { get; set; } = decimal.MaxValue;
+       
     }
 }
