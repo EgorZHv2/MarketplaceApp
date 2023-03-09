@@ -66,9 +66,7 @@ namespace Data.Repositories.Repositories
                 ? queryable.Where(e => e.Types.Any(e => filter.TypesIds.Contains(e.Id)))
             : queryable;
 
-            queryable = queryable.Where(e=>e.ShopProducts.Any(e=>e.Price >= filter.MinPrice && e.Price <= filter.MaxPrice));
-
-            queryable = filter.ProductId is not null ? queryable.Where(e => e.Products.Any(e => e.Id == filter.ProductId)) : queryable;
+           queryable = filter.ProductId is not null ? queryable.Where(e => e.Products.Any(e => e.Id == filter.ProductId)) : queryable;
 
             if(filter.CategoriesIds.Any())
             {

@@ -38,6 +38,7 @@ namespace Logic.Services
         private IPaymentMethodRepository _paymentMethodRepository;
         private IProductRepository _productRepository;
         private IShopProductRepository _shopProductRepository;
+        private IXMLService _XMLService;
 
         public ShopService(
             IShopRepository repository,
@@ -56,9 +57,9 @@ namespace Logic.Services
             ITypeRepository typeRepository,
             IDeliveryTypeRepository deliveryTypeRepository,
             IPaymentMethodRepository paymentMethodRepository,
-            IProductRepository productRepository
-,
-            IShopProductRepository shopProductRepository
+            IProductRepository productRepository,
+            IShopProductRepository shopProductRepository,
+            IXMLService XMLService
 
         ) : base(repository, mapper)
         {
@@ -78,6 +79,7 @@ namespace Logic.Services
             _paymentMethodRepository = paymentMethodRepository;
             _productRepository = productRepository;
             _shopProductRepository = shopProductRepository;
+            _XMLService = XMLService;
         }
 
         public override async Task<Guid> Create(Guid userId, CreateShopDTO createDTO)
@@ -368,32 +370,44 @@ namespace Logic.Services
             {
                 throw new ShopNotFoundException();
             }
-            var shopProducts = new List<ShopProductEntity>();
-            var list = new List<Offer>();
-            var settings = new XmlReaderSettings();
-            settings.ProhibitDtd = false;
-            using (var reader = XmlReader.Create(xmlFile.OpenReadStream(), settings))
-            {
-                var xmlSerializer = new XmlSerializer(typeof(Shop));
-                list.AddRange((xmlSerializer.Deserialize(reader) as Shop).offers);
-            }
-            foreach (var item in list)
+            var onCreation = new List<ShopProductEntity>();
+            var onUpdation = new List<ShopProductEntity>();
+            var deserialized = _XMLService.Deserialize<Shop> (xmlFile);
+            foreach (var item in deserialized.offers)
             {
                 var product = await _productRepository.GetByPartNumber(item.vendorCode);
                 if (product == null)
                 {
                     throw new ProductNotFoundException();
                 }
-                shopProducts.Add(new ShopProductEntity
+                var existing = await _shopProductRepository.GetByShopAndProductIds(shopId, product.Id);
+                if (existing == null)
                 {
-                    ShopId = shopId,
-                    ProductId = product.Id,
-                    Quantity = item.count,
-                    Price = item.price,
-                    Description = item.description
-                });
+                    onCreation.Add(new ShopProductEntity
+                    {
+                        ShopId = shopId,
+                        ProductId = product.Id,
+                        Quantity = item.count,
+                        Price = item.price,
+                        Description = item.description
+                    });
+                }
+                else
+                {
+                    onUpdation.Add(new ShopProductEntity
+                    {
+                        ShopId = shopId,
+                        ProductId = product.Id,
+                        Quantity = item.count,
+                        Price = item.price,
+                        Description = item.description
+                    });
+                }
             }
-            await _shopProductRepository.CreateRange(shopProducts.ToArray());
+            if (onCreation.Any())
+                await _shopProductRepository.CreateRange(onCreation.ToArray());
+            if (onUpdation.Any())
+                await _shopProductRepository.UpdateRange(onUpdation.ToArray());
           
             
         }

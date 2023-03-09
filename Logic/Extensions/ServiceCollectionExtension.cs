@@ -29,6 +29,7 @@ namespace Logic.Extensions
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IProductService,ProductService>();
             services.AddScoped<IFileService,FIleService>();
+            services.AddScoped<IXMLService, XMLService>();
         }
     }
 }

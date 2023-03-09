@@ -27,5 +27,12 @@ namespace Data.Repositories.ShopDictionaryRepositories
             _dbSet.RemoveRange(list);
             await _context.SaveChangesAsync();
         }
+
+       
+        public async Task UpdateRange(params TEntity[] entities)
+        {
+            _dbSet.UpdateRange(entities);
+            await _context.SaveChangesAsync();
+        }
     }
 }
