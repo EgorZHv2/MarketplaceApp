@@ -10,7 +10,7 @@ namespace WebAPi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BaseGenericController<TEntity, TDTO, TCreateDTO, TUpdateDTO, TRepository, TService> : BaseController
+    public class BaseGenericController<TEntity, TDTO, TCreateDTO, TUpdateDTO, TRepository, TService> : ControllerBase
         where TService : IBaseService<TEntity, TDTO, TCreateDTO, TUpdateDTO, TRepository>
         where TEntity : BaseEntity
         where TUpdateDTO : BaseUpdateDTO
@@ -31,7 +31,7 @@ namespace WebAPi.Controllers
         [Authorize(Roles = nameof(Data.Enums.Role.Admin))]
         public async Task<IActionResult> ChangeActivity([FromBody] EntityActivityDTO model)
         {
-            var result = await _service.ChangeActivity(UserId, model);
+            var result = await _service.ChangeActivity(model);
             return Ok(result);
         }
     }

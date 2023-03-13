@@ -2,7 +2,7 @@
 
 namespace Data.DTO.BaseDTOs
 {
-    public class BaseUpdateDTO : BaseOutputDTO
+    public class BaseUpdateDTO 
     {
         [Required]
         public Guid Id { get; set; }

@@ -7,8 +7,8 @@ namespace Logic.Interfaces
 {
     public interface IUserService : IBaseService<UserEntity, UserDTO, CreateUserDTO, UpdateUserDTO, IUserRepository>
     {
-        public Task<UpdateUserDTO> Update(Guid userId, UpdateUserDTO DTO);
+        public Task Update(UpdateUserDTO DTO);
 
-        public Task<Guid> CreateAdmin(Guid userId, CreateAdminDTO model);
+        public Task<Guid> CreateAdmin(CreateAdminDTO model);
     }
 }

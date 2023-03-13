@@ -8,7 +8,7 @@ namespace WebAPi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class FavoriteShopsController : BaseController
+    public class FavoriteShopsController : ControllerBase
     {
         private IShopService _service;
         public FavoriteShopsController(IShopService service)
@@ -24,7 +24,7 @@ namespace WebAPi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> AddShopToFavorites(Guid id)
         {
-            await _service.AddShopToFavorites(UserId, id);
+            await _service.AddShopToFavorites(id);
             return Ok();
         }
         /// <summary>
@@ -36,7 +36,7 @@ namespace WebAPi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFavoriteShop(Guid id)
         {
-            await _service.DeleteShopFromFavorites(UserId, id);
+            await _service.DeleteShopFromFavorites(id);
             return Ok();
         }
         /// <summary>
@@ -48,7 +48,7 @@ namespace WebAPi.Controllers
         [HttpGet]
         public async Task<IActionResult> ShowUserFavoriteShops([FromQuery] PaginationDTO filterPaging)
         {
-            var result = await _service.ShowUserFavoriteShops(UserId, filterPaging);
+            var result = await _service.ShowUserFavoriteShops(filterPaging);
             return Ok(result);
         }
     }

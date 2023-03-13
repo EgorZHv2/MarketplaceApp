@@ -37,11 +37,7 @@ namespace WebAPi.Controllers
         [Authorize(Roles = $"{nameof(Data.Enums.Role.Admin)},{nameof(Data.Enums.Role.Seller)}")]
         public async Task<IActionResult> CreateShop([FromBody] CreateShopDTO model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var result = await _service.Create(UserId, model);
+            var result = await _service.Create(model);
             return Ok(result);
         }
         /// <summary>
@@ -53,13 +49,8 @@ namespace WebAPi.Controllers
         [Authorize(Roles = $"{nameof(Data.Enums.Role.Admin)},{nameof(Data.Enums.Role.Seller)}")]
         public async Task<IActionResult> UpdateShop([FromForm] UpdateShopDTO model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var result = await _service.Update(UserId, model);
-
-            return Ok(result);
+            await _service.Update(model);
+            return Ok();
         }
 
         /// <summary>
@@ -71,7 +62,7 @@ namespace WebAPi.Controllers
         [Authorize(Roles = $"{nameof(Data.Enums.Role.Admin)},{nameof(Data.Enums.Role.Seller)}")]
         public async Task<IActionResult> DeleteShop( Guid id)
         {
-            await _service.Delete(UserId, id);
+            await _service.Delete(id);
             return Ok();
         }
 
@@ -86,7 +77,7 @@ namespace WebAPi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetPage([FromQuery] PaginationDTO model, [FromQuery] ShopFilterDTO filter)
         {
-            var result = await _service.GetPage(UserId, model,filter);
+            var result = await _service.GetPage(model,filter);
             return Ok(result);
         }
 

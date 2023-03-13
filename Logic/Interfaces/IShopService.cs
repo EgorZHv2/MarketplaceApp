@@ -9,13 +9,13 @@ namespace Logic.Interfaces
 {
     public interface IShopService : IBaseService<ShopEntity, ShopDTO, CreateShopDTO, UpdateShopDTO, IShopRepository>
     {
-        public Task AddShopToFavorites(Guid userId, Guid shopId);
+        public Task AddShopToFavorites(Guid shopId);
 
-        public Task<PageModelDTO<ShopDTO>> ShowUserFavoriteShops(Guid userId, PaginationDTO filterPaging);
+        public Task<PageModelDTO<ShopDTO>> ShowUserFavoriteShops(PaginationDTO filterPaging);
 
-        public Task DeleteShopFromFavorites(Guid userId, Guid shopId);
+        public Task DeleteShopFromFavorites(Guid shopId);
 
-        public Task<PageModelDTO<ShopDTO>> GetPage(Guid userId, PaginationDTO pagingModel, ShopFilterDTO filter);
+        public Task<PageModelDTO<ShopDTO>> GetPage(PaginationDTO pagingModel, ShopFilterDTO filter);
         public Task AddProductsToShopFromXML(Guid shopId, IFormFile xmlFile);
     }
 }

@@ -7,7 +7,7 @@ namespace Data.Repositories.Repositories
 {
     public class UserRepository : BaseRepository<UserEntity>, IUserRepository
     {
-        public UserRepository(ApplicationDbContext context) : base(context)
+        public UserRepository(ApplicationDbContext context, IUserData userData) : base(context, userData)
         {
         }
 
@@ -15,9 +15,9 @@ namespace Data.Repositories.Repositories
         {
             return await _dbset.FirstOrDefaultAsync(e => e.Email == email);
         }
-        public async Task<PageModelDTO<UserEntity>> GetPage (UserEntity user,PaginationDTO paginationDTO)
+        public async Task<PageModelDTO<UserEntity>> GetPage (PaginationDTO paginationDTO)
         {
-            var qeryable = _dbset.Where(e => e.IsActive || user.Role == Enums.Role.Admin);
+            var qeryable = _dbset.Where(e=> _userData.Role == Enums.Role.Admin);
             return await GetPage(paginationDTO, qeryable);
         }
     }

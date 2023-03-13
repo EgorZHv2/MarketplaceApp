@@ -10,9 +10,10 @@ namespace Data.EntitiesConfigurations
         {
             entityTypeBuilder.HasKey(user => user.Id);
             entityTypeBuilder.Property(user => user.FirstName).IsRequired(false);
-            entityTypeBuilder.HasQueryFilter(user => user.IsDeleted == false);
-            entityTypeBuilder.Property(user => user.CreatorId).IsRequired(false);
-            entityTypeBuilder.Property(user => user.UpdatorId).IsRequired(false);
+            entityTypeBuilder.HasQueryFilter(user => user.DeleteDateTime == null);
+            entityTypeBuilder.Property(user => user.CreatedBy).IsRequired(false);
+            entityTypeBuilder.Property(user => user.UpdatedBy).IsRequired(false);
+            entityTypeBuilder.Property(user => user.DeletedBy).IsRequired(false);
             entityTypeBuilder.Property(user => user.EmailConfirmationCode).IsRequired(false);
             entityTypeBuilder
                 .HasMany(user => user.FavoriteShops)

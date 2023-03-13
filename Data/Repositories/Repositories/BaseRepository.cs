@@ -11,13 +11,14 @@ namespace Data.Repositories.Repositories
     {
         protected readonly ApplicationDbContext _context;
         protected DbSet<TEntity> _dbset => _context.Set<TEntity>();
-
-        public BaseRepository(ApplicationDbContext context)
+        protected IUserData _userData;
+        public BaseRepository(ApplicationDbContext context,IUserData userData)
         {
             _context = context;
+            _userData = userData;
         }
         
-        public async Task<TEntity?> GetById(Guid Id)
+        public virtual async Task<TEntity?> GetById(Guid Id)
         {
             return await _dbset.FirstOrDefaultAsync(e => e.Id == Id);
         }
@@ -32,77 +33,74 @@ namespace Data.Repositories.Repositories
            if(queryable == null)
            {
               queryable = _dbset.AsNoTracking();
-              queryable = queryable.Where(e => e.IsActive);
+              queryable = queryable.Where(e => e.IsActive || _userData.Role == Enums.Role.Admin);
            }
             
-            return  await queryable.ToPageModelAsync(pagination.PageNumber, pagination.PageSize);
+            return  await queryable.ToPageModelAsync(pagination);
         }
 
-        public virtual async Task<Guid> Create(Guid userId, TEntity entity)
+        public virtual async Task<Guid> Create(TEntity entity)
         {
             entity.CreateDateTime = DateTime.UtcNow;
-            entity.CreatorId = userId;
-            entity.UpdateDateTime = DateTime.UtcNow;
-            entity.UpdatorId = userId;
+            entity.CreatedBy = _userData.Id;
             entity.IsActive = true;
-            entity.IsDeleted = false;
             entity.Id = Guid.NewGuid();
+            entity.DeleteDateTime = null;
+            entity.DeletedBy = null;
             await _context.Set<TEntity>().AddAsync(entity);
             await _context.SaveChangesAsync();
             return entity.Id;
         }
 
-        public async Task CreateMany(Guid userId,params TEntity[] entities)
+        public async Task CreateMany(params TEntity[] entities)
         {
             foreach (TEntity entity in entities)
             {
                 entity.Id = Guid.NewGuid();
                 entity.CreateDateTime = DateTime.UtcNow;
-                entity.UpdateDateTime = DateTime.UtcNow;
                 entity.IsActive = true;
-                entity.IsDeleted = false;
-                entity.CreatorId = userId;
-                entity.UpdatorId = userId;
+                entity.CreatedBy = _userData.Id;
+                 entity.DeleteDateTime = null;
+            entity.DeletedBy = null;
                 await _context.Set<TEntity>().AddAsync(entity);
             }
             await _context.SaveChangesAsync();
         }
 
-        public async Task Update(Guid userId, TEntity entity)
+        public async Task Update(TEntity entity)
         {
             entity.UpdateDateTime = DateTime.UtcNow;
-            entity.UpdatorId = userId;
+            entity.UpdatedBy = _userData.Id;
             _context.Set<TEntity>().Update(entity);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateMany(Guid userId,params TEntity[] entities)
+        public async Task UpdateMany(params TEntity[] entities)
         {
             foreach (TEntity entity in entities)
             {
                 entity.UpdateDateTime = DateTime.UtcNow;
-                entity.UpdatorId = userId;
+                entity.UpdatedBy = _userData.Id;
                 _context.Set<TEntity>().Update(entity);
             }
             await _context.SaveChangesAsync();
         }
 
-        public async Task Delete(Guid userId, TEntity entity)
+        public async Task Delete(TEntity entity)
         {
-            entity.DeletorId = userId;
+            entity.DeletedBy = _userData.Id;
             entity.DeleteDateTime = DateTime.UtcNow;
-            entity.IsDeleted = true;
+     
             _context.Set<TEntity>().Update(entity);
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteMany(Guid userId, params TEntity[] entities)
+        public async Task DeleteMany(params TEntity[] entities)
         {
             foreach (var entity in entities)
             {
-                entity.DeletorId = userId;
+                entity.DeletedBy = _userData.Id;
                 entity.DeleteDateTime = DateTime.UtcNow;
-                entity.IsDeleted = true;
             }
             _context.Set<TEntity>().UpdateRange(entities);
             await _context.SaveChangesAsync();

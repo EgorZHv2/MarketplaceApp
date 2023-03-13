@@ -38,11 +38,7 @@ namespace WebAPi.Controllers
         [Authorize(Roles = nameof(Data.Enums.Role.Admin))]
         public async Task<IActionResult> CreateProduct([FromForm] CreateProductDTO model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var result = await _service.Create(UserId, model);
+            var result = await _service.Create(model);
             return Ok(result);
         }
         /// <summary>
@@ -54,13 +50,8 @@ namespace WebAPi.Controllers
         [Authorize(Roles = nameof(Data.Enums.Role.Admin))]
         public async Task<IActionResult> UpdateProduct([FromBody] UpdateProductDTO model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var result = await _service.Update(UserId, model);
-
-            return Ok(result);
+           await _service.Update(model);
+            return Ok();
         }
 
         /// <summary>
@@ -72,7 +63,7 @@ namespace WebAPi.Controllers
         [Authorize(Roles = nameof(Data.Enums.Role.Admin))]
         public async Task<IActionResult> DeleteProduct( Guid id)
         {
-            await _service.Delete(UserId, id);
+            await _service.Delete(id);
             return Ok();
         }
 
@@ -87,7 +78,7 @@ namespace WebAPi.Controllers
         [HttpGet("all-products")]
         public async Task<IActionResult> GetPage([FromQuery] PaginationDTO model, [FromQuery] ProductFilterDTO filter)
         {
-            var result = await _service.GetPage(UserId, model,filter);
+            var result = await _service.GetPage(model,filter);
             return Ok(result);
         }
 
@@ -95,7 +86,7 @@ namespace WebAPi.Controllers
         [Authorize(Roles = nameof(Data.Enums.Role.Admin))]
         public async Task<IActionResult> UploadFromExcel([FromForm]UploadFileDTO dto)
         {
-            await _service.AddProductsFromExcelFile(UserId, dto.File);
+            await _service.AddProductsFromExcelFile(dto.File);
             return Ok();
         }
 
@@ -103,7 +94,7 @@ namespace WebAPi.Controllers
         [HttpGet("products-in-shops")]
         public async Task<IActionResult> GetProductsInShopsPage([FromQuery] PaginationDTO model, [FromQuery] ShopProductFilterDTO filter)
         {
-            var result = await _service.GetProductsInShopsPage(UserId, model,filter);
+            var result = await _service.GetProductsInShopsPage(model,filter);
             return Ok(result);
         }
 

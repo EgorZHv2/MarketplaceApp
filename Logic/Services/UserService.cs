@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Data;
 using Data.DTO;
 using Data.DTO.User;
 using Data.Entities;
@@ -14,43 +15,46 @@ namespace Logic.Services
     {
         private IImageService _imageService;
         private IHashService _hashService;
+        private IUserData _userData;
 
         public UserService(
             IUserRepository repository,
             IMapper mapper,
             IImageService imageService,
-            IHashService hashService
+            IHashService hashService,
+            IUserData userData
         ) : base(repository, mapper)
         {
             _imageService = imageService;
             _hashService = hashService;
+            _userData = userData;
         }
 
-        public override async Task<UpdateUserDTO> Update(Guid userId, UpdateUserDTO model)
+        public override async Task Update(UpdateUserDTO model)
         {
-            var user = await _repository.GetById(userId);
+            var user = await _repository.GetById(_userData.Id);
             if (user == null)
             {
                 throw new UserNotFoundException();
             }
             if (model.Photo != null)
             {
-                await _imageService.CreateImage(userId, model.Photo, user.Id);
+                await _imageService.CreateImage( model.Photo, user.Id);
             }
-            var result = await base.Update(userId, model);
-            return result;
+            await base.Update(model);
+            
         }
 
-        public async Task<PageModelDTO<UserDTO>> GetPage(Guid userId, PaginationDTO pagingModel)
+        public async Task<PageModelDTO<UserDTO>> GetPage(PaginationDTO pagingModel)
         {
-            var user = await _repository.GetById(userId);
-            var pages = await _repository.GetPage(user, pagingModel);
+           
+            var pages = await _repository.GetPage(pagingModel);
             var result = _mapper.Map<PageModelDTO<UserDTO>>(pages);
 
             return result;
         }
 
-        public async Task<Guid> CreateAdmin(Guid userId, CreateAdminDTO model)
+        public async Task<Guid> CreateAdmin(CreateAdminDTO model)
         {
             var existing = await _repository.GetUserByEmail(model.Email);
             if (existing != null)
@@ -65,7 +69,7 @@ namespace Logic.Services
             user.IsEmailConfirmed = true;
             user.Role = Data.Enums.Role.Admin;
             user.Password = _hashService.HashPassword(model.Password);
-            await _repository.Create(userId, user);
+            await _repository.Create(user);
             return user.Id;
         }
     }

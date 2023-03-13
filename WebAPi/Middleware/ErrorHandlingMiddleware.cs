@@ -23,13 +23,19 @@ namespace WebAPi.Middleware
             }
             catch (ApiException ex)
             {
-                string logmessage = $"Date: {DateTime.UtcNow} | Exception: {ex.GetType().Name} | Code: {ex.StatusCode} | Message: {ex.LogMessage} | ";
+                string logmessage = $"Date: {DateTime.UtcNow} | Exception: {ex.GetType().Name} | Code: {ex.StatusCode} | Message: {ex.LogMessage}";
                 _logger.LogError(logmessage, ex);
                 await ResponseError(context, ex.UserMessage, ex.StatusCode);
             }
+            catch(Exception ex)
+            {
+                string logmessage = $"Date: {DateTime.UtcNow} | Exception: {ex.GetType().Name} | Message: {ex.Message}";
+                _logger.LogError(logmessage, ex);
+                await ResponseError(context, ex.Message);
+            }
         }
 
-        public async Task ResponseError(HttpContext context, string message, HttpStatusCode code)
+        public async Task ResponseError(HttpContext context, string message, HttpStatusCode code = HttpStatusCode.InternalServerError)
         {
             context.Response.StatusCode = (int)code;
             await context.Response.WriteAsJsonAsync(new ErrorResponseDTO()

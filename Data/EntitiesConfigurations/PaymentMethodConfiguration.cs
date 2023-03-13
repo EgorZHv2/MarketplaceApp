@@ -9,7 +9,7 @@ namespace Data.EntitiesConfigurations
         public void Configure(EntityTypeBuilder<PaymentMethodEntity> entityTypeBuilder)
         {
             entityTypeBuilder.HasKey(paymentMethod => paymentMethod.Id);
-            entityTypeBuilder.HasQueryFilter(paymentMethod => paymentMethod.IsDeleted == false);
+            entityTypeBuilder.HasQueryFilter(paymentMethod => paymentMethod.DeleteDateTime == null);
         }
     }
 }

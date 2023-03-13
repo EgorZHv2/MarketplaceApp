@@ -6,7 +6,7 @@ namespace Data.Repositories.Repositories
 {
     public class StaticFileInfoRepository : BaseRepository<StaticFileInfoEntity>, IStaticFileInfoRepository
     {
-        public StaticFileInfoRepository(ApplicationDbContext context) : base(context)
+        public StaticFileInfoRepository(ApplicationDbContext context, IUserData userData) : base(context, userData)
         {
         }
 

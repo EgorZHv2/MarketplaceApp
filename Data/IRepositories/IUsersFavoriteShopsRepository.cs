@@ -11,6 +11,6 @@ namespace Data.IRepositories
 
         public Task Delete(UserFavoriteShopEntity entity);
 
-        public Task<PageModelDTO<ShopEntity>> GetFavsPageByUserId(Guid userId, int pageNumber, int pageSize);
+        public Task<PageModelDTO<ShopEntity>> GetFavsPageByUserId(Guid userId, PaginationDTO pagination);
     }
 }

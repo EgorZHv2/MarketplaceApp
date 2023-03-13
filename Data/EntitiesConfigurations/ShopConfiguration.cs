@@ -15,7 +15,7 @@ namespace Data.EntitiesConfigurations
                 .HasForeignKey(shop => shop.SellerId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            entityTypeBuilder.HasQueryFilter(shop => shop.IsDeleted == false);
+            entityTypeBuilder.HasQueryFilter(shop => shop.DeleteDateTime == null);
 
             entityTypeBuilder
                 .HasMany<DeliveryTypeEntity>(shop => shop.DeliveryTypes)

@@ -12,17 +12,17 @@ namespace Data.IRepositories
 
         Task<PageModelDTO<TEntity>> GetPage(PaginationDTO pagination, IQueryable<TEntity> queryable = null);
 
-        Task<Guid> Create(Guid userId, TEntity entity);
+        Task<Guid> Create(TEntity entity);
 
-        Task CreateMany(Guid userId,  params TEntity[] entities);
+        Task CreateMany(params TEntity[] entities);
 
-        Task Update(Guid userId, TEntity entity);
+        Task Update(TEntity entity);
 
-        Task UpdateMany(Guid userId, params TEntity[] entities);
+        Task UpdateMany(params TEntity[] entities);
 
-        Task Delete(Guid userId, TEntity entity );
+        Task Delete(TEntity entity );
 
-        Task DeleteMany(Guid userId,params TEntity[] entities);
+        Task DeleteMany(params TEntity[] entities);
 
         Task HardDelete(TEntity entity );
 

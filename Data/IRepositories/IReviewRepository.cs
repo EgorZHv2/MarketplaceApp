@@ -6,6 +6,6 @@ namespace Data.IRepositories
     public interface IReviewRepository : IBaseRepository<ReviewEntity>
     {
         public IEnumerable<ReviewEntity> GetReviewsByShopId(Guid ShopId);
-        public  Task<PageModelDTO<ReviewEntity>> GetPage(UserEntity user, PaginationDTO pagination);
+        public  Task<PageModelDTO<ReviewEntity>> GetPage(PaginationDTO pagination);
     }
 }

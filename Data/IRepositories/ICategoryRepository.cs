@@ -9,6 +9,6 @@ namespace Data.IRepositories
         public Task<IEnumerable<CategoryEntity>> GetCategoriesByParentId(Guid parentId);
 
         public Task<IEnumerable<CategoryEntity>> GetCategoriesWithoutParentId();
-        Task<CategoryEntity> GetCategoryByName(string name);
+        Task<CategoryEntity?> GetCategoryByName(string name);
     }
 }

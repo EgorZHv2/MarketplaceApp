@@ -14,7 +14,7 @@ namespace Data.EntitiesConfigurations
         public void Configure(EntityTypeBuilder<ProductEntity> entityTypeBuilder)
         {
             entityTypeBuilder.HasKey(product => product.Id);
-            entityTypeBuilder.HasQueryFilter(product => product.IsDeleted == false);
+            entityTypeBuilder.HasQueryFilter(product => product.DeleteDateTime == null);
             entityTypeBuilder
                 .HasOne(product => product.Category)
                 .WithMany(category => category.Products)

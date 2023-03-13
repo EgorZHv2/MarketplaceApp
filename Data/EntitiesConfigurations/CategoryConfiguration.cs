@@ -9,7 +9,7 @@ namespace Data.EntitiesConfigurations
         public void Configure(EntityTypeBuilder<CategoryEntity> entityTypeBuilder)
         {
             entityTypeBuilder.HasKey(category => category.Id);
-            entityTypeBuilder.HasQueryFilter(category => category.IsDeleted == false);
+            entityTypeBuilder.HasQueryFilter(category => category.DeleteDateTime == null);
             entityTypeBuilder.Property(category => category.ParentCategoryId).IsRequired(false);
             entityTypeBuilder
                 .HasOne(category => category.ParentCategory)

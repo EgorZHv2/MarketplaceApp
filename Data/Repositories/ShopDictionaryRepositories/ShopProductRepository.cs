@@ -13,7 +13,7 @@ namespace Data.Repositories.ShopDictionaryRepositories
     {
         public ShopProductRepository(ApplicationDbContext context) : base(context) { }
 
-        public async Task<ShopProductEntity> GetByShopAndProductIds(Guid shopId,Guid productId)
+        public async Task<ShopProductEntity?> GetByShopAndProductIds(Guid shopId,Guid productId)
         {
             return await _dbSet.FirstOrDefaultAsync(e=> e.ShopId == shopId && e.ProductId == productId);
         }

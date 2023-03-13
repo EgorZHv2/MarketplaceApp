@@ -9,6 +9,6 @@ namespace Data.IRepositories
 {
     public interface IShopProductRepository:IBaseShopDictionaryRepository<ShopProductEntity>
     {
-         Task<ShopProductEntity> GetByShopAndProductIds(Guid shopId, Guid productId);
+         Task<ShopProductEntity?> GetByShopAndProductIds(Guid shopId, Guid productId);
     }
 }

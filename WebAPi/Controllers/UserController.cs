@@ -24,12 +24,8 @@ namespace WebAPi.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateUser([FromForm] UpdateUserDTO model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var result = await _service.Update(UserId, model);
-            return Ok(result);
+            await _service.Update(model);
+            return Ok();
         }
         /// <summary>
         /// Создать аккаунт администратора
@@ -40,11 +36,7 @@ namespace WebAPi.Controllers
         [Authorize(Roles = nameof(Data.Enums.Role.Admin))]
         public async Task<IActionResult> CreateAdmin([FromBody] CreateAdminDTO model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var result = await _service.CreateAdmin(UserId, model);
+            var result = await _service.CreateAdmin(model);
             return Ok(result);
         }
     }

@@ -5,9 +5,8 @@ using Data.IRepositories;
 using Data.Options;
 using Logic.Exceptions;
 using Logic.Interfaces;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
-using System.ComponentModel.Design;
+
 
 namespace Logic.Services
 {
@@ -101,7 +100,7 @@ namespace Logic.Services
             return result;
         }
 
-        public override async Task<Guid> Create(Guid userId, CreateCategoryDTO createDTO)
+        public override async Task<Guid> Create(CreateCategoryDTO createDTO)
         {
             var parent = new CategoryEntity();
             if (createDTO.ParentCategoryId != null)
@@ -120,11 +119,11 @@ namespace Logic.Services
                     category.Tier = parent.Tier + 1;
                 }
             }
-            var result = await _repository.Create(userId, category);
+            var result = await _repository.Create(category);
             return result;
         }
 
-        public async override Task<UpdateCategoryDTO> Update(Guid userId, UpdateCategoryDTO DTO)
+        public async override Task Update(UpdateCategoryDTO DTO)
         {
             var parent = new CategoryEntity();
             if (DTO.ParentCategoryId != null)
@@ -147,8 +146,8 @@ namespace Logic.Services
                     category.Tier = parent.Tier + 1;
                 }
             }
-            await _repository.Update(userId, category);
-            return DTO;
+            await _repository.Update(category);
+           
         }
     }
 }

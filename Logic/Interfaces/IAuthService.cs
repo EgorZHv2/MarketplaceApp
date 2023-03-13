@@ -10,6 +10,6 @@ namespace Logic.Interfaces
 
         public Task Register(RegistrationDTO model);
 
-        public Task ChangePassword(Guid userId, ChangePasswordDTO model);
+        public Task ChangePassword(ChangePasswordDTO model);
     }
 }

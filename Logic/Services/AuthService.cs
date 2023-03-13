@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Data;
 using Data.DTO.Auth;
 using Data.Entities;
 using Data.IRepositories;
@@ -18,6 +19,7 @@ namespace Logic.Services
         private IMapper _mapper;
         private IRandomStringGeneratorService _stringGeneratorService;
         private IEmailService _emailService;
+        private IUserData _userData;
 
         public AuthService(
             IUserRepository userRepository,
@@ -25,7 +27,9 @@ namespace Logic.Services
             ITokenService tokenService,
             IMapper mapper,
             IRandomStringGeneratorService stringGeneratorService,
-            IEmailService emailService
+            IEmailService emailService,
+            IUserData userData
+            
         )
         {
             _userRepository = userRepository;
@@ -34,6 +38,7 @@ namespace Logic.Services
             _mapper = mapper;
             _stringGeneratorService = stringGeneratorService;
             _emailService = emailService;
+            _userData = userData;
         }
 
         public async Task VerifyEmail(string email, string code)
@@ -48,7 +53,7 @@ namespace Logic.Services
                 throw new WrongVerificationCodeException();
             }
             user.IsEmailConfirmed = true;
-            await _userRepository.Update(user.Id, user);
+            await _userRepository.Update(user);
         }
 
         public async Task<string> Login(LoginDTO model)
@@ -86,12 +91,12 @@ namespace Logic.Services
                 "MarketPlaceApp",
                 $"Your verification code = {code}"
             );
-            await _userRepository.Create(Guid.Empty, user);
+            await _userRepository.Create(user);
         }
 
-        public async Task ChangePassword(Guid userId, ChangePasswordDTO model)
+        public async Task ChangePassword(ChangePasswordDTO model)
         {
-            var user = await _userRepository.GetById(userId);
+            var user = await _userRepository.GetById(_userData.Id);
             if (user == null)
             {
                 throw new UserNotFoundException();
@@ -102,7 +107,7 @@ namespace Logic.Services
                 throw new WrongPasswordException();
             }
             user.Password = _hashService.HashPassword(model.Password);
-            await _userRepository.Update(userId, user);
+            await _userRepository.Update(user);
         }
     }
 }

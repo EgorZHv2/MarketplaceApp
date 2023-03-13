@@ -19,17 +19,17 @@ namespace Data.Repositories.Repositories
     {
        
         
-        public ProductRepository(ApplicationDbContext context):base(context)
+        public ProductRepository(ApplicationDbContext context,IUserData userData):base(context,userData)
         {
           
         }
 
-
-        public async Task<PageModelDTO<ProductEntity>> GetPage(UserEntity user, PaginationDTO pagination,
+      
+        public async Task<PageModelDTO<ProductEntity>> GetPage(PaginationDTO pagination,
             ProductFilterDTO filter)
         {
 
-            var queryable = _dbset.Where(e=>e.IsActive || user.Role ==Role.Admin)
+            var queryable = _dbset.Where( e => _userData.Role == Role.Admin)
                 .Include(e => e.Category)
                 .Include(e=>e.Shops)
                 .Include(e=>e.ShopProducts)
@@ -44,17 +44,17 @@ namespace Data.Repositories.Repositories
             queryable = queryable.Where(e => e.Height >= filter.MinHeight && e.Height <= filter.MaxHeight);
             queryable = queryable.Where(e => e.Depth >= filter.MinDepth && e.Depth <= filter.MaxDepth);
             queryable = filter.ShopId is not null ? queryable.Where(e => e.Shops.Any(e => e.Id == filter.ShopId)) : queryable;
-            return await queryable.ToPageModelAsync(pagination.PageNumber, pagination.PageSize);
+            return await queryable.ToPageModelAsync(pagination);
         }
 
-        public async Task<PageModelDTO<ProductEntityWithPriceDTO>>  GetProductsInShopsPage(UserEntity user, PaginationDTO pagination,
+        public async Task<PageModelDTO<ProductEntityWithPriceDTO>>  GetProductsInShopsPage(PaginationDTO pagination,
             ShopProductFilterDTO filter)
         {
 
             var shopProducts = _context.Set<ShopProductEntity>()
                 .Include(e=>e.Product).ThenInclude(e=>e.Category)
                 .Include(e=>e.Product).ThenInclude(e=>e.Shops).AsNoTracking();
-            shopProducts = shopProducts.Where(e => e.Product.IsActive || user.Role == Role.Admin);
+            shopProducts = shopProducts.Where(e => e.Product.IsActive || _userData.Role == Role.Admin);
             shopProducts = shopProducts.Where(e=> e.Price >= filter.MinPrice&& e.Price <= filter.MaxPrice);
             shopProducts = filter.SearchQuery is not null ? shopProducts.Where(
                 e => e.Product.Name.Contains(filter.SearchQuery) || 
@@ -72,9 +72,9 @@ namespace Data.Repositories.Repositories
             
            
 
-            return await qeryable.ToPageModelAsync(pagination.PageNumber, pagination.PageSize);
+            return await qeryable.ToPageModelAsync(pagination);
         }
-        public async Task<ProductEntity> GetByPartNumber(int partNumber)
+        public async Task<ProductEntity?> GetByPartNumber(int partNumber)
         {
             return await _dbset.FirstOrDefaultAsync(e => e.PartNumber == partNumber);
         }

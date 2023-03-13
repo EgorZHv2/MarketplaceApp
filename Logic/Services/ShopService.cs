@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Data;
 using Data.DTO;
 using Data.DTO.Filters;
 using Data.DTO.ProductXmlModels;
@@ -39,6 +40,7 @@ namespace Logic.Services
         private IProductRepository _productRepository;
         private IShopProductRepository _shopProductRepository;
         private IXMLService _XMLService;
+        private IUserData _userData;
 
         public ShopService(
             IShopRepository repository,
@@ -59,7 +61,8 @@ namespace Logic.Services
             IPaymentMethodRepository paymentMethodRepository,
             IProductRepository productRepository,
             IShopProductRepository shopProductRepository,
-            IXMLService XMLService
+            IXMLService XMLService,
+            IUserData userData
 
         ) : base(repository, mapper)
         {
@@ -80,9 +83,10 @@ namespace Logic.Services
             _productRepository = productRepository;
             _shopProductRepository = shopProductRepository;
             _XMLService = XMLService;
+            _userData = userData;
         }
 
-        public override async Task<Guid> Create(Guid userId, CreateShopDTO createDTO)
+        public override async Task<Guid> Create(CreateShopDTO createDTO)
         {
             if (!_iNNService.CheckINN(createDTO.INN))
             {
@@ -91,7 +95,7 @@ namespace Logic.Services
 
             var shop = _mapper.Map<ShopEntity>(createDTO);
 
-            var result = await _repository.Create(userId, shop);
+            var result = await _repository.Create(shop);
 
             if (createDTO.CategoriesId.Any())
             {
@@ -176,7 +180,7 @@ namespace Logic.Services
             return result;
         }
 
-        public override async Task<UpdateShopDTO> Update(Guid userId, UpdateShopDTO updateDTO)
+        public override async Task Update(UpdateShopDTO updateDTO)
         {
             if (!_iNNService.CheckINN(updateDTO.INN))
             {
@@ -192,9 +196,9 @@ namespace Logic.Services
 
             if (updateDTO.Image != null)
             {
-                await _imageService.CreateImage(userId, updateDTO.Image, updateDTO.Id);
+                await _imageService.CreateImage(updateDTO.Image, updateDTO.Id);
             }
-            await _repository.Update(userId, shop);
+            await _repository.Update(shop);
 
             await _shopCategoryRepository.DeleteAllByShop(shop);
             await _shopDeliveryTypeRepository.DeleteAllByShop(shop);
@@ -279,13 +283,13 @@ namespace Logic.Services
 
                 await _shopPaymentMethodRepository.CreateRange(paymentMethods);
             }
-            return updateDTO;
+            
         }
 
-        public async Task AddShopToFavorites(Guid userId, Guid shopId)
+        public async Task AddShopToFavorites(Guid shopId)
         {
-            var user = await _userRepository.GetById(userId);
-            var existing = await _usersFavoriteShops.GetFavByShopAndUserId(userId, shopId);
+            var user = await _userRepository.GetById(_userData.Id);
+            var existing = await _usersFavoriteShops.GetFavByShopAndUserId(_userData.Id, shopId);
             if (existing != null)
             {
                 throw new AlreadyExistsException(
@@ -303,32 +307,30 @@ namespace Logic.Services
                 throw new ShopNotFoundException();
             }
             user.FavoriteShops.Add(shop);
-            await _userRepository.Update(userId, user);
+            await _userRepository.Update(user);
         }
 
         public async Task<PageModelDTO<ShopDTO>> ShowUserFavoriteShops(
-            Guid userId,
             PaginationDTO filterPaging
         )
         {
-            var user = await _userRepository.GetById(userId);
+            var user = await _userRepository.GetById(_userData.Id);
             if (user == null)
             {
                 throw new UserNotFoundException();
             }
 
             var list = await _usersFavoriteShops.GetFavsPageByUserId(
-                userId,
-                filterPaging.PageNumber,
-                filterPaging.PageSize
+                _userData.Id,
+                filterPaging
             );
             var result = _mapper.Map<PageModelDTO<ShopDTO>>(list);
             return result;
         }
 
-        public async Task DeleteShopFromFavorites(Guid userId, Guid shopId)
+        public async Task DeleteShopFromFavorites(Guid shopId)
         {
-            var existing = await _usersFavoriteShops.GetFavByShopAndUserId(userId, shopId);
+            var existing = await _usersFavoriteShops.GetFavByShopAndUserId(_userData.Id, shopId);
             if (existing == null)
             {
                 throw new ShopNotFoundException();
@@ -337,13 +339,12 @@ namespace Logic.Services
         }
 
         public async Task<PageModelDTO<ShopDTO>> GetPage(
-            Guid userId,
-            PaginationDTO pagingModel,
+           PaginationDTO pagingModel,
             ShopFilterDTO filter
         )
         {
-            var user = await _userRepository.GetById(userId);
-            var pages = await _repository.GetPage(user, pagingModel, filter);
+        
+            var pages = await _repository.GetPage(pagingModel, filter);
             string basepath = _options.BaseImagePath;
             var result = _mapper.Map<PageModelDTO<ShopDTO>>(pages);
             foreach (var shop in result.Values)

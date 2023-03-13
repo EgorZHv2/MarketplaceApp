@@ -14,8 +14,8 @@ namespace Logic.Interfaces
 {
     public interface IProductService:IBaseService<ProductEntity,ProductDTO,CreateProductDTO,UpdateProductDTO,IProductRepository>
     {
-        Task<PageModelDTO<ProductDTO>> GetPage(Guid userId, PaginationDTO pagingModel, ProductFilterDTO filter);
-        Task AddProductsFromExcelFile(Guid userId, IFormFile excelFile);
-        Task<PageModelDTO<ProductDTOWithPrice>> GetProductsInShopsPage(Guid userId,PaginationDTO pagingModel,ShopProductFilterDTO filter);
+        Task<PageModelDTO<ProductDTO>> GetPage(PaginationDTO pagingModel, ProductFilterDTO filter);
+        Task AddProductsFromExcelFile(IFormFile excelFile);
+        Task<PageModelDTO<ProductDTOWithPrice>> GetProductsInShopsPage(PaginationDTO pagingModel,ShopProductFilterDTO filter);
     }
 }

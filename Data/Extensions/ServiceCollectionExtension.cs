@@ -43,6 +43,8 @@ namespace Data.Extensions
             services.AddScoped<IShopPaymentMethodRepository, ShopPaymentMethodRepository>();
             services.AddScoped<IShopTypeRepository, ShopTypeRepository>();
             services.AddScoped<IShopProductRepository, ShopProductRepository>();
+
+            services.AddScoped<IUserData, UserData>();
         }
     }
 }

@@ -13,11 +13,11 @@ namespace Data.IRepositories
 {
     public interface IProductRepository : IBaseRepository<ProductEntity>
     {
-        Task<PageModelDTO<ProductEntity>> GetPage(UserEntity user, PaginationDTO pagination,
+        Task<PageModelDTO<ProductEntity>> GetPage(PaginationDTO pagination,
          ProductFilterDTO filter);
         Task<ProductEntity> GetByPartNumber(int partNumber);
 
-        Task<PageModelDTO<ProductEntityWithPriceDTO>> GetProductsInShopsPage(UserEntity user, PaginationDTO pagination,
+        Task<PageModelDTO<ProductEntityWithPriceDTO>> GetProductsInShopsPage(PaginationDTO pagination,
           ShopProductFilterDTO filter);
         
     }

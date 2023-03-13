@@ -25,16 +25,20 @@ namespace Logic.Services
             _mapper = mapper;
         }
 
-        public virtual async Task<Guid> Create(Guid userId, TCreateDTO createDTO)
+        public virtual async Task<Guid> Create(TCreateDTO createDTO)
         {
             var entity = _mapper.Map<TEntity>(createDTO);
-            Guid result = await _repository.Create(userId, entity);
+            Guid result = await _repository.Create(entity);
             return result;
         }
 
         public virtual async Task<TDTO> GetById(Guid Id)
         {
             var entity = await _repository.GetById(Id);
+            if(entity == null)
+            {
+                throw new GenericEntityNotFoundException();
+            }
             var result = _mapper.Map<TDTO>(entity);
             return result;
         }
@@ -51,29 +55,29 @@ namespace Logic.Services
             return result;
         }
 
-        public virtual async Task<TUpdateDTO> Update(Guid userId, TUpdateDTO DTO)
+        public virtual async Task Update(TUpdateDTO DTO)
         {
-            TEntity entity = await _repository.GetById(DTO.Id);
+            TEntity? entity = await _repository.GetById(DTO.Id);
             if (entity == null)
             {
                 throw new GenericEntityNotFoundException();
             }
             _mapper.Map(DTO, entity);
-            await _repository.Update(userId, entity);
-            return DTO;
+            await _repository.Update(entity);
+            
         }
 
-        public virtual async Task Delete(Guid userId, Guid entityId)
+        public virtual async Task Delete(Guid entityId)
         {
             var entity = await _repository.GetById(entityId);
-            if (entity == null)
+            if (entity != null)
             {
-                throw new GenericEntityNotFoundException();
+                await _repository.Delete(entity);
             }
-            await _repository.Delete(userId, entity);
+            
         }
 
-        public async Task<EntityActivityDTO> ChangeActivity(Guid userId, EntityActivityDTO model)
+        public async Task<EntityActivityDTO> ChangeActivity(EntityActivityDTO model)
         {
             var entity = await _repository.GetById(model.Id);
             if (entity == null)
@@ -81,7 +85,7 @@ namespace Logic.Services
                 throw new GenericEntityNotFoundException();
             }
             entity.IsActive = model.IsActive;
-            await _repository.Update(userId, entity);
+            await _repository.Update(entity);
             return model;
         }
     }

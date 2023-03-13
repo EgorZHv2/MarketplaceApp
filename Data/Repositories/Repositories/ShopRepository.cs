@@ -14,37 +14,34 @@ namespace Data.Repositories.Repositories
     {
         private ICategoryRepository _categoryRepository;
 
-        public ShopRepository(ApplicationDbContext context, ICategoryRepository categoryRepository)
-            : base(context)
+        public ShopRepository(ApplicationDbContext context,IUserData userData, ICategoryRepository categoryRepository)
+            : base(context,userData)
         {
             _categoryRepository = categoryRepository;
         }
 
         public override async Task<Guid> Create(
-            Guid userId,
-            ShopEntity entity
+             ShopEntity entity
             
         )
         {
             entity.CreateDateTime = DateTime.UtcNow;
-            entity.CreatorId = userId;
-            entity.UpdateDateTime = DateTime.UtcNow;
-            entity.UpdatorId = userId;
+            entity.CreatedBy = _userData.Id;
             entity.IsActive = true;
-            entity.IsDeleted = false;
+            entity.DeletedBy = null;
+            entity.DeleteDateTime = null;
             entity.Id = Guid.NewGuid();
-            entity.SellerId = userId;
+            entity.SellerId = _userData.Id;
             await _dbset.AddAsync(entity);
             await _context.SaveChangesAsync();
             return entity.Id;
         }
 
         public async Task<PageModelDTO<ShopEntity>> GetPage(
-           UserEntity user,
             PaginationDTO pagination,
             ShopFilterDTO filter)
         {
-            var queryable = _dbset.Where(e=>e.IsActive || user.Role == Enums.Role.Admin || e.SellerId == user.Id)
+            var queryable = _dbset.Where(e=>e.IsActive || _userData.Role == Enums.Role.Admin || e.SellerId == _userData.Id)
                 .Include(e => e.Categories)
                 .Include(e => e.DeliveryTypes)
                 .Include(e => e.PaymentMethods)
@@ -53,9 +50,9 @@ namespace Data.Repositories.Repositories
                 .Include(e=>e.ShopProducts)
                 .AsNoTracking();
             queryable = filter.SearchQuery is not null
-                ? queryable.Where(e => e.Title.Contains(filter.SearchQuery) || e.Description.Contains(filter.SearchQuery))
+                ? queryable.Where(e => e.Title.Contains(filter.SearchQuery) || e.Description.Contains(filter.SearchQuery) || e.ShopProducts.Any(e=>e.Description.Contains(filter.SearchQuery)))
                 : queryable;
-          
+            queryable = queryable.Where(e=> e.ShopProducts.Any(e=>e.Price>= filter.MinPrice && e.Price <= filter.MaxPrice));
             queryable = filter.DeliveryTypesIds.Any() 
                 ? queryable.Where(e => e.DeliveryTypes.Any(e => filter.DeliveryTypesIds.Contains(e.Id)))
                 : queryable;

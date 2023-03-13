@@ -9,7 +9,7 @@ namespace Data.EntitiesConfigurations
         public void Configure(EntityTypeBuilder<DeliveryTypeEntity> entityTypeBuilder)
         {
             entityTypeBuilder.HasKey(deliveryType => deliveryType.Id);
-            entityTypeBuilder.HasQueryFilter(deliveryType => deliveryType.IsDeleted == false);
+            entityTypeBuilder.HasQueryFilter(deliveryType => deliveryType.DeleteDateTime == null);
         }
     }
 }

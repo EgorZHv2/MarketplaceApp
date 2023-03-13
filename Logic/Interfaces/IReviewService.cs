@@ -8,12 +8,7 @@ namespace Logic.Interfaces
     public interface IReviewService
         : IBaseService<ReviewEntity, ReviewDTO, CreateReviewDTO, UpdateReviewDTO, IReviewRepository>
     {
-        public Task<List<ReviewDTO>> GetReviewsByShopId(
-            Guid userId,
-            Guid shopId
-            
-        );
-
-        public Task<PageModelDTO<ReviewDTO>> GetPage(Guid userId, PaginationDTO pagingModel);
+        public Task<List<ReviewDTO>> GetReviewsByShopId(Guid shopId);
+        public Task<PageModelDTO<ReviewDTO>> GetPage(PaginationDTO pagingModel);
     }
 }

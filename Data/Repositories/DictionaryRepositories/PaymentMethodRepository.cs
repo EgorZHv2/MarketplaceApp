@@ -5,7 +5,7 @@ namespace Data.Repositories.DictionaryRepositories
 {
     public class PaymentMethodRepository : BaseDictionaryRepository<PaymentMethodEntity>, IPaymentMethodRepository
     {
-        public PaymentMethodRepository(ApplicationDbContext context) : base(context)
+        public PaymentMethodRepository(ApplicationDbContext context, IUserData userData) : base(context, userData)
         {
         }
     }

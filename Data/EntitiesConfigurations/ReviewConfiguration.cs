@@ -19,7 +19,7 @@ namespace Data.EntitiesConfigurations
                 .WithMany(user => user.Reviews)
                 .HasForeignKey(review => review.BuyerId)
                 .OnDelete(DeleteBehavior.Cascade);
-            entityTypeBuilder.HasQueryFilter(review => review.IsDeleted == false);
+            entityTypeBuilder.HasQueryFilter(review => review.DeleteDateTime == null);
         }
     }
 }

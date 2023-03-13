@@ -7,7 +7,7 @@ namespace WebAPi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController : BaseController
+    public class AuthController : ControllerBase
     {
         private IAuthService _authService;
 
@@ -23,10 +23,7 @@ namespace WebAPi.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+          
             var result = await _authService.Login(model);
             return Ok(result);
         }
@@ -38,10 +35,6 @@ namespace WebAPi.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegistrationDTO model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             await _authService.Register(model);
             return Ok();
         }
@@ -66,11 +59,8 @@ namespace WebAPi.Controllers
         [Authorize]
         public async Task<IActionResult> ChangePassword(ChangePasswordDTO model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            await _authService.ChangePassword(UserId, model);
+           
+            await _authService.ChangePassword(model);
             return Ok();
         }
     }

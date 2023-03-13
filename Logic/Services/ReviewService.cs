@@ -26,21 +26,17 @@ namespace Logic.Services
             _shopRepository = shopRepository;
         }
 
-        public async Task<List<ReviewDTO>> GetReviewsByShopId(Guid userId, Guid shopId)
+        public async Task<List<ReviewDTO>> GetReviewsByShopId(Guid shopId)
         {
-            var user = await _userRepository.GetById(userId);
+          
             var list = _repository
-                .GetReviewsByShopId(shopId)
-                .Where(
-                    e => (e.IsActive || user.Id == e.BuyerId || user.Role == Data.Enums.Role.Admin)
-                )
-                .ToList();
+                .GetReviewsByShopId(shopId);
 
             var result = _mapper.Map<List<ReviewDTO>>(list);
             return result;
         }
 
-        public override async Task<Guid> Create(Guid userId, CreateReviewDTO createDTO)
+        public override async Task<Guid> Create(CreateReviewDTO createDTO)
         {
             var shop = _shopRepository.GetById(createDTO.ShopId);
             if (shop == null)
@@ -49,16 +45,14 @@ namespace Logic.Services
             }
 
             var entity = _mapper.Map<ReviewEntity>(createDTO);
-            entity.BuyerId = userId;
-            var result = await _repository.Create(userId, entity);
+
+            var result = await _repository.Create(entity);
             return result;
         }
 
-        public async Task<PageModelDTO<ReviewDTO>> GetPage(Guid userId, PaginationDTO pagingModel)
+        public async Task<PageModelDTO<ReviewDTO>> GetPage(PaginationDTO pagingModel)
         {
-            var user = await _userRepository.GetById(userId);
-
-            var pages = await _repository.GetPage(user, pagingModel);
+            var pages = await _repository.GetPage(pagingModel);
             var result = _mapper.Map<PageModelDTO<ReviewDTO>>(pages);
             return result;
         }

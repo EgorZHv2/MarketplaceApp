@@ -3,6 +3,7 @@ using Data.Entities;
 using Data.Extensions;
 using Data.IRepositories;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Data.Repositories.Repositories
 {
@@ -36,14 +37,14 @@ namespace Data.Repositories.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<PageModelDTO<ShopEntity>> GetFavsPageByUserId(Guid userId, int pagenumber, int pagesize)
+        public async Task<PageModelDTO<ShopEntity>> GetFavsPageByUserId(Guid userId, PaginationDTO pagination)
         {
             var queryable = _dbset
                 .Include(e => e.Shop)
                 .Where(e => e.UserId == userId)
                 .Select(p => p.Shop);
 
-            var result = await queryable.ToPageModelAsync<ShopEntity>(pagenumber, pagesize);
+            var result = await queryable.ToPageModelAsync<ShopEntity>(pagination);
             return result;
         }
     }

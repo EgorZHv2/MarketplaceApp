@@ -10,7 +10,7 @@ namespace WebAPi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BaseDictionaryController<TEntity, TDTO, TCreateDTO, TUpdateDTO, TRepository, TService> : BaseController
+    public class BaseDictionaryController<TEntity, TDTO, TCreateDTO, TUpdateDTO, TRepository, TService> : ControllerBase
         where TEntity : BaseDictionaryEntity
         where TDTO : BaseDictinoaryOutputDTO
         where TCreateDTO : BaseDictionaryCreateDTO
@@ -30,7 +30,7 @@ namespace WebAPi.Controllers
         [Authorize(Roles = nameof(Data.Enums.Role.Admin))]
         public async Task<IActionResult> Create(TCreateDTO model)
         {
-            var result = await _dictionaryService.Create(UserId, model);
+            var result = await _dictionaryService.Create(model);
             return Ok(result);
         }
 
@@ -38,8 +38,8 @@ namespace WebAPi.Controllers
         [Authorize(Roles = nameof(Data.Enums.Role.Admin))]
         public virtual async Task<IActionResult> Update(TUpdateDTO model)
         {
-            var result = await _dictionaryService.Update(UserId, model);
-            return Ok(result);
+            await _dictionaryService.Update(model);
+            return Ok();
         }
 
         [HttpGet]
@@ -54,7 +54,7 @@ namespace WebAPi.Controllers
         [Authorize(Roles = nameof(Data.Enums.Role.Admin))]
         public async Task<IActionResult> Delete(Guid id)
         {
-            await _dictionaryService.Delete(UserId, id);
+            await _dictionaryService.Delete(id);
             return Ok();
         }
     }

@@ -6,7 +6,7 @@ namespace Data.Repositories.DictionaryRepositories
 {
     public class CategoryRepository : BaseDictionaryRepository<CategoryEntity>, ICategoryRepository
     {
-        public CategoryRepository(ApplicationDbContext context) : base(context)
+        public CategoryRepository(ApplicationDbContext context, IUserData userData) : base(context, userData)
         {
         }
 
@@ -24,10 +24,10 @@ namespace Data.Repositories.DictionaryRepositories
             return result;
         }
 
-        public async Task<CategoryEntity> GetCategoryByName(string name)
+        public async Task<CategoryEntity?> GetCategoryByName(string name)
         {
-            var result = await _dbset.FirstOrDefaultAsync(e=>e.Name == name);
-            return result;
+           
+            return await _dbset.FirstOrDefaultAsync(e=>e.Name == name);
         }
     }
 }

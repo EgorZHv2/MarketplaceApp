@@ -36,12 +36,7 @@ namespace WebAPi.Controllers
         [Authorize(Roles = nameof(Data.Enums.Role.Admin))]
         public override async Task<IActionResult> Update(UpdateCategoryDTO model)
         {
-            if (!ModelState.IsValid)
-            {
-                BadRequest(ModelState);
-            }
-       
-            await _dictionaryService.Update(UserId, model);
+            await _dictionaryService.Update(model);
             return Ok();
         }
     }

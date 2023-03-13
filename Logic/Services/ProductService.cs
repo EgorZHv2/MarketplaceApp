@@ -54,54 +54,52 @@ namespace Logic.Services
         }
 
         public async Task<PageModelDTO<ProductDTO>> GetPage(
-            Guid userId,
             PaginationDTO pagingModel,
             ProductFilterDTO filter
         )
         {
-            var user = await _userRepository.GetById(userId);
-            var pages = await _repository.GetPage(user,pagingModel, filter);
+            
+            var pages = await _repository.GetPage(pagingModel, filter);
 
             var result = _mapper.Map<PageModelDTO<ProductDTO>>(pages);
 
             return result;
         }
         public async Task<PageModelDTO<ProductDTOWithPrice>> GetProductsInShopsPage(
-            Guid userId,
             PaginationDTO pagingModel,
             ShopProductFilterDTO filter
         )
         {
-            var user = await _userRepository.GetById(userId);
-            var pages = await _repository.GetProductsInShopsPage(user,pagingModel, filter);
+            
+            var pages = await _repository.GetProductsInShopsPage(pagingModel, filter);
             
             var result = _mapper.Map<PageModelDTO<ProductDTOWithPrice>>(pages);
 
             return result;
         }
-        public override async Task<Guid> Create(Guid userId, CreateProductDTO createDTO)
+        public override async Task<Guid> Create(CreateProductDTO createDTO)
         {
             var category = _categoryRepository.GetById(createDTO.CategoryId);
             if (category == default)
             {
                 throw new CategoryNotFoundException();
             }
-            var result = await base.Create(userId, createDTO);
-            await _imageService.CreateManyImages(userId, createDTO.Photos, result);
+            var result = await base.Create(createDTO);
+            await _imageService.CreateManyImages(createDTO.Photos, result);
             return result;
         }
 
-        public override Task<UpdateProductDTO> Update(Guid userId, UpdateProductDTO DTO)
+        public override async Task Update(UpdateProductDTO DTO)
         {
             var category = _categoryRepository.GetById(DTO.CategoryId);
             if (category == default)
             {
                 throw new CategoryNotFoundException();
             }
-            return base.Update(userId, DTO);
+            await base.Update(DTO);
         }
 
-        public async Task AddProductsFromExcelFile(Guid userId, IFormFile excelFile) 
+        public async Task AddProductsFromExcelFile(IFormFile excelFile) 
         {
             var list = new List<ExcelProductModel>();
             using(var stream = new MemoryStream())
@@ -139,7 +137,7 @@ namespace Logic.Services
                 var tier1Category = await _categoryRepository.GetCategoryByName(item.Tier1CategoryName);
                 if(tier1Category == default)
                 {
-                   productCategory =  await _categoryService.Create(userId, new CreateCategoryDTO { Name = item.Tier1CategoryName, ParentCategoryId = null });
+                   productCategory =  await _categoryService.Create(new CreateCategoryDTO { Name = item.Tier1CategoryName, ParentCategoryId = null });
                 }
                 else
                 {
@@ -150,7 +148,7 @@ namespace Logic.Services
                    var tier2Category = await _categoryRepository.GetCategoryByName(item.Tier2CategoryName);
                    if(tier2Category == default)
                    {
-                        productCategory = await _categoryService.Create(userId, new CreateCategoryDTO { Name = item.Tier2CategoryName, ParentCategoryId = productCategory });
+                        productCategory = await _categoryService.Create(new CreateCategoryDTO { Name = item.Tier2CategoryName, ParentCategoryId = productCategory });
                    }
                    else
                    {
@@ -163,7 +161,7 @@ namespace Logic.Services
                    var tier3Category = await _categoryRepository.GetCategoryByName(item.Tier3CategoryName);
                    if(tier3Category == default)
                    {
-                        productCategory = await _categoryService.Create(userId, new CreateCategoryDTO { Name = item.Tier3CategoryName, ParentCategoryId = productCategory });
+                        productCategory = await _categoryService.Create(new CreateCategoryDTO { Name = item.Tier3CategoryName, ParentCategoryId = productCategory });
                    }
                    else
                    {
@@ -176,7 +174,7 @@ namespace Logic.Services
                    var tier4Category = await _categoryRepository.GetCategoryByName(item.Tier4CategoryName);
                    if(tier4Category == default)
                    {
-                        productCategory = await _categoryService.Create(userId, new CreateCategoryDTO { Name = item.Tier4CategoryName, ParentCategoryId = productCategory });
+                        productCategory = await _categoryService.Create(new CreateCategoryDTO { Name = item.Tier4CategoryName, ParentCategoryId = productCategory });
                    }
                    else
                    {
@@ -199,16 +197,16 @@ namespace Logic.Services
                     var product = _mapper.Map<ProductEntity>(item);
                     product.CategoryId = productCategory;
                     product.Country = country;
-                    await _repository.Create(userId, product);
-                    await _imageService.CreateManyImages(userId, item.Photos, product.Id);
+                    await _repository.Create(product);
+                    await _imageService.CreateManyImages(item.Photos, product.Id);
                 }
                 else
                 {
                     _mapper.Map(item, existingProduct);
                     existingProduct.CategoryId = productCategory;
                     existingProduct.Country = country;
-                    await _repository.Update(userId, existingProduct);
-                    await _imageService.CreateManyImages(userId,item.Photos,existingProduct.Id); 
+                    await _repository.Update(existingProduct);
+                    await _imageService.CreateManyImages(item.Photos,existingProduct.Id); 
                 }
             }
             
