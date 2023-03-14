@@ -9,6 +9,7 @@ namespace Data.DTO.Shop
         public string INN { get; set; }
         public bool Blocked { get; set; }
         public Guid SellerId { get; set; }
-        public string? ImagePath { get; set; }
+        public string ImagePath { get; set; }
+
     }
 }

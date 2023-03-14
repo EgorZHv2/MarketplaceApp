@@ -20,7 +20,7 @@ namespace WebAPi.Mappers
             CreateMap<RegistrationDTO, UserEntity>();
 
            
-            CreateMap<ShopEntity, ShopDTO>().ForMember(x => x.ImagePath, opt => opt.Ignore());;
+            //CreateMap<ShopEntity, ShopDTO>().ForMember(x => x.ImagePath, opt => opt.Ignore());
             CreateMap<PageModelDTO<ShopEntity>, PageModelDTO<ShopDTO>>();
             CreateMap<CreateShopDTO, ShopEntity>()
                 .ForMember(e => e.ShopPaymentMethods, opt => opt.Ignore())

@@ -347,20 +347,20 @@ namespace Logic.Services
             var pages = await _repository.GetPage(pagingModel, filter);
             string basepath = _options.BaseImagePath;
             var result = _mapper.Map<PageModelDTO<ShopDTO>>(pages);
-            foreach (var shop in result.Values)
-            {
-                var fileinfo = await _staticFileInfoRepository.GetByParentId(shop.Id);
-                if (fileinfo != null)
-                {
-                    shop.ImagePath =
-                        basepath
-                        + fileinfo.ParentEntityId.ToString()
-                        + "/"
-                        + fileinfo.Name
-                        + "."
-                        + fileinfo.Extension;
-                }
-            }
+            //foreach (var shop in result.Values)
+            //{
+            //    var fileinfo = await _staticFileInfoRepository.GetByParentId(shop.Id);
+            //    if (fileinfo != null)
+            //    {
+            //        shop.ImagePath =
+            //            basepath
+            //            + fileinfo.ParentEntityId.ToString()
+            //            + "/"
+            //            + fileinfo.Name
+            //            + "."
+            //            + fileinfo.Extension;
+            //    }
+            //}
             return result;
         }
 
