@@ -10,10 +10,7 @@ namespace Data.DTO.Product
 {
     public class ExcelProductModel
     {
-        public string? Tier1CategoryName { get; set; }
-        public string? Tier2CategoryName { get; set; }
-        public string? Tier3CategoryName { get; set; }
-        public string? Tier4CategoryName { get; set; }
+        public Queue<string> CategoriesNames { get; set; } = new Queue<string>();
         public int? PartNumber { get; set; }
         public string? Name { get; set; }
         public string? Description { get; set; }
