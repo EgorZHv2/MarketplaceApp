@@ -10,6 +10,6 @@ namespace Logic.Interfaces
     {
         Task Upload(string directory,string fileName,Stream datastream);
         Task Delete(string filePath);
-        Task UploadFromWeb(string directory, string fileName, string webPath);
+        
     }
 }

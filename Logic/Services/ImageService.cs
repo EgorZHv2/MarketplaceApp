@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Net;
 
 namespace Logic.Services
 {
@@ -36,7 +37,11 @@ namespace Logic.Services
             }
             var fileName = Guid.NewGuid().ToString();
             var folderName = _options.BaseImagePath + entityId.ToString();
-            await _fileservice.UploadFromWeb(folderName, fileName + "." + fileExtension, webPath);
+            var request = HttpWebRequest.Create(webPath);
+            var response = request.GetResponse();
+            await _fileservice.Upload(folderName,fileName + "." + fileExtension, response.GetResponseStream());
+            
+    
             var entity = new StaticFileInfoEntity
             {
                 Extension = fileExtension,
@@ -130,9 +135,11 @@ namespace Logic.Services
                 {
                     throw new WrongExtensionException();
                 }
-                var fileName = Guid.NewGuid().ToString();
+                var fileName = Guid.NewGuid().ToString(); ;
                 var folderName = _options.BaseImagePath + entityId.ToString();
-                await _fileservice.UploadFromWeb(folderName, fileName + "." +fileExtension, webPath);
+                var request = HttpWebRequest.Create(webPath);
+                var response = request.GetResponse();
+                await _fileservice.Upload(folderName, fileName + "." + fileExtension, response.GetResponseStream());
                 StaticFileInfoEntity entity = new StaticFileInfoEntity
                 {
                     Extension = fileExtension,

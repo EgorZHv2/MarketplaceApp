@@ -30,16 +30,7 @@ namespace Logic.Services
             File.Delete(filePath);
             return Task.CompletedTask;
         }
-        public  Task UploadFromWeb(string directory,string fileName,string webPath)
-        {
-            CheckDirectoryAndCreateIfNotExist(directory);
-            var uri = new Uri(webPath);
-            using(var client = new WebClient())
-            {
-                client.DownloadFileAsync(uri, directory + "/" + fileName);
-            }
-            return Task.CompletedTask;
-        }
+      
 
         private void CheckDirectoryAndCreateIfNotExist(string directory)
         {
