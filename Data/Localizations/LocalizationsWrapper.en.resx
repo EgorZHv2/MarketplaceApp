@@ -138,6 +138,9 @@
   <data name="DeliveryTypeNotFoundException" xml:space="preserve">
     <value>Delivery type not found</value>
   </data>
+  <data name="DirectoryNotFoundException" xml:space="preserve">
+    <value>Directory not found</value>
+  </data>
   <data name="EmailInUseException" xml:space="preserve">
     <value>Email already in user</value>
   </data>

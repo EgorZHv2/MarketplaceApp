@@ -138,6 +138,9 @@
   <data name="DeliveryTypeNotFoundException" xml:space="preserve">
     <value>Тип доставки не найден</value>
   </data>
+  <data name="DirectoryNotFoundException" xml:space="preserve">
+    <value>Папка не найдена</value>
+  </data>
   <data name="EmailInUseException" xml:space="preserve">
     <value>Email уже используется</value>
   </data>

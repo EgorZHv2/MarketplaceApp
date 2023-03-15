@@ -25,10 +25,11 @@ namespace Logic.Services
             
             if (!File.Exists(filePath))
             {
-                throw new DirectoryNotFoundException("Папка не найдена");
+                throw new DirectoryNotFoundException();
             }
             File.Delete(filePath);
             return Task.CompletedTask;
+            
         }
       
 

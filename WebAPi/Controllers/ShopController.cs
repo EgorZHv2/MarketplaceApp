@@ -73,7 +73,7 @@ namespace WebAPi.Controllers
         /// <param name="model"></param>
         /// <param name="filter"></param>
         /// <returns></returns>
-        [Authorize]
+        //[Authorize]
         [HttpGet]
         public async Task<IActionResult> GetPage([FromQuery] PaginationDTO model, [FromQuery] ShopFilterDTO filter)
         {

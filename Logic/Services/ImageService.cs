@@ -28,7 +28,7 @@ namespace Logic.Services
             _staticFileInfo = staticFileInfo;
         }
 
-        public async Task CreateImage(string webPath, Guid entityId)
+        public async Task<Guid> CreateImage(string webPath, Guid entityId)
         {
             var fileExtension = webPath.Split("/").Last().Split(".").Last();
             if (!_options.AllowedImageExtensions.Contains(fileExtension))
@@ -53,10 +53,10 @@ namespace Logic.Services
             {
                 await DeleteAllImagesByParentId(entityId);
             }
-            await _staticFileInfo.Create(entity);
+            return  await _staticFileInfo.Create(entity);
         }
 
-        public async Task CreateImage(IFormFile file, Guid entityId)
+        public async Task<Guid> CreateImage(IFormFile file, Guid entityId)
         {
             var fileExtension = file.FileName.Split(".").Last();
             if (!_options.AllowedImageExtensions.Contains(fileExtension))
@@ -85,16 +85,17 @@ namespace Logic.Services
                 await DeleteAllImagesByParentId(entityId);
             }
 
-            await _staticFileInfo.Create(entity);
+            return  await _staticFileInfo.Create(entity);
         }
 
-        public async Task CreateManyImages(ICollection<IFormFile> files, Guid entityId)
+        public async Task<List<Guid>> CreateManyImages(ICollection<IFormFile> files, Guid entityId)
         {
             var existing = await _staticFileInfo.GetAllByParentId(entityId);
             if (existing.Any())
             {
                 await DeleteAllImagesByParentId(entityId);
             }
+            var result = new List<Guid>();
             foreach (var file in files)
             {
                 var fileExtension = file.FileName.Split(".").Last();
@@ -117,17 +118,19 @@ namespace Logic.Services
                     Name = fileName,
                     ParentEntityId = entityId
                 };
-                await _staticFileInfo.Create(entity);
+                result.Add(await _staticFileInfo.Create(entity));
             }
+            return result;
         }
 
-        public async Task CreateManyImages(ICollection<string> webPaths, Guid entityId)
+        public async Task<List<Guid>> CreateManyImages(ICollection<string> webPaths, Guid entityId)
         {
             var existing = await _staticFileInfo.GetAllByParentId(entityId);
             if (existing.Any())
             {
                 await DeleteAllImagesByParentId(entityId);
             }
+            var result = new List<Guid>();
             foreach (var webPath in webPaths)
             {
                 var fileExtension = webPath.Split("/").Last().Split(".").Last();
@@ -146,8 +149,9 @@ namespace Logic.Services
                     Name = fileName,
                     ParentEntityId = entityId
                 };
-                await _staticFileInfo.Create(entity);
+                result.Add(await _staticFileInfo.Create(entity));
             }
+            return result;
         }
 
         public async Task DeleteAllImagesByParentId(Guid id)

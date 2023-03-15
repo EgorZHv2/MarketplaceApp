@@ -52,7 +52,8 @@ namespace Data.Repositories.Repositories
             queryable = filter.SearchQuery is not null
                 ? queryable.Where(e => e.Title.Contains(filter.SearchQuery) || e.Description.Contains(filter.SearchQuery) || e.ShopProducts.Any(e=>e.Description.Contains(filter.SearchQuery)))
                 : queryable;
-            queryable = queryable.Where(e=> e.ShopProducts.Any(e=>e.Price>= filter.MinPrice && e.Price <= filter.MaxPrice));
+            
+            queryable = queryable.Where( e=> e.ShopProducts.Any() ? e.ShopProducts.Any(e=>e.Price>= filter.MinPrice && e.Price <= filter.MaxPrice) : true);
             queryable = filter.DeliveryTypesIds.Any() 
                 ? queryable.Where(e => e.DeliveryTypes.Any(e => filter.DeliveryTypesIds.Contains(e.Id)))
                 : queryable;

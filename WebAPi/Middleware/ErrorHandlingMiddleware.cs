@@ -27,29 +27,39 @@ namespace WebAPi.Middleware
             {
                 string logmessage = $"Date: {DateTime.UtcNow} | Exception: {ex.GetType().Name} | Code: {ex.StatusCode} | Message: {ex.LogMessage}";
                 _logger.LogError(logmessage, ex);
-              
+                string userMessage = stringLocalizer[ex.GetType().Name].Value;
                 switch (ex)
                 {
+                    
                     case CategoryTierException categoryTierException:
-                          ex.UserMessage = stringLocalizer[ex.GetType().Name] + categoryTierException.MaxCategoryTier;
+                          ex.UserMessage = userMessage  + categoryTierException.MaxCategoryTier;
                         break;
                     case AlreadyExistsException alreadyExistsException:
-                        ex.UserMessage = stringLocalizer[ex.GetType().Name] + alreadyExistsException.EntityName;
+                        ex.UserMessage = userMessage + alreadyExistsException.EntityName;
                         break;
                     case RequiredImportPropertyException requiredImportProperty:
-                         ex.UserMessage = stringLocalizer[ex.GetType().Name] + requiredImportProperty.RequiredPropertyName;
+                         ex.UserMessage = userMessage + requiredImportProperty.RequiredPropertyName;
                         break;
                          
                     default:
-                        ex.UserMessage = stringLocalizer[ex.GetType().Name];
+                        ex.UserMessage = userMessage;
                         break;
 
                 }
                
                 await ResponseError(context, ex.UserMessage, ex.StatusCode);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
+                switch (ex)
+                {
+                    case DirectoryNotFoundException directoryNotFound:
+                        ex = new DirectoryNotFoundException(stringLocalizer[ex.GetType().Name].Value);
+                        break;
+                    default:
+                        break;
+
+                }
                 string logmessage = $"Date: {DateTime.UtcNow} | Exception: {ex.GetType().Name} | Message: {ex.Message}";
                 _logger.LogError(logmessage, ex);
                 await ResponseError(context, ex.Message);

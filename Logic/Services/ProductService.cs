@@ -268,15 +268,17 @@ namespace Logic.Services
                     product.CategoryId = parentCategoryId.Value;
                     product.Country = country;
                     await _repository.Create(product);
-                    await _imageService.CreateManyImages(item.Photos, product.Id);
+                    product.ImagesIds = (await _imageService.CreateManyImages(item.Photos, product.Id)).ToArray();
+                    await _repository.Update(product);
                 }
                 else
                 {
                     _mapper.Map(item, existingProduct);
                     existingProduct.CategoryId = parentCategoryId.Value;
                     existingProduct.Country = country;
+                    existingProduct.ImagesIds =  (await _imageService.CreateManyImages(item.Photos, existingProduct.Id)).ToArray();
                     await _repository.Update(existingProduct);
-                    await _imageService.CreateManyImages(item.Photos, existingProduct.Id);
+                    
                 }
             }
         }

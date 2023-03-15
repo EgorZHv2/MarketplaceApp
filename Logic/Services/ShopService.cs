@@ -196,7 +196,7 @@ namespace Logic.Services
 
             if (updateDTO.Image != null)
             {
-                await _imageService.CreateImage(updateDTO.Image, updateDTO.Id);
+                shop.ImageId = await  _imageService.CreateImage(updateDTO.Image, updateDTO.Id);
             }
             await _repository.Update(shop);
 

@@ -4,10 +4,10 @@ namespace Logic.Interfaces
 {
     public interface IImageService
     {
-        Task CreateImage(IFormFile file, Guid entityId);
-        Task CreateImage(string webPath, Guid entityId);
-        Task CreateManyImages(ICollection<IFormFile> files, Guid entityId);
-        Task CreateManyImages(ICollection<string> webPaths, Guid entityId);
+        Task<Guid> CreateImage(IFormFile file, Guid entityId);
+        Task<Guid> CreateImage(string webPath, Guid entityId);
+        Task<List<Guid>> CreateManyImages(ICollection<IFormFile> files, Guid entityId);
+        Task<List<Guid>> CreateManyImages(ICollection<string> webPaths, Guid entityId);
 
         Task DeleteAllImagesByParentId(Guid id);
     }
