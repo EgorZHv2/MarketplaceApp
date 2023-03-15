@@ -59,10 +59,7 @@ namespace Logic.Services
             var existing = await _repository.GetUserByEmail(model.Email);
             if (existing != null)
             {
-                throw new AlreadyExistsException(
-                    "Пользователь с данной почтой уже существует",
-                    "This user already exists"
-                );
+                throw new AlreadyExistsException(nameof(UserEntity));
             }
 
             var user = _mapper.Map<UserEntity>(model);

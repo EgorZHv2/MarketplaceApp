@@ -8,6 +8,6 @@ namespace Logic.Exceptions
 {
     public class TypeNotFoundException:ApiException
     {
-        public TypeNotFoundException():base("Тип магазина не найден","TypeEntity not found",System.Net.HttpStatusCode.NotFound) { }
+        public TypeNotFoundException():base("TypeEntity not found",System.Net.HttpStatusCode.NotFound) { }
     }
 }

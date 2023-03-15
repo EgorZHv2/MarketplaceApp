@@ -8,6 +8,6 @@ namespace Logic.Exceptions
 {
     public class DeliveryTypeNotFoundException:ApiException
     {
-        public DeliveryTypeNotFoundException() : base("Способ доставки не найден", "Delivery type not found", System.Net.HttpStatusCode.NotFound) { }
+        public DeliveryTypeNotFoundException() : base("Delivery type not found", System.Net.HttpStatusCode.NotFound) { }
     }
 }

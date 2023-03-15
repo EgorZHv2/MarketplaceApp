@@ -8,6 +8,6 @@ namespace Logic.Exceptions
 {
     public class WrongVerificationCodeException:ApiException
     {
-        public WrongVerificationCodeException() : base("Неверный код подтверждения", "Wrong verification code", System.Net.HttpStatusCode.Unauthorized) { }
+        public WrongVerificationCodeException() : base("Wrong verification code", System.Net.HttpStatusCode.Unauthorized) { }
     }
 }

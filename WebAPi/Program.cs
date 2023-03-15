@@ -3,12 +3,16 @@ using Data.Extensions;
 using Data.IRepositories;
 using Data.Options;
 using Logic.Extensions;
+using Logic.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Globalization;
 using System.Text;
 using WebAPi.Middleware;
 
@@ -18,11 +22,20 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 });
 
 // Add services to the container.
+var supportCultures = new[]
+{  new CultureInfo("en"),
+    new CultureInfo("ru")
+   
+};
 
+
+builder.Services.AddLocalization();
+//builder.Services.AddScoped<IStringLocalizer, MyStringLocalizer>();
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
 {
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-});
+}).AddMvcLocalization();
+
 
 //builder.Services.AddControllers().AddJsonOptions(options =>
 //{
@@ -123,6 +136,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("ru"),
+    SupportedCultures = supportCultures,
+    SupportedUICultures = supportCultures
+});
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

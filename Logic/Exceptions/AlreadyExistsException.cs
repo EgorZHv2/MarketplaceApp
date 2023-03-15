@@ -4,8 +4,10 @@ namespace Logic.Exceptions
 {
     public class AlreadyExistsException : ApiException
     {
-        public AlreadyExistsException(string userMessage, string logMessage) : base(userMessage, logMessage, HttpStatusCode.Conflict)
+        public string EntityName { get; set; }
+        public AlreadyExistsException(string entityname) : base(entityname + " already exists", HttpStatusCode.Conflict)
         {
+            EntityName = entityname;
         }
     }
 }

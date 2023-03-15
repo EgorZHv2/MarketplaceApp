@@ -8,7 +8,7 @@ namespace Logic.Exceptions
 {
     public class EmailInUseException:ApiException
     {
-        public EmailInUseException():base("Почта уже используется","Email already in user",System.Net.HttpStatusCode.Conflict) { }
+        public EmailInUseException():base("Email already in user",System.Net.HttpStatusCode.Conflict) { }
     }
 
 }

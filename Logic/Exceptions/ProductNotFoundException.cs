@@ -8,6 +8,6 @@ namespace Logic.Exceptions
 {
     public class ProductNotFoundException:ApiException
     {
-        public ProductNotFoundException():base("Продукт не найден","Product not found", System.Net.HttpStatusCode.NotFound) { }
+        public ProductNotFoundException():base("Product not found", System.Net.HttpStatusCode.NotFound) { }
     }
 }

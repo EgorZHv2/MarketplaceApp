@@ -8,9 +8,8 @@ namespace Logic.Exceptions
         public string LogMessage { get; set; }
         public HttpStatusCode StatusCode { get; set; }
 
-        public ApiException(string userMessage, string logMessage, HttpStatusCode statusCode)
+        public ApiException(string logMessage, HttpStatusCode statusCode)
         {
-            UserMessage = userMessage;
             LogMessage = logMessage;
             StatusCode = statusCode;
         }

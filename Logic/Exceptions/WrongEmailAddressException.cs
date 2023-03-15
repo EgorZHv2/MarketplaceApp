@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Logic.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -9,6 +10,6 @@ namespace Logic.Exceptions
 {
     public class WrongEmailAddressException:ApiException
     {
-        public WrongEmailAddressException():base("Неверный Email адрес","Wrong Email address",HttpStatusCode.NotFound) { }
+        public WrongEmailAddressException():base("Wrong Email address",HttpStatusCode.NotFound) { }
     }
 }

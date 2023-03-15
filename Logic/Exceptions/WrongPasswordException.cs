@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Logic.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,6 @@ namespace Logic.Exceptions
 {
     public class WrongPasswordException:ApiException
     {
-        public WrongPasswordException():base("Неверный пароль","Wrong password",System.Net.HttpStatusCode.Unauthorized) { }
+        public WrongPasswordException() : base("Wrong password",System.Net.HttpStatusCode.Unauthorized) { }
     }
 }

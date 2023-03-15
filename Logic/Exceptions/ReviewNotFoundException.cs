@@ -8,6 +8,6 @@ namespace Logic.Exceptions
 {
     public class ReviewNotFoundException:ApiException
     {
-        public ReviewNotFoundException():base("Отзыв не найден","Review not found", System.Net.HttpStatusCode.NotFound) { }
+        public ReviewNotFoundException():base("Review not found", System.Net.HttpStatusCode.NotFound) { }
     }
 }

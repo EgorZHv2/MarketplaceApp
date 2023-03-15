@@ -8,6 +8,10 @@ namespace Logic.Exceptions
 {
     public class CategoryTierException:ApiException
     {
-        public CategoryTierException(int maxtier) : base($"Максимальный уровень категории {maxtier}","Category tier over max tier",System.Net.HttpStatusCode.BadRequest) { }
+        public int MaxCategoryTier { get; set; }
+        public CategoryTierException(int maxtier) : base("Category tier over max tier",System.Net.HttpStatusCode.BadRequest) 
+        {
+            MaxCategoryTier = maxtier;
+        }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using Data.DTO;
+using Data.Localizations;
 using Logic.Exceptions;
+using Microsoft.Extensions.Localization;
 using System.Net;
 
 namespace WebAPi.Middleware
@@ -15,7 +17,7 @@ namespace WebAPi.Middleware
             _logger = logger;
         }
 
-        public async Task InvokeAsync(HttpContext context)
+        public async Task InvokeAsync(HttpContext context,IStringLocalizer<LocalizationsWrapper> stringLocalizer)
         {
             try
             {
@@ -25,6 +27,25 @@ namespace WebAPi.Middleware
             {
                 string logmessage = $"Date: {DateTime.UtcNow} | Exception: {ex.GetType().Name} | Code: {ex.StatusCode} | Message: {ex.LogMessage}";
                 _logger.LogError(logmessage, ex);
+              
+                switch (ex)
+                {
+                    case CategoryTierException categoryTierException:
+                          ex.UserMessage = stringLocalizer[ex.GetType().Name] + categoryTierException.MaxCategoryTier;
+                        break;
+                    case AlreadyExistsException alreadyExistsException:
+                        ex.UserMessage = stringLocalizer[ex.GetType().Name] + alreadyExistsException.EntityName;
+                        break;
+                    case RequiredImportPropertyException requiredImportProperty:
+                         ex.UserMessage = stringLocalizer[ex.GetType().Name] + requiredImportProperty.RequiredPropertyName;
+                        break;
+                         
+                    default:
+                        ex.UserMessage = stringLocalizer[ex.GetType().Name];
+                        break;
+
+                }
+               
                 await ResponseError(context, ex.UserMessage, ex.StatusCode);
             }
             catch(Exception ex)

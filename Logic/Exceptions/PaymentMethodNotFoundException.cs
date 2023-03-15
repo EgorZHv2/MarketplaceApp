@@ -8,6 +8,6 @@ namespace Logic.Exceptions
 {
     public class PaymentMethodNotFoundException:ApiException
     {
-        public PaymentMethodNotFoundException():base("Тип оплаты не найден","Payment method not found",System.Net.HttpStatusCode.NotFound) { }
+        public PaymentMethodNotFoundException():base("Payment method not found",System.Net.HttpStatusCode.NotFound) { }
     }
 }

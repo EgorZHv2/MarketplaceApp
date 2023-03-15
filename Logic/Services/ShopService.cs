@@ -292,10 +292,7 @@ namespace Logic.Services
             var existing = await _usersFavoriteShops.GetFavByShopAndUserId(_userData.Id, shopId);
             if (existing != null)
             {
-                throw new AlreadyExistsException(
-                    "Магазин уже в избранном",
-                    "Shop already in favorites table"
-                );
+                throw new AlreadyExistsException(nameof(ShopEntity));
             }
             if (user == null)
             {

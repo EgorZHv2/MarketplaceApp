@@ -8,6 +8,6 @@ namespace Logic.Exceptions
 {
     public class GenericEntityNotFoundException:ApiException
     {
-        public GenericEntityNotFoundException():base("Объект не найден","Entity not found",System.Net.HttpStatusCode.NotFound) { }
+        public GenericEntityNotFoundException():base("Entity not found",System.Net.HttpStatusCode.NotFound) { }
     }
 }

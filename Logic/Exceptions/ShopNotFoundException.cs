@@ -8,6 +8,6 @@ namespace Logic.Exceptions
 {
     public class ShopNotFoundException:ApiException
     {
-         public ShopNotFoundException():base("Магазин не найден","Shop not found", System.Net.HttpStatusCode.NotFound) { }
+         public ShopNotFoundException():base("Shop not found", System.Net.HttpStatusCode.NotFound) { }
     }
 }

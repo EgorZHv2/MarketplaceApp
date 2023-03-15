@@ -8,6 +8,6 @@ namespace Logic.Exceptions
 {
     public class CategoryNotFoundException:ApiException
     {
-        public CategoryNotFoundException():base("Категория не найдена","Category not found",System.Net.HttpStatusCode.NotFound) { }
+        public CategoryNotFoundException():base("Category not found",System.Net.HttpStatusCode.NotFound) { }
     }
 }

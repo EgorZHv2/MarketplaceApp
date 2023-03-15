@@ -8,6 +8,6 @@ namespace Logic.Exceptions
 {
     public class BlockedUserException:ApiException
     {
-        public BlockedUserException():base("Пользователь заблокирован","User blocked", System.Net.HttpStatusCode.Forbidden) { }
+        public BlockedUserException():base("User blocked", System.Net.HttpStatusCode.Forbidden) { }
     }
 }

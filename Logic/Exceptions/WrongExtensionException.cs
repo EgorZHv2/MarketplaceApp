@@ -4,7 +4,7 @@ namespace Logic.Exceptions
 {
     public class WrongExtensionException : ApiException
     {
-        public WrongExtensionException() : base("Неверное расширение файла", "Wrong file extension", HttpStatusCode.UnsupportedMediaType)
+        public WrongExtensionException() : base("Wrong file extension", HttpStatusCode.UnsupportedMediaType)
         {
         }
     }

@@ -8,6 +8,6 @@ namespace Logic.Exceptions
 {
     public class UserNotFoundException:ApiException
     {
-         public UserNotFoundException():base("Пользователь не найден","User not found", System.Net.HttpStatusCode.NotFound) { }
+         public UserNotFoundException():base("User not found", System.Net.HttpStatusCode.NotFound) { }
     }
 }

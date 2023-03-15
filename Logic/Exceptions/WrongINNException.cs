@@ -8,6 +8,6 @@ namespace Logic.Exceptions
 {
     public class WrongINNException:ApiException
     {
-        public WrongINNException() : base("Неверный ИНН", "INN not found", System.Net.HttpStatusCode.NotFound) { }
+        public WrongINNException() : base("INN not found", System.Net.HttpStatusCode.NotFound) { }
     }
 }

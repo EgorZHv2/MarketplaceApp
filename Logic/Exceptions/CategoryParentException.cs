@@ -4,7 +4,7 @@ namespace Logic.Exceptions
 {
     public class CategoryParentException : ApiException
     {
-        public CategoryParentException() : base("У категории не может быть родителя являющегося её потомком", "Parent category is child category", HttpStatusCode.BadRequest)
+        public CategoryParentException() : base("Parent category is child category", HttpStatusCode.BadRequest)
         {
         }
     }

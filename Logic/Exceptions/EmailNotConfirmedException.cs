@@ -8,6 +8,6 @@ namespace Logic.Exceptions
 {
     public class EmailNotConfirmedException:ApiException
     {
-        public EmailNotConfirmedException():base("Почта не подтверждена","Email not confirmed",System.Net.HttpStatusCode.Forbidden) { }
+        public EmailNotConfirmedException():base("Email not confirmed",System.Net.HttpStatusCode.Forbidden) { }
     }
 }

@@ -8,6 +8,10 @@ namespace Logic.Exceptions
 {
     public class RequiredImportPropertyException:ApiException
     {
-        public RequiredImportPropertyException(string propertyName) : base($"Нужно заполнить все обязательные поля. Поле {propertyName} было пустым", $"Required property {propertyName} was null", System.Net.HttpStatusCode.BadRequest) { }
+        public string RequiredPropertyName { get; set; }
+        public RequiredImportPropertyException(string propertyName) : base($"Required property {propertyName} was null", System.Net.HttpStatusCode.BadRequest) 
+        {
+            RequiredPropertyName = propertyName;
+        }
     }
 }
