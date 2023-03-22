@@ -15,6 +15,7 @@ namespace Data.Options
         public int MaxCategoryTier { get; set; }
         public string JwtAuthKey { get; set; }
         public int JwtTimeInMinutes { get; set; }
+        public string FileControllerPath { get; set; }
 
     }
 }

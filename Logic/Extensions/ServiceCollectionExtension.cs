@@ -31,6 +31,9 @@ namespace Logic.Extensions
             services.AddScoped<IProductService,ProductService>();
             services.AddScoped<IFileService,FIleService>();
             services.AddScoped<IXMLService, XMLService>();
+            
+            services.AddScoped<IHttpService, HttpService>();
+            services.AddHttpClient<IHttpService,HttpService>().SetHandlerLifetime(TimeSpan.FromMinutes(60));
         }
     }
 }

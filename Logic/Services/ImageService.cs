@@ -1,4 +1,5 @@
-﻿using Data.Entities;
+﻿using Data.DTO;
+using Data.Entities;
 using Data.IRepositories;
 using Data.Options;
 using Logic.Exceptions;
@@ -16,16 +17,19 @@ namespace Logic.Services
         private readonly ApplicationOptions _options;
         private readonly IFileService _fileservice;
         private readonly IStaticFileInfoRepository _staticFileInfo;
+        private readonly IHttpService _httpService;
 
         public ImageService(
             IOptions<ApplicationOptions> options,
             IFileService fileService,
-            IStaticFileInfoRepository staticFileInfo
+            IStaticFileInfoRepository staticFileInfo,
+            IHttpService httpService
         )
         {
             _options = options.Value;
             _fileservice = fileService;
             _staticFileInfo = staticFileInfo;
+            _httpService = httpService;
         }
 
         public async Task<Guid> CreateImage(string webPath, Guid entityId)
@@ -63,7 +67,7 @@ namespace Logic.Services
             {
                 throw new WrongExtensionException();
             }
-
+            await _httpService.PostAsync<FileInfoDTO>(_options.FileControllerPath, new CreateFileDTO { EntityId = entityId, File = file });
             var fileName = Guid.NewGuid().ToString();
             var folderName = _options.BaseImagePath + entityId.ToString();
             await _fileservice.Upload(
