@@ -17,19 +17,21 @@ namespace Logic.Services
         private readonly ApplicationOptions _options;
         private readonly IFileService _fileservice;
         private readonly IStaticFileInfoRepository _staticFileInfo;
-        private readonly IHttpService _httpService;
+        private readonly IFileHttpService _fileHttpService;
+
 
         public ImageService(
             IOptions<ApplicationOptions> options,
             IFileService fileService,
             IStaticFileInfoRepository staticFileInfo,
-            IHttpService httpService
+            IFileHttpService fileHttpService
+            
         )
         {
             _options = options.Value;
             _fileservice = fileService;
             _staticFileInfo = staticFileInfo;
-            _httpService = httpService;
+            _fileHttpService = fileHttpService;
         }
 
         public async Task<Guid> CreateImage(string webPath, Guid entityId)
@@ -67,7 +69,7 @@ namespace Logic.Services
             {
                 throw new WrongExtensionException();
             }
-            await _httpService.PostAsync<FileInfoDTO>(_options.FileControllerPath, new CreateFileDTO { EntityId = entityId, File = file });
+            //await _httpService.PostAsync<FileInfoDTO>(_options.FileControllerPath, new CreateFileDTO { EntityId = entityId, File = file });
             var fileName = Guid.NewGuid().ToString();
             var folderName = _options.BaseImagePath + entityId.ToString();
             await _fileservice.Upload(

@@ -1,4 +1,4 @@
-﻿using Logic.Helpers;
+﻿
 using Logic.Interfaces;
 using Logic.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,8 +32,10 @@ namespace Logic.Extensions
             services.AddScoped<IFileService,FIleService>();
             services.AddScoped<IXMLService, XMLService>();
             
-            services.AddScoped<IHttpService, HttpService>();
-            services.AddHttpClient<IHttpService,HttpService>().SetHandlerLifetime(TimeSpan.FromMinutes(60));
+            services.AddScoped<IBaseHttpService, BaseHttpService>();
+            services.AddHttpClient<IBaseHttpService,BaseHttpService>().SetHandlerLifetime(TimeSpan.FromMinutes(60));
+            services.AddScoped<IFileHttpService, FileHttpService>();
+            services.AddHttpClient<IFileHttpService, FileHttpService>().SetHandlerLifetime(TimeSpan.FromMinutes(60));
         }
     }
 }

@@ -41,6 +41,7 @@ namespace Logic.Services
         private IShopProductRepository _shopProductRepository;
         private IXMLService _XMLService;
         private IUserData _userData;
+        private IFileHttpService _fileHttpService;
 
         public ShopService(
             IShopRepository repository,
@@ -62,7 +63,8 @@ namespace Logic.Services
             IProductRepository productRepository,
             IShopProductRepository shopProductRepository,
             IXMLService XMLService,
-            IUserData userData
+            IUserData userData,
+            IFileHttpService fileHttpService
 
         ) : base(repository, mapper)
         {
@@ -84,6 +86,7 @@ namespace Logic.Services
             _shopProductRepository = shopProductRepository;
             _XMLService = XMLService;
             _userData = userData;
+            _fileHttpService = fileHttpService;
         }
 
         public override async Task<Guid> Create(CreateShopDTO createDTO)
@@ -196,7 +199,9 @@ namespace Logic.Services
 
             if (updateDTO.Image != null)
             {
-                shop.ImageId = await  _imageService.CreateImage(updateDTO.Image, updateDTO.Id);
+                var fileInfo =  await _fileHttpService.PostAsync(new CreateFileDTO { File = updateDTO.Image,EntityId = shop.Id});
+                shop.ImageId = fileInfo.Id;
+                shop.ImageLink = fileInfo.FileLink;
             }
             await _repository.Update(shop);
 
@@ -342,22 +347,7 @@ namespace Logic.Services
         {
         
             var pages = await _repository.GetPage(pagingModel, filter);
-            string basepath = _options.BaseImagePath;
             var result = _mapper.Map<PageModelDTO<ShopDTO>>(pages);
-            //foreach (var shop in result.Values)
-            //{
-            //    var fileinfo = await _staticFileInfoRepository.GetByParentId(shop.Id);
-            //    if (fileinfo != null)
-            //    {
-            //        shop.ImagePath =
-            //            basepath
-            //            + fileinfo.ParentEntityId.ToString()
-            //            + "/"
-            //            + fileinfo.Name
-            //            + "."
-            //            + fileinfo.Extension;
-            //    }
-            //}
             return result;
         }
 

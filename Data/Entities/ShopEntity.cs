@@ -9,7 +9,7 @@
         public Guid SellerId { get; set; }
         public UserEntity Seller { get; set; }
         public Guid? ImageId { get; set; }
-        
+        public string? ImageLink { get; set; }
         public List<ReviewEntity> Reviews { get; set; } = new List<ReviewEntity>();
         public List<UserEntity> Users { get; set; } = new List<UserEntity>();
         public List<ProductEntity> Products { get; set; } = new List<ProductEntity>();

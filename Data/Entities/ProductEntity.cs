@@ -20,6 +20,7 @@ namespace Data.Entities
         public double Depth { get; set; }
         public Country Country { get; set; }
         public Guid[]? ImagesIds { get; set; } 
+        public string[]? ImagesLinks { get; set; }
         public List<ShopEntity> Shops { get; set; } = new List<ShopEntity>(); 
         public List<ShopProductEntity> ShopProducts { get; set; } = new List<ShopProductEntity>();
     }

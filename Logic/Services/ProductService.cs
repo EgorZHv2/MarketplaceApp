@@ -20,6 +20,8 @@ using Data.DTO.Category;
 using Data.Enums;
 using Microsoft.Extensions.Options;
 using Data.Options;
+using System.Net;
+using System.IO;
 
 namespace Logic.Services
 {
@@ -33,27 +35,29 @@ namespace Logic.Services
         >,
             IProductService
     {
-        private IUserRepository _userRepository;
+
         private ICategoryRepository _categoryRepository;
         private IImageService _imageService;
         private ICategoryService _categoryService;
         private ApplicationOptions _options;
+        private IFileHttpService _fileHttpService;
 
         public ProductService(
             IProductRepository repository,
             IMapper mapper,
-            IUserRepository userRepository,
             ICategoryRepository categoryRepository,
             IImageService imageService,
             ICategoryService categoryService,
-            IOptions<ApplicationOptions> options
+            IOptions<ApplicationOptions> options,
+            IFileHttpService fileHttpService
         ) : base(repository, mapper)
         {
-            _userRepository = userRepository;
+
             _categoryRepository = categoryRepository;
             _imageService = imageService;
             _categoryService = categoryService;
             _options = options.Value;
+            _fileHttpService = fileHttpService;
         }
 
         public async Task<PageModelDTO<ProductDTO>> GetPage(
@@ -262,13 +266,24 @@ namespace Logic.Services
                     throw new CountryNotFoundException();
                 }
                 var existingProduct = await _repository.GetByPartNumber(item.PartNumber.Value);
+                var imageIds = new List<Guid>();
+                var imageLinks = new List<string>();
                 if (existingProduct == default)
                 {
                     var product = _mapper.Map<ProductEntity>(item);
                     product.CategoryId = parentCategoryId.Value;
                     product.Country = country;
                     await _repository.Create(product);
-                    product.ImagesIds = (await _imageService.CreateManyImages(item.Photos, product.Id)).ToArray();
+                    foreach(var photoLink in item.Photos)
+                    {
+                      
+                        var fileInfo = await _fileHttpService.PostFileFromLinkAsync(new CreateFileFromLinkDTO { EntityId = product.Id, FileLink = photoLink });
+                        imageIds.Add(fileInfo.Id);
+                        imageLinks.Add(fileInfo.FileLink);
+                    }
+                    product.ImagesLinks = imageLinks.ToArray();
+                    product.ImagesIds = imageIds.ToArray();
+                    
                     await _repository.Update(product);
                 }
                 else
@@ -276,7 +291,15 @@ namespace Logic.Services
                     _mapper.Map(item, existingProduct);
                     existingProduct.CategoryId = parentCategoryId.Value;
                     existingProduct.Country = country;
-                    existingProduct.ImagesIds =  (await _imageService.CreateManyImages(item.Photos, existingProduct.Id)).ToArray();
+                    foreach(var photoLink in item.Photos)
+                    {
+                                           
+                        var fileInfo = await _fileHttpService.PostFileFromLinkAsync(new CreateFileFromLinkDTO { EntityId = existingProduct.Id, FileLink = photoLink });
+                        imageIds.Add(fileInfo.Id);
+                        imageLinks.Add(fileInfo.FileLink);
+                    }
+                    existingProduct.ImagesLinks = imageLinks.ToArray();
+                        existingProduct.ImagesIds = imageIds.ToArray();
                     await _repository.Update(existingProduct);
                     
                 }

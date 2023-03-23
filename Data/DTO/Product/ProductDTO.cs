@@ -20,6 +20,7 @@ namespace Data.DTO.Product
         public double Height { get; set; }
         public double Depth { get; set; }
         public Country Country { get; set; }
-        public List<string> ImagePaths { get; set; } = new List<string>();
+        public string[]? ImagesLinks { get; set; }
+       
     }
 }

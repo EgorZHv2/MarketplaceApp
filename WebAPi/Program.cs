@@ -3,7 +3,6 @@ using Data.Extensions;
 using Data.IRepositories;
 using Data.Options;
 using Logic.Extensions;
-using Logic.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
@@ -30,18 +29,17 @@ var supportCultures = new[]
 
 
 builder.Services.AddLocalization();
-//builder.Services.AddScoped<IStringLocalizer, MyStringLocalizer>();
-//builder.Services.AddControllers().AddNewtonsoftJson(options =>
-//{
-//    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-//}).AddMvcLocalization();
-
-
-builder.Services.AddControllers().AddJsonOptions(options =>
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
 {
-    options.JsonSerializerOptions.WriteIndented = true;
-    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
-});
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+}).AddMvcLocalization();
+
+
+//builder.Services.AddControllers().AddJsonOptions(options =>
+//{
+//    options.JsonSerializerOptions.WriteIndented = true;
+//    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+//});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
