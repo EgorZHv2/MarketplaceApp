@@ -11,5 +11,6 @@ namespace Logic.Interfaces
     {
         Task<FileInfoDTO> PostAsync(CreateFileDTO dto);
         Task<FileInfoDTO> PostFileFromLinkAsync(CreateFileFromLinkDTO dto);
+        Task DeleteFilesByParentId(Guid parentId);
     }
 }

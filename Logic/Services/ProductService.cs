@@ -60,6 +60,11 @@ namespace Logic.Services
             _fileHttpService = fileHttpService;
         }
 
+        public override async Task Delete(Guid entityId)
+        {
+            await _fileHttpService.DeleteFilesByParentId( entityId );
+            await base.Delete(entityId);
+        }
         public async Task<PageModelDTO<ProductDTO>> GetPage(
             PaginationDTO pagingModel,
             ProductFilterDTO filter

@@ -88,7 +88,11 @@ namespace Logic.Services
             _userData = userData;
             _fileHttpService = fileHttpService;
         }
-
+        public override async Task Delete(Guid entityId)
+        {
+            await _fileHttpService.DeleteFilesByParentId(entityId);
+            await base.Delete(entityId);
+        }
         public override async Task<Guid> Create(CreateShopDTO createDTO)
         {
             if (!_iNNService.CheckINN(createDTO.INN))

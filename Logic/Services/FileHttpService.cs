@@ -52,6 +52,16 @@ namespace Logic.Services
             var result = await FromHttpResponseMessage<FileInfoDTO>(response);
             return result;
         }
+        public async Task DeleteFilesByParentId(Guid parentId)
+        {
+            var httpRequest = new HttpRequestMessage
+            {
+                RequestUri = new Uri(_options.FileControllerPath + "/by-parent-id/" + parentId.ToString(), UriKind.RelativeOrAbsolute),
+                Method = HttpMethod.Delete
+            };
+            var response = await _httpClient.SendAsync(httpRequest);
+            
+        }
 
     }
 }
