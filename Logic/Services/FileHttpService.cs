@@ -34,7 +34,7 @@ namespace Logic.Services
                 Content = form,
                 
             };
-            httpRequest.Headers.Add("Authorization", _userData.JWToken);
+            httpRequest.Headers.Add("Authorization", "Bearer " + _userData.JWToken);
             var response = await _httpClient.SendAsync(httpRequest);
             var result = await FromHttpResponseMessage<FileInfoDTO>(response);
             return result;
@@ -50,7 +50,7 @@ namespace Logic.Services
                 Method = HttpMethod.Post,
                 Content = form
             };
-            httpRequest.Headers.Add("Authorization", _userData.JWToken);
+            httpRequest.Headers.Add("Authorization", "Bearer " + _userData.JWToken);
             var response = await _httpClient.SendAsync(httpRequest);
             if (!response.IsSuccessStatusCode)
             {
@@ -66,7 +66,7 @@ namespace Logic.Services
                 RequestUri = new Uri(_options.FileControllerPath + "/by-parent-id/" + parentId.ToString(), UriKind.RelativeOrAbsolute),
                 Method = HttpMethod.Delete
             };
-            httpRequest.Headers.Add("Authorization", _userData.JWToken);
+           httpRequest.Headers.Add("Authorization", "Bearer " + _userData.JWToken);
             var response = await _httpClient.SendAsync(httpRequest);
             
         }

@@ -69,11 +69,13 @@ namespace WebAPi.Middleware
         public async Task ResponseError(HttpContext context, string message, HttpStatusCode code = HttpStatusCode.InternalServerError)
         {
             context.Response.StatusCode = (int)code;
+            context.Response.Headers["Content-Type"] = "application/json";
             await context.Response.WriteAsJsonAsync(new ErrorResponseDTO()
             {
                 Message = message,
                 StatusCode = context.Response.StatusCode
-            }.ToJson());
+
+            });
         }
     }
 }
