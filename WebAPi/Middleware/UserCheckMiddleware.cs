@@ -43,6 +43,8 @@ namespace WebAPi.Middleware
                 userData.Name = user.FirstName;
                 userData.Id = user.Id;
                 userData.Role = user.Role;
+                userData.JWToken = token;
+                
                
             }
            

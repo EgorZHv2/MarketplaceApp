@@ -16,6 +16,8 @@ namespace Data.Options
         public string JwtAuthKey { get; set; }
         public int JwtTimeInMinutes { get; set; }
         public string FileControllerPath { get; set; }
+        public string ServiceAccessKey { get; set; }
+
 
     }
 }

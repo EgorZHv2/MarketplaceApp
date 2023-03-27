@@ -1,4 +1,5 @@
-﻿using Data.DTO;
+﻿using Data;
+using Data.DTO;
 using Data.Options;
 using Logic.Interfaces;
 using Microsoft.Extensions.Options;
@@ -13,9 +14,12 @@ namespace Logic.Services
     public class FileHttpService:BaseHttpService,IFileHttpService
     {
         private readonly ApplicationOptions _options;
-        public FileHttpService(HttpClient client, IOptions<ApplicationOptions> options) : base(client) 
+        private readonly IUserData _userData;
+        public FileHttpService(HttpClient client, IOptions<ApplicationOptions> options,
+            IUserData userData) : base(client) 
         {
             _options = options.Value;
+            _userData= userData;
         }
 
         public async Task<FileInfoDTO> PostAsync(CreateFileDTO dto)
@@ -27,8 +31,10 @@ namespace Logic.Services
             {
                 RequestUri = new Uri(_options.FileControllerPath,UriKind.RelativeOrAbsolute),
                 Method = HttpMethod.Post,
-                Content = form
+                Content = form,
+                
             };
+            httpRequest.Headers.Add("Authorization", _userData.JWToken);
             var response = await _httpClient.SendAsync(httpRequest);
             var result = await FromHttpResponseMessage<FileInfoDTO>(response);
             return result;
@@ -44,6 +50,7 @@ namespace Logic.Services
                 Method = HttpMethod.Post,
                 Content = form
             };
+            httpRequest.Headers.Add("Authorization", _userData.JWToken);
             var response = await _httpClient.SendAsync(httpRequest);
             if (!response.IsSuccessStatusCode)
             {
@@ -59,6 +66,7 @@ namespace Logic.Services
                 RequestUri = new Uri(_options.FileControllerPath + "/by-parent-id/" + parentId.ToString(), UriKind.RelativeOrAbsolute),
                 Method = HttpMethod.Delete
             };
+            httpRequest.Headers.Add("Authorization", _userData.JWToken);
             var response = await _httpClient.SendAsync(httpRequest);
             
         }
