@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AlreadyExistsException" xml:space="preserve">
-    <value>Объект уже существует:</value>
+    <value>Объект уже существует: {0}</value>
   </data>
   <data name="BlockedUserException" xml:space="preserve">
     <value>Пользователь заблокирован</value>
@@ -130,7 +130,7 @@
     <value>Категория не может иметь родительскую в потомках</value>
   </data>
   <data name="CategoryTierException" xml:space="preserve">
-    <value>$Максимальный уровень категории: {maxtier}</value>
+    <value>Максимальный уровень категории: {0}</value>
   </data>
   <data name="CountryNotFoundException" xml:space="preserve">
     <value>Страна не найдена</value>
@@ -140,6 +140,9 @@
   </data>
   <data name="DirectoryNotFoundException" xml:space="preserve">
     <value>Папка не найдена</value>
+  </data>
+  <data name="EmailCodeVerification" xml:space="preserve">
+    <value>Ваш код подтверждения: {0}</value>
   </data>
   <data name="EmailInUseException" xml:space="preserve">
     <value>Email уже используется</value>
@@ -160,7 +163,7 @@
     <value>Продукт не найден</value>
   </data>
   <data name="RequiredImportPropertyException" xml:space="preserve">
-    <value>Требуется необходимое поле для импорта:</value>
+    <value>Требуется необходимое поле для импорта: {0} в строке {1} столбца {2}</value>
   </data>
   <data name="ReviewNotFoundException" xml:space="preserve">
     <value>Отзыв не найден</value>

@@ -3,8 +3,10 @@ using Data;
 using Data.DTO.Auth;
 using Data.Entities;
 using Data.IRepositories;
+using Data.Localizations;
 using Logic.Exceptions;
 using Logic.Interfaces;
+using Microsoft.Extensions.Localization;
 using System.Net;
 using System.Text.RegularExpressions;
 using WebAPi.Interfaces;
@@ -20,7 +22,7 @@ namespace Logic.Services
         private IRandomStringGeneratorService _stringGeneratorService;
         private IEmailService _emailService;
         private IUserData _userData;
-
+        private IStringLocalizer<LocalizationsWrapper> _stringLocalizer;
         public AuthService(
             IUserRepository userRepository,
             IHashService hashService,
@@ -28,7 +30,8 @@ namespace Logic.Services
             IMapper mapper,
             IRandomStringGeneratorService stringGeneratorService,
             IEmailService emailService,
-            IUserData userData
+            IUserData userData,
+            IStringLocalizer<LocalizationsWrapper> stringLocalizer
             
         )
         {
@@ -39,6 +42,7 @@ namespace Logic.Services
             _stringGeneratorService = stringGeneratorService;
             _emailService = emailService;
             _userData = userData;
+            _stringLocalizer = stringLocalizer;
         }
 
         public async Task VerifyEmail(string email, string code)
@@ -89,7 +93,7 @@ namespace Logic.Services
             _emailService.SendEmail(
                 user.Email,
                 "MarketPlaceApp",
-                $"Your verification code = {code}"
+               string.Format(_stringLocalizer["EmailCodeVerification"].Value,code)
             );
             await _userRepository.Create(user);
         }

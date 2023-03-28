@@ -364,7 +364,7 @@ namespace Logic.Services
             }
             var onCreation = new List<ShopProductEntity>();
             var onUpdation = new List<ShopProductEntity>();
-            var deserialized = _XMLService.Deserialize<Shop> (xmlFile);
+            var deserialized = _XMLService.Deserialize<ShopNode> (xmlFile);
             foreach (var item in deserialized.offers)
             {
                 var product = await _productRepository.GetByPartNumber(item.vendorCode);

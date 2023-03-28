@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Marketplace.DTO;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
 using System.Threading.Tasks;
 
 namespace Logic.Exceptions.Handlers
@@ -19,7 +22,8 @@ namespace Logic.Exceptions.Handlers
 
             var statusCode = responseMessage.StatusCode;
             var content = await responseMessage.Content.ReadAsStringAsync();
-            throw new Exception(statusCode + content);
+            var exception = JsonConvert.DeserializeObject<ApiExceptionDTO>(content);
+            throw new ApiException(exception.LogMessage,exception.UserMessage,exception.StatusCode);
         }
     }
 }

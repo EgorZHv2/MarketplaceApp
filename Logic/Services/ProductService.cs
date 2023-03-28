@@ -200,28 +200,28 @@ namespace Logic.Services
                                     }
                                     break;
                                 case ProductExcelColumns.Код:
-                                    entity.PartNumber = int.Parse(worksheet.Cells[row, column].Value?.ToString().Trim() ?? throw new RequiredImportPropertyException(ProductExcelColumns.Код.ToString()));
+                                    entity.PartNumber = int.Parse(worksheet.Cells[row, column].Value?.ToString().Trim() ?? throw new RequiredImportPropertyException(ProductExcelColumns.Код.ToString(),row,column));
                                     break;
                                 case ProductExcelColumns.Название:
-                                    entity.Name = worksheet.Cells[row, column].Value?.ToString().Trim() ?? throw new RequiredImportPropertyException(ProductExcelColumns.Название.ToString());
+                                    entity.Name = worksheet.Cells[row, column].Value?.ToString().Trim() ?? throw new RequiredImportPropertyException(ProductExcelColumns.Название.ToString(),row,column);
                                     break;
                                 case ProductExcelColumns.Описание:
-                                    entity.Description = worksheet.Cells[row, column].Value?.ToString().Trim() ?? throw new RequiredImportPropertyException(ProductExcelColumns.Описание.ToString());
+                                    entity.Description = worksheet.Cells[row, column].Value?.ToString().Trim() ?? throw new RequiredImportPropertyException(ProductExcelColumns.Описание.ToString(), row, column);
                                     break;
                                 case ProductExcelColumns.Вес:
-                                    entity.Weight = double.Parse(worksheet.Cells[row, column].Value?.ToString().Trim() ?? throw new RequiredImportPropertyException(ProductExcelColumns.Вес.ToString()));
+                                    entity.Weight = double.Parse(worksheet.Cells[row, column].Value?.ToString().Trim() ?? throw new RequiredImportPropertyException(ProductExcelColumns.Вес.ToString(), row, column));
                                     break;
                                 case ProductExcelColumns.Ширина:
-                                    entity.Width = double.Parse(worksheet.Cells[row, column].Value?.ToString().Trim() ?? throw new RequiredImportPropertyException(ProductExcelColumns.Ширина.ToString()));
+                                    entity.Width = double.Parse(worksheet.Cells[row, column].Value?.ToString().Trim() ?? throw new RequiredImportPropertyException(ProductExcelColumns.Ширина.ToString(), row, column));
                                     break;
                                 case ProductExcelColumns.Высота:
-                                    entity.Height = double.Parse(worksheet.Cells[row, column].Value?.ToString().Trim() ?? throw new RequiredImportPropertyException(ProductExcelColumns.Высота.ToString()));
+                                    entity.Height = double.Parse(worksheet.Cells[row, column].Value?.ToString().Trim() ?? throw new RequiredImportPropertyException(ProductExcelColumns.Высота.ToString(), row, column));
                                     break;
                                 case ProductExcelColumns.Глубина:
-                                    entity.Depth = double.Parse(worksheet.Cells[row, column].Value?.ToString().Trim() ?? throw new RequiredImportPropertyException(ProductExcelColumns.Глубина.ToString()));
+                                    entity.Depth = double.Parse(worksheet.Cells[row, column].Value?.ToString().Trim() ?? throw new RequiredImportPropertyException(ProductExcelColumns.Глубина.ToString(), row, column));
                                     break;
                                 case ProductExcelColumns.Страна:
-                                    entity.Country = worksheet.Cells[row, column].Value.ToString().Trim() ?? throw new RequiredImportPropertyException(ProductExcelColumns.Страна.ToString());
+                                    entity.Country = worksheet.Cells[row, column].Value.ToString().Trim() ?? throw new RequiredImportPropertyException(ProductExcelColumns.Страна.ToString(), row, column);
                                     break;
                                 case ProductExcelColumns.Фотографии:
                                     entity.Photos = worksheet.Cells[row, column].Value.ToString().Trim().Replace(" ", "").Split(";").ToList();
@@ -261,15 +261,9 @@ namespace Logic.Services
                         parentCategoryId= category.Id;
                     }
                 }
-                var country = default(Country);
-                try
-                {
-                    country = (Country)Enum.Parse(typeof(Country), item.Country);
-                }
-                catch
-                {
-                    throw new CountryNotFoundException();
-                }
+                var country = Country.None;
+                country = Enum.TryParse(item.Country,out country) ? country : default;
+               
                 var existingProduct = await _repository.GetByPartNumber(item.PartNumber.Value);
                 var imageIds = new List<Guid>();
                 var imageLinks = new List<string>();

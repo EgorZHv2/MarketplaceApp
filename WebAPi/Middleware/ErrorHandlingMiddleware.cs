@@ -28,17 +28,21 @@ namespace WebAPi.Middleware
                 string logmessage = $"Date: {DateTime.UtcNow} | Exception: {ex.GetType().Name} | Code: {ex.StatusCode} | Message: {ex.LogMessage}";
                 _logger.LogError(logmessage, ex);
                 string userMessage = stringLocalizer[ex.GetType().Name].Value;
+                if(userMessage == ex.GetType().Name)
+                {
+                    userMessage = ex.UserMessage;
+                }
                 switch (ex)
                 {
                     
                     case CategoryTierException categoryTierException:
-                          ex.UserMessage = userMessage  + categoryTierException.MaxCategoryTier;
+                          ex.UserMessage = string.Format(userMessage,categoryTierException.MaxCategoryTier);
                         break;
                     case AlreadyExistsException alreadyExistsException:
-                        ex.UserMessage = userMessage + alreadyExistsException.EntityName;
+                        ex.UserMessage = string.Format(userMessage, alreadyExistsException.EntityName);
                         break;
                     case RequiredImportPropertyException requiredImportProperty:
-                         ex.UserMessage = userMessage + requiredImportProperty.RequiredPropertyName;
+                         ex.UserMessage = string.Format(userMessage, requiredImportProperty.RequiredPropertyName,requiredImportProperty.Row,requiredImportProperty.Column) ;
                         break;
                          
                     default:

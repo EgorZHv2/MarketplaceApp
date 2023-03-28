@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AlreadyExistsException" xml:space="preserve">
-    <value>Object already exists:</value>
+    <value>Object already exists: {0}</value>
   </data>
   <data name="BlockedUserException" xml:space="preserve">
     <value>User blocked</value>
@@ -130,7 +130,7 @@
     <value>Parent category can't be child itself</value>
   </data>
   <data name="CategoryTierException" xml:space="preserve">
-    <value>Category tier over max category tier</value>
+    <value>Category tier over max category tier {0}</value>
   </data>
   <data name="CountryNotFoundException" xml:space="preserve">
     <value>Country not found</value>
@@ -140,6 +140,9 @@
   </data>
   <data name="DirectoryNotFoundException" xml:space="preserve">
     <value>Directory not found</value>
+  </data>
+  <data name="EmailCodeVerification" xml:space="preserve">
+    <value>Your verification code: {0}</value>
   </data>
   <data name="EmailInUseException" xml:space="preserve">
     <value>Email already in user</value>
@@ -160,7 +163,7 @@
     <value>Product not found</value>
   </data>
   <data name="RequiredImportPropertyException" xml:space="preserve">
-    <value>Need required property:</value>
+    <value>Need required property: {0} in row {1} in column {2}</value>
   </data>
   <data name="ReviewNotFoundException" xml:space="preserve">
     <value>Review not found</value>

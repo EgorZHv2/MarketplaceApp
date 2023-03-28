@@ -8,8 +8,8 @@ using System.Xml.Serialization;
 namespace Data.DTO
 {
     [Serializable]
-
-    public class Offer
+    [XmlType("offer")]
+    public class OfferNode
     {
         
         public decimal price { get; set; }

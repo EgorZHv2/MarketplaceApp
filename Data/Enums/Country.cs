@@ -8,6 +8,7 @@ namespace Data.Enums
 {
     public enum Country
     {
+        None,
         Russia,
         Germany,
         USA,

@@ -10,11 +10,11 @@ namespace Data.DTO.ProductXmlModels
     [Serializable]
     [XmlRoot("shop")]
     [XmlType("shop")]
-    public class Shop
+    public class ShopNode
     {
         [XmlArray("offers")]
         [XmlArrayItem("offer")]
-        public List<Offer> offers { get; set; } = new List<Offer>();
+        public List<OfferNode> offers { get; set; } = new List<OfferNode>();
         public int Num { get; set; }
     }
 }
