@@ -13,6 +13,7 @@ public class FilesController : Controller
     public async Task<IActionResult> GetFileInfo(Guid id)
     {
         // code
+        // more code
         return NotFound();
     }
 }
