@@ -12,6 +12,7 @@ public class FilesController : Controller
     [HttpGet("{id}")]
     public async Task<IActionResult> GetFileInfo(Guid id)
     {
+        // code
         return NotFound();
     }
 }
