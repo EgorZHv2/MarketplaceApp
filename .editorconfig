@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CS0006: Metadata file 'C:\Project С#\Практика\MarketplaceApp\Data\obj\Debug\net6.0\ref\Data.dll' could not be found
+dotnet_diagnostic.CS0006.severity = none
